@@ -1,0 +1,27 @@
+{
+  "modes": [
+    {
+      "id": "white-out",
+      "title": "White Out",
+      "mcVersion": "1.20.1",
+      "version": "1.0.0",
+      "loader": "fabric",
+      "loaderVersion": null,
+      "size": "39 МБ",
+      "players": "—",
+      "accent": "#7c5cff",
+      "tags": [
+        "Режим"
+      ],
+      "image": "",
+      "imageUrl": null,
+      "build": {
+        "files": 10,
+        "bytes": 40872343,
+        "version": "1.0.0"
+      },
+      "description": "",
+      "changelog": ""
+    }
+  ]
+}
