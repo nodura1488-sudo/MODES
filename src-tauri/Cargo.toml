@@ -1,6 +1,6 @@
 [package]
 name = "tm-launcher"
-version = "0.4.0"
+version = "0.4.1"
 description = "TMLauncher — майнкрафт-лаунчер с режимами и аккаунтами Ely.by"
 authors = ["TM"]
 license = "MIT"
