@@ -1,8 +1,16 @@
 {
   "mode": "white-out",
-  "version": "1.0.1",
-  "generatedAt": "2026-11-01T17:05:12.058Z",
+  "version": "1.0.2",
+  "generatedAt": "2026-11-04T23:55:08.056Z",
   "files": {
+    "mods/Mappet-Reloaded-0.4-dev.jar": {
+      "sha256": "c3bf5656b55e55d03bae1897edc3f807d993e682e4c4f89b7334851bcf4fe34f",
+      "size": 2702600
+    },
+    "mods/WhiteOut-1.0.0.jar": {
+      "sha256": "85808cdbf3bda4659f3605d0e977bacdd1a2d2ccf14b493bb607196db91eb0da",
+      "size": 204816
+    },
     "mods/bbs-2.3.3-1.20.1.jar": {
       "sha256": "c898db674b1be67e26093c7b12c6543ea195e3b53c9573d6f55c4f7f4b584b1a",
       "size": 10723055
@@ -19,10 +27,6 @@
       "sha256": "76133efe92aea907cf75562d9e26517deb170e2580e1ecd4979da2c8902de782",
       "size": 691483
     },
-    "mods/Mappet-Reloaded-0.4-dev.jar": {
-      "sha256": "524fc9131b373038ef41d675eb9945f0c1dee4c735686c220df693b83c13dc5c",
-      "size": 2577434
-    },
     "mods/sodium-extra-0.5.9+mc1.20.1.jar": {
       "sha256": "5cae656838b595e27d5133264374e5d90f5f35a39e343bfc5a76b908fec97c9f",
       "size": 370701
@@ -31,17 +35,21 @@
       "sha256": "688c26029ce69f0b1f7cf936866656ca6723228ac46c4aef5b5f793b1e6abd22",
       "size": 971552
     },
-    "mods/TBlocks-1.0.0.jar": {
-      "sha256": "6db4a81a276e44985e96f78c68cf9ae1f4dae57ad020e598e698d7e2d5bdcb26",
-      "size": 14807366
-    },
-    "mods/WhiteOut-1.0.0.jar": {
-      "sha256": "97bc5dfc7e92745ab85173061c4bddcb5ccab31d702ee4aa6209a38eb4bb9366",
-      "size": 41219
+    "mods/tblocks-1.0.0.jar": {
+      "sha256": "55ca2f79951f128d2ae58cdfbc03724aa931ef78179a267e53978898f966ced2",
+      "size": 1362761
     },
     "mods/worldedit-mod-7.2.15.jar": {
       "sha256": "17db6b3e94f52d25426684663e1e1846823cbb7907f1c365ac329e5bc7bfaf2c",
       "size": 5825402
+    },
+    "shaderpacks/BSL_v10.1.zip": {
+      "sha256": "e8c2031dffcb9160ed025f934748aa30f8eb691c92bffc17713da908e7943ce6",
+      "size": 1152396
+    },
+    "shaderpacks/BSL_v10.1.zip.txt": {
+      "sha256": "d87f2b61584f9ebc4760fb93a72ad95953e405d1c6d4443e80593cf14635a5d4",
+      "size": 317
     }
   }
 }

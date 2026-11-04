@@ -1,27 +1,40 @@
 {
   "modes": [
     {
+      "accent": "#7c5cff",
+      "build": {
+        "bytes": 28869214,
+        "files": 12,
+        "version": "1.0.2"
+      },
+      "changelog": "v1.0.2 — Тестовое обновление [Релиз]\n— тест",
+      "description": "",
+      "history": [
+        {
+          "changes": [
+            "тест"
+          ],
+          "date": "2026-11-04",
+          "tags": [
+            "release"
+          ],
+          "title": "Тестовое обновление",
+          "version": "1.0.2"
+        }
+      ],
       "id": "white-out",
-      "title": "White Out",
-      "mcVersion": "1.20.1",
-      "version": "1.0.1",
+      "image": "",
+      "imageUrl": null,
       "loader": "fabric",
       "loaderVersion": null,
-      "size": "39 МБ",
+      "mcVersion": "1.20.1",
       "players": "—",
-      "accent": "#7c5cff",
+      "size": "28 МБ",
       "tags": [
         "Режим"
       ],
-      "image": "",
-      "imageUrl": null,
-      "build": {
-        "files": 10,
-        "bytes": 40872343,
-        "version": "1.0.0"
-      },
-      "description": "",
-      "changelog": ""
+      "title": "White Out",
+      "version": "1.0.2"
     }
   ]
 }
