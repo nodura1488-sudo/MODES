@@ -1,0 +1,19 @@
+{
+  "name": "tdev-launcher",
+  "productName": "TDEV Launcher",
+  "version": "0.1.0",
+  "description": "TDEV Launcher — майнкрафт-лаунчер с режимами и аккаунтами Ely.by",
+  "main": "main.js",
+  "author": "TDEV",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "extract-zip": "^2.0.1",
+    "minecraft-launcher-core": "^3.18.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "tm-launcher",
+  "productName": "TMLauncher",
+  "version": "0.4.0",
+  "private": true,
+  "description": "TMLauncher — Minecraft launcher with modes and Ely.by accounts (Tauri)",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.4"
+  }
+}

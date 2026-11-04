@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:;">
+  <title>TDEV Launcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+
+  <!-- Титлбар -->
+  <header id="titlebar">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="24" y2="24">
+            <stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#00e0ff"/>
+          </linearGradient>
+        </defs>
+        <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z" stroke="url(#lg)" stroke-width="1.8" fill="rgba(124,92,255,0.12)"/>
+        <path d="M8.5 9 H15.5 M12 9 V16" stroke="url(#lg)" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">TDEV <b>LAUNCHER</b></span>
+    </div>
+    <div class="titlebar-drag"></div>
+    <button id="account-chip" class="chip" title="Аккаунт">
+      <span class="avatar" id="account-avatar"></span>
+      <span id="account-name">Гость</span>
+      <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 3.5 L5 6.5 L8 3.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" id="btn-min" title="Свернуть">
+      <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6 H10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <button class="tb-btn" id="btn-settings" title="Настройки">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3.2"/>
+        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+    <button class="tb-btn tb-close" id="btn-close" title="Закрыть">
+      <svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 3 L9 9 M9 3 L3 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <!-- Главная -->
+  <main id="home">
+    <aside id="modes-list">
+      <div class="modes-header">
+        <h1>РЕЖИМЫ</h1>
+        <span id="modes-count" class="count"></span>
+        <button id="btn-refresh" class="icon-btn icon-btn-dim" title="Обновить список режимов из репозитория">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/>
+          </svg>
+        </button>
+        <button id="btn-publish" class="icon-btn" title="Выложить режим">
+          <svg width="13" height="13" viewBox="0 0 12 12"><path d="M6 1.5 V10.5 M1.5 6 H10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div id="modes-cards"></div>
+      <div class="modes-footer">
+        <span id="folder-link" class="link">Папка игры</span>
+        <span class="dot">•</span>
+        <span id="site-link" class="link">tdev.gg</span>
+      </div>
+    </aside>
+
+    <section id="mode-detail">
+      <div id="detail-empty" class="detail-empty">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M12 8 L16.5 10.5 V15 L12 17.5 L7.5 15 V10.5 Z"/>
+        </svg>
+        <p>Выбери режим слева,<br>чтобы увидеть детали</p>
+      </div>
+
+      <div id="detail-body" hidden>
+        <div class="hero">
+          <img id="detail-img" alt="">
+          <div class="hero-shade"></div>
+          <div class="hero-title">
+            <h2 id="detail-title"></h2>
+            <div id="detail-tags"></div>
+          </div>
+        </div>
+        <div class="meta-row">
+          <div class="meta"><span class="meta-label">Версия</span><span id="meta-version" class="meta-value"></span></div>
+          <div class="meta"><span class="meta-label">Minecraft</span><span id="meta-mc" class="meta-value"></span></div>
+          <div class="meta"><span class="meta-label">Загрузчик</span><span id="meta-loader" class="meta-value"></span></div>
+          <div class="meta"><span class="meta-label">Размер</span><span id="meta-size" class="meta-value"></span></div>
+          <div class="meta"><span class="meta-label">Онлайн</span><span id="meta-players" class="meta-value"></span></div>
+        </div>
+        <p id="detail-desc"></p>
+        <div class="changelog">
+          <h3>Что нового</h3>
+          <p id="detail-changelog"></p>
+        </div>
+      </div>
+
+      <div id="detail-footer" hidden>
+        <div class="status"><span id="action-status">Готов к запуску</span></div>
+        <div id="progress-wrap" hidden><div id="progress-bar"></div></div>
+        <button id="action-btn">УСТАНОВИТЬ</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Настройки -->
+  <div class="modal-overlay" id="modal-settings" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h2>НАСТРОЙКИ</h2>
+        <button class="modal-close" data-close="modal-settings">✕</button>
+      </div>
+
+      <div class="field">
+        <label>Оперативная память: <output id="ram-out">4 ГБ</output></label>
+        <input type="range" id="set-ram" min="2" max="16" step="1" value="4">
+        <div class="hint">Сколько ОЗУ отдать игре. 4–8 ГБ — норм для сборок</div>
+      </div>
+
+      <div class="field">
+        <label>Папка игры</label>
+        <div class="row">
+          <input type="text" id="set-dir" readonly>
+          <button class="btn-ghost" id="btn-choose-dir">Выбрать</button>
+          <button class="btn-ghost" id="btn-open-dir">Открыть</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Путь к Java</label>
+        <input type="text" id="set-java" placeholder="пусто = системная java">
+        <div class="hint">Например: C:\Program Files\Java\jdk-17\bin\javaw.exe</div>
+      </div>
+
+      <div class="field">
+        <label>Окно игры</label>
+        <div class="row">
+          <input type="number" id="set-width" min="400" max="3840" placeholder="925"> ×
+          <input type="number" id="set-height" min="300" max="2160" placeholder="530">
+          <label class="check"><input type="checkbox" id="set-fullscreen"> Полный экран</label>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn-primary" id="btn-save-settings">СОХРАНИТЬ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Выкладка режима -->
+  <div class="modal-overlay" id="modal-publish" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h2>ВЫКЛАДКА РЕЖИМА</h2>
+        <button class="modal-close" data-close="modal-publish">✕</button>
+      </div>
+
+      <div class="field">
+        <label>GitHub репозиторий</label>
+        <input type="text" id="pub-repo" placeholder="owner/repo" value="nodura1488-sudo/MODES">
+        <div class="hint">Сборка зальётся в <b>modes/&lt;id&gt;/</b> пофайлово + манифест, арт в <b>arts/</b>, список — <b>modes.json</b></div>
+      </div>
+
+      <div class="field">
+        <label>GitHub токен</label>
+        <input type="password" id="pub-token" placeholder="ghp_…">
+        <div class="hint">
+          <span class="link" id="pub-token-link">Создать токен</span> → Generate new token (classic) →
+          галочка <b>repo</b>. Токен хранится только у тебя на ПК
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Название режима</label>
+        <input type="text" id="pub-title" placeholder="например, FROST LEGENDS">
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Версия режима</label>
+          <input type="text" id="pub-version" value="1.0.0">
+        </div>
+        <div class="field">
+          <label>Версия Minecraft</label>
+          <input type="text" id="pub-mc" value="1.20.1">
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Загрузчик</label>
+          <select id="pub-loader">
+            <option value="vanilla">Vanilla (без модов на ядре)</option>
+            <option value="forge">Forge</option>
+            <option value="fabric">Fabric</option>
+          </select>
+        </div>
+        <div class="field" id="pub-loader-version-field" hidden>
+          <label>Версия загрузчика</label>
+          <input type="text" id="pub-loader-version" placeholder="пусто = рекомендованная">
+          <div class="hint">Forge: 47.2.0 • Fabric: 0.15.11</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Теги (через запятую)</label>
+        <input type="text" id="pub-tags" placeholder="Хоррор, Кооператив">
+      </div>
+
+      <div class="field">
+        <label>Описание</label>
+        <textarea id="pub-desc" rows="3" placeholder="О чём режим, что делать игрокам…"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Что нового</label>
+        <textarea id="pub-changelog" rows="2" placeholder="• Добавлено…&#10;• Исправлено…"></textarea>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Цвет акцента</label>
+          <input type="color" id="pub-accent" value="#7c5cff">
+        </div>
+        <div class="field">
+          <label>Арт карточки</label>
+          <div class="row">
+            <button class="btn-ghost" id="pub-pick-art" type="button">Выбрать</button>
+            <img id="pub-art-preview" class="art-preview" hidden alt="">
+          </div>
+          <div class="hint" id="pub-art-name"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Сборка (zip) — необязательно</label>
+        <div class="row">
+          <button class="btn-ghost" id="pub-pick-zip" type="button">Выбрать zip</button>
+          <span class="hint" id="pub-zip-name"></span>
+        </div>
+        <div class="hint">
+          mods/, config/, resourcepacks/ и т.п. Зальётся в репо пофайлово — у игроков
+          обновления качаются инкрементально (только изменённое). Без zip — чистая ваниль
+        </div>
+      </div>
+
+      <div class="pub-progress" id="pub-progress-wrap" hidden>
+        <div class="pub-step" id="pub-step"></div>
+        <div class="progress-track"><div class="progress-fill" id="pub-progress-bar"></div></div>
+      </div>
+
+      <div id="pub-error" class="form-error" hidden></div>
+
+      <div class="modal-foot">
+        <button class="btn-primary" id="btn-publish-submit">ОПУБЛИКОВАТЬ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Аккаунт -->
+  <div class="modal-overlay" id="modal-account" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h2>АККАУНТ</h2>
+        <button class="modal-close" data-close="modal-account">✕</button>
+      </div>
+
+      <div id="acc-current" class="acc-current"></div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="ely">Ely.by</button>
+        <button class="tab" data-tab="offline">Офлайн</button>
+      </div>
+
+      <form id="form-ely" class="tab-body">
+        <input type="text" id="ely-user" placeholder="Логин или e-mail Ely.by" autocomplete="off">
+        <input type="password" id="ely-pass" placeholder="Пароль">
+        <div id="ely-error" class="form-error" hidden></div>
+        <button type="submit" class="btn-primary" id="btn-ely-login">ВОЙТИ</button>
+        <div class="hint center">
+          <span class="link" id="ely-site">Войти через сайт Ely.by</span> — откроется браузер,
+          войди там и введи те же данные в форме выше
+        </div>
+        <div class="hint center">
+          Нет аккаунта? <span class="link" id="ely-register">Регистрация на ely.by</span> — бесплатно
+        </div>
+      </form>
+
+      <form id="form-offline" class="tab-body" hidden>
+        <input type="text" id="off-nick" placeholder="Ник для игры">
+        <div id="off-error" class="form-error" hidden></div>
+        <button type="submit" class="btn-primary">ИГРАТЬ БЕЗ ВХОДА</button>
+        <div class="hint center">Скины и серверы с авторизацией будут недоступны</div>
+      </form>
+
+      <div class="acc-list-head">СОХРАНЁННЫЕ АККАУНТЫ</div>
+      <div id="acc-list" class="acc-list"></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "TMLauncher",
+  "version": "0.4.0",
+  "identifier": "gg.tm.launcher",
+  "build": {
+    "frontendDist": "../src"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "TMLauncher",
+        "width": 1200,
+        "height": 740,
+        "minWidth": 980,
+        "minHeight": 640,
+        "decorations": false,
+        "resizable": true,
+        "maximizable": false,
+        "fullscreen": false,
+        "center": true,
+        "visible": true,
+        "backgroundColor": "#080810",
+        "shadow": false,
+        "theme": "Dark"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "publisher": "TM",
+    "shortDescription": "TMLauncher",
+    "longDescription": "TMLauncher — лаунчер Minecraft с режимами и аккаунтами Ely.by",
+    "copyright": "© TM",
+    "category": "Game",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["Russian", "English"],
+        "displayLanguageSelector": false
+      }
+    }
+  }
+}
