@@ -1,0 +1,47 @@
+{
+  "mode": "white-out",
+  "version": "1.0.1",
+  "generatedAt": "2026-11-01T17:05:12.058Z",
+  "files": {
+    "mods/bbs-2.3.3-1.20.1.jar": {
+      "sha256": "c898db674b1be67e26093c7b12c6543ea195e3b53c9573d6f55c4f7f4b584b1a",
+      "size": 10723055
+    },
+    "mods/fabric-api-0.92.12+1.20.1.jar": {
+      "sha256": "4197ff4fbdac13cffccd267c1bc59e9fbabb2b5683a9d5f8023f4b5ea16a1c1e",
+      "size": 2137232
+    },
+    "mods/iris-1.7.6+mc1.20.1.jar": {
+      "sha256": "9eb15e563e0c9ae6eff15b7863f8432dd290cf9f724c7373e9b15b14aa829ed5",
+      "size": 2726899
+    },
+    "mods/lithium-fabric-mc1.20.1-0.11.4.jar": {
+      "sha256": "76133efe92aea907cf75562d9e26517deb170e2580e1ecd4979da2c8902de782",
+      "size": 691483
+    },
+    "mods/Mappet-Reloaded-0.4-dev.jar": {
+      "sha256": "524fc9131b373038ef41d675eb9945f0c1dee4c735686c220df693b83c13dc5c",
+      "size": 2577434
+    },
+    "mods/sodium-extra-0.5.9+mc1.20.1.jar": {
+      "sha256": "5cae656838b595e27d5133264374e5d90f5f35a39e343bfc5a76b908fec97c9f",
+      "size": 370701
+    },
+    "mods/sodium-fabric-0.5.13+mc1.20.1.jar": {
+      "sha256": "688c26029ce69f0b1f7cf936866656ca6723228ac46c4aef5b5f793b1e6abd22",
+      "size": 971552
+    },
+    "mods/TBlocks-1.0.0.jar": {
+      "sha256": "6db4a81a276e44985e96f78c68cf9ae1f4dae57ad020e598e698d7e2d5bdcb26",
+      "size": 14807366
+    },
+    "mods/WhiteOut-1.0.0.jar": {
+      "sha256": "97bc5dfc7e92745ab85173061c4bddcb5ccab31d702ee4aa6209a38eb4bb9366",
+      "size": 41219
+    },
+    "mods/worldedit-mod-7.2.15.jar": {
+      "sha256": "17db6b3e94f52d25426684663e1e1846823cbb7907f1c365ac329e5bc7bfaf2c",
+      "size": 5825402
+    }
+  }
+}
