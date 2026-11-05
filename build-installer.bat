@@ -8,14 +8,15 @@ if not exist "node_modules\.bin\tauri.cmd" (
   exit /b 1
 )
 
-rem Build the portable exe first; it also prepares the MSVC environment.
-call build-release.bat --no-pause
+call "%~dp0build-env.bat"
 if errorlevel 1 goto :fail
-cd /d "%~dp0"
 
-echo [TM] Building NSIS installer...
+echo [TM] Building Tauri release + NSIS installer...
 if exist "src-tauri\target-msvc\release\bundle\nsis\*.exe" del /Q "src-tauri\target-msvc\release\bundle\nsis\*.exe"
 call "node_modules\.bin\tauri.cmd" build
+if errorlevel 1 goto :fail
+
+copy /Y "src-tauri\target-msvc\release\tm-launcher.exe" "TMLauncher.exe" >nul
 if errorlevel 1 goto :fail
 
 set "SETUP="
@@ -29,7 +30,7 @@ copy /Y "%SETUP%" "TMLauncher Setup.exe" >nul
 if errorlevel 1 goto :fail
 
 echo.
-echo [TM] Done: "TMLauncher Setup.exe"
+echo [TM] Done: "TMLauncher.exe" and "TMLauncher Setup.exe"
 if /I not "%~1"=="--no-pause" pause
 exit /b 0
 

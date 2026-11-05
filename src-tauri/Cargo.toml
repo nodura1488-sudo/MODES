@@ -1,6 +1,6 @@
 [package]
 name = "tm-launcher"
-version = "0.4.7"
+version = "0.4.8"
 description = "TMLauncher — майнкрафт-лаунчер с режимами и аккаунтами Ely.by"
 authors = ["TM"]
 license = "MIT"
@@ -25,5 +25,5 @@ mc-launcher-core = "0.1.2"
 [profile.release]
 opt-level = 2
 lto = "thin"
-codegen-units = 1
+codegen-units = 4
 strip = true
