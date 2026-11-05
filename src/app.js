@@ -19,8 +19,18 @@ const LOADER_LABELS = {
   waterfall: 'Waterfall'
 };
 
+const UPDATE_TAGS = {
+  release: { label: 'Релиз', cls: 'release' },
+  hotfix: { label: 'Hot-fix', cls: 'hotfix' },
+  content: { label: 'Контент', cls: 'content' },
+  balance: { label: 'Баланс', cls: 'balance' },
+  fix: { label: 'Исправление', cls: 'fix' },
+  tech: { label: 'Техническое', cls: 'tech' }
+};
+
 const ART_CACHE = new Map();
 const DEFAULT_ACCENT = '#0d8cff';
+const SPLASH_START = performance.now();
 
 const S = {
   modes: [],
@@ -41,10 +51,19 @@ const S = {
   elyLogin: null,
   section: 'store',
   detailFrom: null,
-  dataDir: ''
+  dataDir: '',
+  updateInfo: null
 };
 
 const els = {
+  splash: $('splash'),
+  splashSub: $('splash-sub'),
+  splashBar: $('splash-progress-bar'),
+  sideLibCount: $('side-lib-count'),
+  sideInstalledCount: $('side-installed-count'),
+  updateFeed: $('update-feed'),
+  updateList: $('update-list'),
+  updateCount: $('update-count'),
   storeView: $('store-view'),
   libraryView: $('library-view'),
   libraryGrid: $('library-grid'),
@@ -73,6 +92,12 @@ const els = {
   accChip: $('account-chip'),
   accAvatar: $('account-avatar'),
   accName: $('account-name'),
+  updateChip: $('update-chip'),
+  updateChipText: $('update-chip-text'),
+  updateCurrent: $('update-current'),
+  updateLatest: $('update-latest'),
+  updateNotes: $('update-notes'),
+  btnUpdateDownload: $('btn-update-download'),
   toast: $('toast'),
   detailBack: $('detail-back'),
   detailImg: $('detail-img'),
@@ -90,6 +115,19 @@ const els = {
   changelogToggle: $('changelog-toggle'),
   reqSize: $('req-size'),
   sideFolder: $('side-folder'),
+  sideCard: $('side-card'),
+  sideAccent: $('side-accent'),
+  sideVersion: $('side-version'),
+  sideStateDot: $('side-state-dot'),
+  sideStateText: $('side-state-text'),
+  sideFiles: $('side-files'),
+  sideSize: $('side-size'),
+  sideMc: $('side-mc'),
+  sideLoader: $('side-loader'),
+  sideUpdateVersion: $('side-update-version'),
+  sideUpdateTag: $('side-update-tag'),
+  sideUpdateChanges: $('side-update-changes'),
+  sideHistoryLink: $('side-history-link'),
   moreSection: $('more-section'),
   moreGrid: $('more-grid'),
   ram: $('set-ram'),
@@ -116,6 +154,7 @@ async function init() {
   bindDetail();
   bindSettings();
   bindAccountModal();
+  bindUpdateModal();
 
   if (api && api.onGameEvent) api.onGameEvent(onGameEvent);
   if (api && api.getAppDataPath) {
@@ -127,6 +166,7 @@ async function init() {
   renderStore();
   renderLibrary();
   updateSidebar();
+  if (els.splashSub) els.splashSub.textContent = 'Загружаем режимы и аккаунт…';
 
   try {
     const [modes, state, settings, accounts, current] = await Promise.all([
@@ -147,6 +187,8 @@ async function init() {
     renderLibrary();
     updateSidebar();
     requestAnimationFrame(() => { $('app').scrollTop = 0; });
+    finishSplash();
+    checkLauncherUpdate();
 
     if (api.refreshSession) {
       api.refreshSession().then((acc) => {
@@ -160,12 +202,37 @@ async function init() {
     S.loading = false;
     renderStore();
     renderLibrary();
+    finishSplash();
     toast('Не удалось загрузить данные: ' + err, 'error');
   }
 
   const openParam = new URLSearchParams(location.search).get('open');
   if (openParam && $('modal-' + openParam)) openModal('modal-' + openParam);
 }
+
+let splashFinished = false;
+function finishSplash() {
+  if (splashFinished) return;
+  splashFinished = true;
+  const elapsed = performance.now() - SPLASH_START;
+  const wait = Math.max(0, 680 - elapsed);
+  setTimeout(() => {
+    if (!els.splash) return;
+    if (els.splashBar) {
+      els.splashBar.style.animation = 'none';
+      els.splashBar.style.width = '100%';
+    }
+    setTimeout(() => {
+      if (!els.splash) return;
+      els.splash.classList.add('done');
+      setTimeout(() => {
+        if (els.splash) els.splash.remove();
+      }, 420);
+    }, 180);
+  }, wait);
+}
+
+setTimeout(finishSplash, 12000);
 
 // ---------------------------------------------------------------- окно
 
@@ -344,6 +411,53 @@ function filterModes() {
   return S.modes.filter(matchesSearch);
 }
 
+function updateSidebarCounts() {
+  if (!els.sideLibCount) return;
+  els.sideLibCount.textContent = String(S.modes.filter((mode) => inLibrary(mode)).length);
+  els.sideInstalledCount.textContent = String(S.modes.filter((mode) => isInstalled(mode)).length);
+}
+
+function renderUpdateFeed() {
+  if (!els.updateFeed) return;
+  if (S.loading || S.search) {
+    els.updateFeed.hidden = true;
+    return;
+  }
+
+  const items = [];
+  S.modes.forEach((mode) => {
+    const entry = latestUpdateEntry(mode);
+    if (entry) items.push({ mode, entry });
+  });
+  items.sort((a, b) => String(b.entry.date || '').localeCompare(String(a.entry.date || '')));
+  const list = items.slice(0, 4);
+  els.updateFeed.hidden = list.length === 0;
+  els.updateCount.textContent = String(list.length);
+
+  els.updateList.innerHTML = list.map(({ mode, entry }) => {
+    const tag = entry.tags && entry.tags.length ? tagPill(entry.tags[0]) : '';
+    const changes = (entry.changes || []).slice(0, 2).map((change) => `— ${change}`).join('\n');
+    return `
+      <article class="update-card" data-id="${escapeHtml(mode.id)}">
+        <div class="update-card-head">
+          <span class="update-mode">${escapeHtml(mode.title || 'Режим')}</span>
+          ${entry.date ? `<span class="update-date">${escapeHtml(formatUpdateDate(entry.date))}</span>` : ''}
+        </div>
+        <div class="update-card-title">
+          <b>v${escapeHtml(entry.version || mode.version || '—')}</b>
+          ${entry.title ? `<span>${escapeHtml(entry.title)}</span>` : ''}
+        </div>
+        ${tag ? `<div class="update-card-tag">${tag}</div>` : ''}
+        <div class="update-card-changes">${escapeHtml(changes || 'Без описания изменений')}</div>
+      </article>`;
+  }).join('');
+
+  els.updateList.onclick = (event) => {
+    const card = event.target.closest('.update-card');
+    if (card && card.dataset.id) openDetail(card.dataset.id);
+  };
+}
+
 function renderStore() {
   if (!els.storeView) return;
 
@@ -356,12 +470,15 @@ function renderStore() {
     els.modesGrid.innerHTML = '';
     els.emptyState.hidden = true;
     els.loadingState.hidden = false;
+    els.updateFeed.hidden = true;
+    updateSidebarCounts();
     return;
   }
   els.loadingState.hidden = true;
 
   if (searchActive) {
     els.featured.hidden = true;
+    els.updateFeed.hidden = true;
     const result = sortModes(filterModes());
     els.catalogTitle.textContent = 'Результаты поиска';
     els.modesCount.textContent = String(result.length);
@@ -377,6 +494,7 @@ function renderStore() {
   const featured = S.modes.find((m) => m.imageUrl || m.image) || S.modes[0] || null;
   S.featuredId = featured ? featured.id : null;
   renderFeatured(featured);
+  renderUpdateFeed();
 
   const list = sortModes(S.modes);
   els.catalogTitle.textContent = 'Все режимы';
@@ -387,6 +505,7 @@ function renderStore() {
     'Режимов пока нет',
     'Список появится, когда в репозитории будет modes.json'
   );
+  updateSidebarCounts();
 }
 
 function renderLibrary() {
@@ -404,6 +523,7 @@ function renderLibrary() {
       ? 'Попробуй изменить запрос'
       : 'Добавь режим в библиотеку из магазина, и он появится здесь';
   }
+  updateSidebarCounts();
 }
 
 function renderFeatured(mode) {
@@ -551,6 +671,87 @@ function accentColor(mode) {
   return /^#[0-9a-f]{6}$/i.test(raw) ? raw : DEFAULT_ACCENT;
 }
 
+function formatBytes(bytes) {
+  const value = Number(bytes || 0);
+  if (value >= 1024 * 1024 * 1024) return `${(value / 1024 / 1024 / 1024).toFixed(1)} ГБ`;
+  if (value >= 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} МБ`;
+  if (value >= 1024) return `${(value / 1024).toFixed(0)} КБ`;
+  return `${value} Б`;
+}
+
+function tagPill(tag) {
+  const meta = UPDATE_TAGS[tag] || { label: tag, cls: 'tech' };
+  return `<span class="tag-pill ${escapeHtml(meta.cls)}">${escapeHtml(meta.label)}</span>`;
+}
+
+function formatUpdateDate(value) {
+  return String(value || '').replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3.$2.$1');
+}
+
+function latestUpdateEntry(mode) {
+  if (Array.isArray(mode.history) && mode.history.length) {
+    return mode.history[0];
+  }
+  const parsed = parseChangelog(mode)[0];
+  if (!parsed) return null;
+  const match = String(parsed.title || '').match(/^v?(\d+\.\d+(?:\.\d+)?)/i);
+  return {
+    version: match ? match[1] : parsed.title,
+    title: '',
+    tags: [],
+    date: '',
+    changes: parsed.lines
+  };
+}
+
+function renderSideInfo(mode) {
+  if (!mode) return;
+  const latest = latestUpdateEntry(mode);
+  const installed = isInstalled(mode);
+  const lib = inLibrary(mode);
+  const running = S.running === mode.id;
+
+  let state = 'Не добавлен в библиотеку';
+  let stateClass = '';
+  if (running) {
+    state = 'В игре';
+    stateClass = 'ok';
+  } else if (installed) {
+    state = isUpdate(mode) ? 'Доступно обновление' : 'Установлено';
+    stateClass = isUpdate(mode) ? 'warn' : 'ok';
+  } else if (lib) {
+    state = 'В библиотеке';
+    stateClass = 'warn';
+  }
+
+  els.sideAccent.style.background = accentColor(mode);
+  els.sideVersion.textContent = mode.version ? `v${mode.version}` : '—';
+  els.sideStateDot.className = `side-state-dot ${stateClass}`.trim();
+  els.sideStateText.textContent = state;
+  els.sideFiles.textContent = mode.build ? String(mode.build.files || 0) : '—';
+  els.sideSize.textContent = mode.size || (mode.build ? formatBytes(mode.build.bytes) : '—');
+  els.sideMc.textContent = mode.mcVersion || '—';
+  els.sideLoader.textContent = loaderLabel(mode);
+
+  if (latest) {
+    els.sideUpdateVersion.textContent = latest.version ? `v${latest.version}` : '—';
+    els.sideUpdateTag.innerHTML = latest.tags && latest.tags.length ? tagPill(latest.tags[0]) : '';
+    const changes = (latest.changes || []).slice(0, 3).map((change) => `— ${change}`).join('\n');
+    els.sideUpdateChanges.textContent = changes || 'Изменения не указаны.';
+    els.sideUpdateChanges.classList.remove('empty');
+    if (latest.date) {
+      els.sideUpdateChanges.textContent += `\n${formatUpdateDate(latest.date)}`;
+    }
+  } else {
+    els.sideUpdateVersion.textContent = '—';
+    els.sideUpdateTag.innerHTML = '';
+    els.sideUpdateChanges.textContent = 'Пока нет обновлений.';
+    els.sideUpdateChanges.classList.add('empty');
+  }
+
+  els.sideHistoryLink.hidden = parseChangelog(mode).length === 0;
+}
+
 function fallbackArt(mode) {
   const key = [mode.id, mode.title, mode.accent].join('|');
   if (ART_CACHE.has(key)) return ART_CACHE.get(key);
@@ -605,6 +806,13 @@ function wireImage(img, mode) {
 function bindDetail() {
   els.detailBack.onclick = () => showStore();
   els.sideFolder.onclick = () => api.openGameFolder().catch(() => {});
+  els.sideHistoryLink.onclick = () => {
+    const section = els.detailChangelogSection;
+    if (!section) return;
+    const first = section.querySelector('details.changelog-item');
+    if (first) first.open = true;
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   els.changelogToggle.onclick = () => {
     const items = Array.from(els.detailChangelog.querySelectorAll('details.changelog-item'));
     const expand = items.some((item) => !item.open);
@@ -834,6 +1042,7 @@ function renderDetail() {
   els.detailDesc.textContent = modeDescription(mode);
   renderChangelog(mode);
   els.reqSize.textContent = mode.size || '—';
+  renderSideInfo(mode);
 
   const others = sortByTitle(S.modes.filter((m) => m.id !== mode.id)).slice(0, 3);
   els.moreSection.hidden = others.length === 0;
@@ -953,11 +1162,67 @@ function onGameEvent(ev) {
   }
 }
 
+// ---------------------------------------------------------------- обновление лаунчера
+
+function bindUpdateModal() {
+  const close = () => {
+    $('modal-update').hidden = true;
+  };
+  $('btn-update-later').onclick = close;
+  $('btn-update-later-x').onclick = close;
+  els.updateChip.onclick = () => {
+    if (!S.updateInfo) return;
+    els.updateCurrent.textContent = `v${S.updateInfo.current}`;
+    els.updateLatest.textContent = `v${S.updateInfo.latest}`;
+    els.updateNotes.textContent = (S.updateInfo.notes || '').trim() || 'Список изменений появится позже.';
+    els.btnUpdateDownload.textContent = S.updateInfo.installerUrl
+      ? 'Скачать обновление'
+      : 'Открыть релиз';
+    $('modal-update').hidden = false;
+  };
+  els.btnUpdateDownload.onclick = async () => {
+    const info = S.updateInfo;
+    if (!info) return;
+    if (!info.installerUrl) {
+      api.openUrl(info.url).catch((err) => toast(String(err), 'error'));
+      return;
+    }
+    els.btnUpdateDownload.disabled = true;
+    els.btnUpdateDownload.textContent = 'Скачиваю…';
+    try {
+      await api.downloadUpdate(info.installerUrl);
+      close();
+      toast('Установщик открыт. Заверши установку обновления.', 'ok');
+    } catch (err) {
+      toast(String(err), 'error');
+    } finally {
+      els.btnUpdateDownload.disabled = false;
+      els.btnUpdateDownload.textContent = 'Скачать обновление';
+    }
+  };
+}
+
+async function checkLauncherUpdate() {
+  if (!api.checkUpdate) return;
+  try {
+    const info = await api.checkUpdate();
+    if (!info || !info.available) {
+      els.updateChip.hidden = true;
+      return;
+    }
+    S.updateInfo = info;
+    els.updateChipText.textContent = `Обновление ${info.latest}`;
+    els.updateChip.hidden = false;
+  } catch (_) {
+    els.updateChip.hidden = true;
+  }
+}
+
 // ---------------------------------------------------------------- аккаунт
 
 function avatarSkin(acc) {
   if (!acc || acc.type !== 'ely' || !acc.name) return '';
-  return `background-image:url('https://skinsystem.ely.by/skins/${encodeURIComponent(acc.name)}.png');background-size:256px auto;background-position:-32px -32px;`;
+  return `url("https://skinsystem.ely.by/skins/${encodeURIComponent(acc.name)}.png")`;
 }
 
 function avatarLetter(acc) {
@@ -967,21 +1232,31 @@ function avatarLetter(acc) {
 
 function applyAvatar(el, acc) {
   if (!el) return;
+  el.classList.remove('loaded');
+  el.style.backgroundImage = '';
+  el.dataset.avatarUrl = '';
+
   if (acc && acc.type === 'ely' && acc.name) {
-    el.style.cssText = '';
+    const url = `https://skinsystem.ely.by/skins/${encodeURIComponent(acc.name)}.png`;
     el.textContent = avatarLetter(acc);
+    el.dataset.avatarUrl = url;
     const img = new Image();
     img.onload = () => {
-      el.style.cssText = avatarSkin(acc);
+      if (el.dataset.avatarUrl !== url) return;
+      const hasHat = img.naturalWidth >= 64 && img.naturalHeight >= 64;
+      el.style.backgroundImage = hasHat
+        ? `${avatarSkin(acc)}, ${avatarSkin(acc)}`
+        : avatarSkin(acc);
       el.textContent = '';
+      el.classList.add('loaded');
     };
     img.onerror = () => {
-      el.style.cssText = '';
+      if (el.dataset.avatarUrl !== url) return;
+      el.style.backgroundImage = '';
       el.textContent = avatarLetter(acc);
     };
-    img.src = `https://skinsystem.ely.by/skins/${encodeURIComponent(acc.name)}.png`;
+    img.src = url;
   } else {
-    el.style.cssText = '';
     el.textContent = avatarLetter(acc);
   }
 }

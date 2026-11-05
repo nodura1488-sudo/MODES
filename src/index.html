@@ -7,6 +7,26 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="splash">
+    <div class="splash-glow"></div>
+    <div class="splash-inner">
+      <div class="splash-logo">
+        <svg width="62" height="62" viewBox="0 0 24 24" fill="none">
+          <defs>
+            <linearGradient id="splash-grad" x1="0" y1="0" x2="24" y2="24">
+              <stop offset="0" stop-color="#0d8cff"/><stop offset="1" stop-color="#00d4ff"/>
+            </linearGradient>
+          </defs>
+          <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z" fill="rgba(13,140,255,0.12)" stroke="url(#splash-grad)" stroke-width="1.4"/>
+          <path d="M8.5 9 H15.5 M12 9 V16" stroke="url(#splash-grad)" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="splash-brand">TMLauncher</div>
+      <div class="splash-sub" id="splash-sub">Загружаем режимы и аккаунт…</div>
+      <div class="splash-progress"><div id="splash-progress-bar"></div></div>
+    </div>
+  </div>
+
   <header id="topbar">
     <div class="brand" data-tauri-drag-region>
       <span class="brand-logo">
@@ -36,6 +56,11 @@
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/>
       </svg>
+    </button>
+
+    <button class="update-chip" id="update-chip" hidden type="button">
+      <span class="update-chip-dot"></span>
+      <span id="update-chip-text">Обновление</span>
     </button>
 
     <button class="account-chip" id="account-chip" title="Аккаунт">
@@ -78,6 +103,10 @@
           <span>Библиотека</span>
         </button>
       </nav>
+      <div class="sidebar-foot">
+        <div class="sidebar-stat"><span>В библиотеке</span><b id="side-lib-count">0</b></div>
+        <div class="sidebar-stat"><span>Установлено</span><b id="side-installed-count">0</b></div>
+      </div>
     </aside>
 
     <main id="app">
@@ -95,6 +124,14 @@
             <span class="featured-status" id="featured-status"></span>
           </div>
         </div>
+      </section>
+
+      <section class="update-feed" id="update-feed" hidden>
+        <div class="shelf-head">
+          <h2>Что нового</h2>
+          <span class="count" id="update-count"></span>
+        </div>
+        <div id="update-list" class="update-list"></div>
       </section>
 
       <section id="catalog-section" class="shelf">
@@ -187,13 +224,29 @@
         </div>
 
         <aside class="detail-side">
-          <div class="side-card">
-            <h3>Информация</h3>
-            <div class="side-row"><span>Платформа</span><b>Windows 10/11</b></div>
-            <div class="side-row"><span>Java</span><b>17+</b></div>
-            <div class="side-row"><span>Тип</span><b>Режим</b></div>
-            <div class="side-row"><span>Языки</span><b>Русский</b></div>
-            <button class="btn btn-ghost btn-block" id="side-folder">Открыть папку игры</button>
+          <div class="side-card mode-info-card" id="side-card">
+            <div class="side-accent" id="side-accent"></div>
+            <div class="side-head">
+              <span class="side-kicker">Режим</span>
+              <span class="side-version" id="side-version">—</span>
+            </div>
+            <div class="side-state">
+              <span class="side-state-dot" id="side-state-dot"></span>
+              <span id="side-state-text">Не добавлен в библиотеку</span>
+            </div>
+            <div class="side-stats">
+              <div class="side-stat"><span>Файлов</span><b id="side-files">—</b></div>
+              <div class="side-stat"><span>Размер</span><b id="side-size">—</b></div>
+              <div class="side-stat"><span>Minecraft</span><b id="side-mc">—</b></div>
+              <div class="side-stat"><span>Загрузчик</span><b id="side-loader">—</b></div>
+            </div>
+            <div class="side-update" id="side-update">
+              <div class="side-update-head"><span>Последнее обновление</span><b id="side-update-version">—</b></div>
+              <div class="side-update-tag" id="side-update-tag"></div>
+              <div class="side-update-changes" id="side-update-changes">Пока нет обновлений.</div>
+              <button class="side-history-link" id="side-history-link" type="button">Вся история →</button>
+            </div>
+            <button class="btn btn-ghost btn-block side-folder" id="side-folder">Открыть папку игры</button>
           </div>
         </aside>
       </div>
@@ -334,6 +387,25 @@
         <button class="btn btn-ghost btn-block" id="btn-ely-window" hidden>Открыть окно Ely.by</button>
         <button class="btn btn-ghost btn-block" id="btn-ely-cancel" hidden>Отмена</button>
         <div class="hint center">Пароль вводится на сайте Ely.by и не попадает в лаунчер.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-update" hidden role="dialog" aria-modal="true" aria-labelledby="update-title">
+    <div class="modal modal-update">
+      <div class="modal-head">
+        <h2 id="update-title">Доступно обновление</h2>
+        <button class="modal-close" id="btn-update-later-x" type="button">✕</button>
+      </div>
+      <div class="update-versions">
+        <div><span>Сейчас</span><b id="update-current">—</b></div>
+        <div class="update-arrow">→</div>
+        <div><span>Новая версия</span><b id="update-latest">—</b></div>
+      </div>
+      <pre class="update-notes" id="update-notes"></pre>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btn-update-later" type="button">Позже</button>
+        <button class="btn btn-primary" id="btn-update-download" type="button">Скачать обновление</button>
       </div>
     </div>
   </div>

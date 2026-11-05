@@ -25,6 +25,8 @@
     openGameFolder: () => invoke("game_open_folder"),
     getAppDataPath: () => invoke("app_data_path"),
     openAppFolder: () => invoke("app_open_folder"),
+    checkUpdate: () => invoke("check_update"),
+    downloadUpdate: (url) => invoke("download_update", { url }),
 
     // аккаунты
     getAccounts: () => invoke("accounts_get"),

@@ -8,6 +8,7 @@ mod models;
 mod net;
 mod state;
 mod store;
+mod update;
 mod util;
 
 use state::AppState;
@@ -44,6 +45,8 @@ fn main() {
             commands::game_uninstall,
             commands::game_set_library,
             commands::game_open_mode_folder,
+            update::check_update,
+            update::download_update,
         ])
         .setup(|app| {
             if let Some(window) = app.get_webview_window("main") {

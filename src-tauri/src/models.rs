@@ -5,6 +5,16 @@ fn default_loader() -> String {
     "vanilla".to_string()
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase", default)]
+pub struct HistoryEntry {
+    pub version: String,
+    pub title: Option<String>,
+    pub tags: Vec<String>,
+    pub date: String,
+    pub changes: Vec<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Mode {
@@ -24,6 +34,7 @@ pub struct Mode {
     pub image: Option<String>,
     pub description: String,
     pub changelog: String,
+    pub history: Vec<HistoryEntry>,
     pub build: Option<BuildInfo>,
 }
 
@@ -45,6 +56,7 @@ impl Default for Mode {
             image: None,
             description: String::new(),
             changelog: String::new(),
+            history: Vec::new(),
             build: None,
         }
     }
