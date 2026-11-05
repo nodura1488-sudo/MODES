@@ -62,9 +62,6 @@ const els = {
   splashBar: $('splash-progress-bar'),
   sideLibCount: $('side-lib-count'),
   sideInstalledCount: $('side-installed-count'),
-  updateFeed: $('update-feed'),
-  updateList: $('update-list'),
-  updateCount: $('update-count'),
   storeView: $('store-view'),
   libraryView: $('library-view'),
   libraryGrid: $('library-grid'),
@@ -118,19 +115,11 @@ const els = {
   changelogToggle: $('changelog-toggle'),
   reqSize: $('req-size'),
   sideFolder: $('side-folder'),
-  sideCard: $('side-card'),
-  sideAccent: $('side-accent'),
-  sideVersion: $('side-version'),
-  sideStateDot: $('side-state-dot'),
-  sideStateText: $('side-state-text'),
-  sideFiles: $('side-files'),
-  sideSize: $('side-size'),
-  sideMc: $('side-mc'),
-  sideLoader: $('side-loader'),
-  sideUpdateVersion: $('side-update-version'),
-  sideUpdateTag: $('side-update-tag'),
-  sideUpdateChanges: $('side-update-changes'),
-  sideHistoryLink: $('side-history-link'),
+  detailSpotlight: $('detail-spotlight'),
+  spotlightTitle: $('spotlight-title'),
+  spotlightTag: $('spotlight-tag'),
+  spotlightDate: $('spotlight-date'),
+  spotlightLink: $('spotlight-link'),
   moreSection: $('more-section'),
   moreGrid: $('more-grid'),
   ram: $('set-ram'),
@@ -420,47 +409,6 @@ function updateSidebarCounts() {
   els.sideInstalledCount.textContent = String(S.modes.filter((mode) => isInstalled(mode)).length);
 }
 
-function renderUpdateFeed() {
-  if (!els.updateFeed) return;
-  if (S.loading || S.search) {
-    els.updateFeed.hidden = true;
-    return;
-  }
-
-  const items = [];
-  S.modes.forEach((mode) => {
-    const entry = latestUpdateEntry(mode);
-    if (entry) items.push({ mode, entry });
-  });
-  items.sort((a, b) => String(b.entry.date || '').localeCompare(String(a.entry.date || '')));
-  const list = items.slice(0, 4);
-  els.updateFeed.hidden = list.length === 0;
-  els.updateCount.textContent = String(list.length);
-
-  els.updateList.innerHTML = list.map(({ mode, entry }) => {
-    const tag = entry.tags && entry.tags.length ? tagPill(entry.tags[0]) : '';
-    const changes = (entry.changes || []).slice(0, 2).map((change) => `— ${change}`).join('\n');
-    return `
-      <article class="update-card" data-id="${escapeHtml(mode.id)}">
-        <div class="update-card-head">
-          <span class="update-mode">${escapeHtml(mode.title || 'Режим')}</span>
-          ${entry.date ? `<span class="update-date">${escapeHtml(formatUpdateDate(entry.date))}</span>` : ''}
-        </div>
-        <div class="update-card-title">
-          <b>v${escapeHtml(entry.version || mode.version || '—')}</b>
-          ${entry.title ? `<span>${escapeHtml(entry.title)}</span>` : ''}
-        </div>
-        ${tag ? `<div class="update-card-tag">${tag}</div>` : ''}
-        <div class="update-card-changes">${escapeHtml(changes || 'Без описания изменений')}</div>
-      </article>`;
-  }).join('');
-
-  els.updateList.onclick = (event) => {
-    const card = event.target.closest('.update-card');
-    if (card && card.dataset.id) openDetail(card.dataset.id);
-  };
-}
-
 function renderStore() {
   if (!els.storeView) return;
 
@@ -473,7 +421,6 @@ function renderStore() {
     els.modesGrid.innerHTML = '';
     els.emptyState.hidden = true;
     els.loadingState.hidden = false;
-    els.updateFeed.hidden = true;
     updateSidebarCounts();
     return;
   }
@@ -481,7 +428,6 @@ function renderStore() {
 
   if (searchActive) {
     els.featured.hidden = true;
-    els.updateFeed.hidden = true;
     const result = sortModes(filterModes());
     els.catalogTitle.textContent = 'Результаты поиска';
     els.modesCount.textContent = String(result.length);
@@ -497,7 +443,6 @@ function renderStore() {
   const featured = S.modes.find((m) => m.imageUrl || m.image) || S.modes[0] || null;
   S.featuredId = featured ? featured.id : null;
   renderFeatured(featured);
-  renderUpdateFeed();
 
   const list = sortModes(S.modes);
   els.catalogTitle.textContent = 'Все режимы';
@@ -707,52 +652,19 @@ function latestUpdateEntry(mode) {
   };
 }
 
-function renderSideInfo(mode) {
-  if (!mode) return;
+function renderSpotlight(mode) {
   const latest = latestUpdateEntry(mode);
-  const installed = isInstalled(mode);
-  const lib = inLibrary(mode);
-  const running = S.running === mode.id;
-
-  let state = 'Не добавлен в библиотеку';
-  let stateClass = '';
-  if (running) {
-    state = 'В игре';
-    stateClass = 'ok';
-  } else if (installed) {
-    state = isUpdate(mode) ? 'Доступно обновление' : 'Установлено';
-    stateClass = isUpdate(mode) ? 'warn' : 'ok';
-  } else if (lib) {
-    state = 'В библиотеке';
-    stateClass = 'warn';
+  if (!latest) {
+    els.detailSpotlight.hidden = true;
+    return;
   }
 
-  els.sideAccent.style.background = accentColor(mode);
-  els.sideVersion.textContent = mode.version ? `v${mode.version}` : '—';
-  els.sideStateDot.className = `side-state-dot ${stateClass}`.trim();
-  els.sideStateText.textContent = state;
-  els.sideFiles.textContent = mode.build ? String(mode.build.files || 0) : '—';
-  els.sideSize.textContent = mode.size || (mode.build ? formatBytes(mode.build.bytes) : '—');
-  els.sideMc.textContent = mode.mcVersion || '—';
-  els.sideLoader.textContent = loaderLabel(mode);
-
-  if (latest) {
-    els.sideUpdateVersion.textContent = latest.version ? `v${latest.version}` : '—';
-    els.sideUpdateTag.innerHTML = latest.tags && latest.tags.length ? tagPill(latest.tags[0]) : '';
-    const changes = (latest.changes || []).slice(0, 3).map((change) => `— ${change}`).join('\n');
-    els.sideUpdateChanges.textContent = changes || 'Изменения не указаны.';
-    els.sideUpdateChanges.classList.remove('empty');
-    if (latest.date) {
-      els.sideUpdateChanges.textContent += `\n${formatUpdateDate(latest.date)}`;
-    }
-  } else {
-    els.sideUpdateVersion.textContent = '—';
-    els.sideUpdateTag.innerHTML = '';
-    els.sideUpdateChanges.textContent = 'Пока нет обновлений.';
-    els.sideUpdateChanges.classList.add('empty');
-  }
-
-  els.sideHistoryLink.hidden = parseChangelog(mode).length === 0;
+  els.detailSpotlight.hidden = false;
+  const version = latest.version ? `v${latest.version}` : '';
+  const title = latest.title || '';
+  els.spotlightTitle.textContent = [version, title].filter(Boolean).join(' — ') || 'Обновление режима';
+  els.spotlightTag.innerHTML = latest.tags && latest.tags.length ? tagPill(latest.tags[0]) : '';
+  els.spotlightDate.textContent = latest.date ? formatUpdateDate(latest.date) : '';
 }
 
 function fallbackArt(mode) {
@@ -809,7 +721,7 @@ function wireImage(img, mode) {
 function bindDetail() {
   els.detailBack.onclick = () => showStore();
   els.sideFolder.onclick = () => api.openGameFolder().catch(() => {});
-  els.sideHistoryLink.onclick = () => {
+  els.spotlightLink.onclick = () => {
     const section = els.detailChangelogSection;
     if (!section) return;
     const first = section.querySelector('details.changelog-item');
@@ -977,8 +889,27 @@ function parseChangelog(mode) {
   return entries;
 }
 
+function changelogModel(mode) {
+  if (Array.isArray(mode.history) && mode.history.length) {
+    return mode.history.map((entry) => ({
+      version: entry.version || '',
+      title: entry.title || '',
+      tags: Array.isArray(entry.tags) ? entry.tags : [],
+      date: entry.date || '',
+      lines: Array.isArray(entry.changes) ? entry.changes : []
+    }));
+  }
+  return parseChangelog(mode).map((entry) => ({
+    version: '',
+    title: entry.title,
+    tags: [],
+    date: '',
+    lines: entry.lines
+  }));
+}
+
 function renderChangelog(mode) {
-  const entries = parseChangelog(mode);
+  const entries = changelogModel(mode);
 
   if (entries.length === 0) {
     els.detailChangelog.innerHTML = '<div class="changelog-empty">Пока нет записей об обновлениях.</div>';
@@ -986,19 +917,27 @@ function renderChangelog(mode) {
     return;
   }
 
-  els.detailChangelog.innerHTML = entries.map((entry, index) => `
-    <details class="changelog-item"${index === 0 ? ' open' : ''}>
-      <summary>
-        <span class="changelog-version">${escapeHtml(entry.title)}</span>
-        <svg class="changelog-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9 L12 15 L18 9"/></svg>
-      </summary>
-      <div class="changelog-body">
-        ${entry.lines.length
-          ? `<ul>${entry.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>`
-          : '<p>Изменения не указаны.</p>'}
-      </div>
-    </details>`).join('');
+  els.detailChangelog.innerHTML = entries.map((entry, index) => {
+    const version = entry.version ? `v${entry.version}` : entry.title;
+    const name = entry.version ? entry.title : '';
+    return `
+      <details class="changelog-item"${index === 0 ? ' open' : ''}>
+        <summary>
+          <span class="changelog-version">${escapeHtml(version)}</span>
+          ${name ? `<span class="changelog-title">${escapeHtml(name)}</span>` : ''}
+          ${entry.tags.length ? tagPill(entry.tags[0]) : ''}
+          ${entry.date ? `<span class="changelog-date">${escapeHtml(formatUpdateDate(entry.date))}</span>` : ''}
+          <svg class="changelog-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9 L12 15 L18 9"/></svg>
+        </summary>
+        <div class="changelog-body">
+          ${entry.lines.length
+            ? `<ul>${entry.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>`
+            : '<p>Изменения не указаны.</p>'}
+        </div>
+      </details>`;
+  }).join('');
 
+  els.detailChangelog.classList.toggle('timeline', entries.length > 0);
   els.changelogToggle.hidden = entries.length < 2;
   updateChangelogToggle();
 }
@@ -1031,13 +970,16 @@ function renderDetail() {
     .map((t) => `<span>${escapeHtml(t)}</span>`)
     .join('');
 
+  const latest = latestUpdateEntry(mode);
+  const updated = latest && latest.date ? formatUpdateDate(latest.date) : '—';
   els.detailMeta.innerHTML = [
     ['Версия', 'v' + (mode.version || '—')],
     ['Minecraft', mode.mcVersion || '—'],
     ['Загрузчик', loaderLabel(mode)],
-    ['Размер', mode.size || '—']
+    ['Размер', mode.size || '—'],
+    ['Обновлено', updated]
   ].map(([label, value]) => `
-    <div class="meta-box">
+    <div class="meta-item">
       <span class="meta-label">${label}</span>
       <span class="meta-value">${escapeHtml(value)}</span>
     </div>`).join('');
@@ -1045,7 +987,7 @@ function renderDetail() {
   els.detailDesc.textContent = modeDescription(mode);
   renderChangelog(mode);
   els.reqSize.textContent = mode.size || '—';
-  renderSideInfo(mode);
+  renderSpotlight(mode);
 
   const others = sortByTitle(S.modes.filter((m) => m.id !== mode.id)).slice(0, 3);
   els.moreSection.hidden = others.length === 0;

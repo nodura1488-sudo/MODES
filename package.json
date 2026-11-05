@@ -1,7 +1,7 @@
 {
   "name": "tm-launcher",
   "productName": "TMLauncher",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "private": true,
   "description": "TMLauncher — Minecraft launcher with modes and Ely.by accounts (Tauri)",
   "scripts": {
