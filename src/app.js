@@ -66,6 +66,7 @@ const els = {
   splashUpdateStatus: $('splash-update-status'),
   splashUpdateBar: $('splash-update-bar'),
   splashUpdatePercent: $('splash-update-percent'),
+  splashUpdateRing: $('splash-update-ring'),
   sideLibCount: $('side-lib-count'),
   sideInstalledCount: $('side-installed-count'),
   storeView: $('store-view'),
@@ -1192,9 +1193,14 @@ async function handleStartupUpdate() {
 }
 
 function showSplashUpdate(info) {
+  if (els.splash) els.splash.classList.add('updating');
   if (els.splashNormal) els.splashNormal.hidden = true;
-  if (els.splashUpdate) els.splashUpdate.hidden = false;
+  if (els.splashUpdate) {
+    els.splashUpdate.classList.remove('installing');
+    els.splashUpdate.hidden = false;
+  }
   if (els.splashUpdateVersion) els.splashUpdateVersion.textContent = `v${info.latest}`;
+  if (els.splashUpdateRing) els.splashUpdateRing.style.strokeDashoffset = '402.12';
   if (els.splashUpdateBar) els.splashUpdateBar.style.width = '0%';
   if (els.splashUpdatePercent) els.splashUpdatePercent.textContent = '0%';
   if (els.splashUpdateStatus) {
@@ -1206,11 +1212,16 @@ function setSplashProgress(percent, status) {
   const value = Math.max(0, Math.min(100, Math.round(percent || 0)));
   if (els.splashUpdateBar) els.splashUpdateBar.style.width = `${value}%`;
   if (els.splashUpdatePercent) els.splashUpdatePercent.textContent = `${value}%`;
+  if (els.splashUpdateRing) els.splashUpdateRing.style.strokeDashoffset = `${(402.12 * (1 - value / 100)).toFixed(2)}`;
   if (status && els.splashUpdateStatus) els.splashUpdateStatus.textContent = status;
 }
 
 function hideSplashUpdate() {
-  if (els.splashUpdate) els.splashUpdate.hidden = true;
+  if (els.splash) els.splash.classList.remove('updating');
+  if (els.splashUpdate) {
+    els.splashUpdate.hidden = true;
+    els.splashUpdate.classList.remove('installing');
+  }
   if (els.splashNormal) els.splashNormal.hidden = false;
 }
 
@@ -1235,6 +1246,7 @@ async function startAutoUpdate(info) {
     }
 
     await api.installUpdate(info.installerUrl);
+    if (els.splashUpdate) els.splashUpdate.classList.add('installing');
     setSplashProgress(100, 'Устанавливаю обновление. Лаунчер сейчас закроется…');
     setTimeout(() => {
       api.close().catch(() => {});

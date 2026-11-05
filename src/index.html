@@ -12,8 +12,11 @@
     <div class="splash-inner">
       <div class="splash-normal" id="splash-normal">
         <div class="splash-logo-wrap">
+          <span class="splash-halo"></span>
           <span class="splash-ring splash-ring-a"></span>
           <span class="splash-ring splash-ring-b"></span>
+          <span class="splash-orbit splash-orbit-a"></span>
+          <span class="splash-orbit splash-orbit-b"></span>
           <div class="splash-logo">
             <svg width="62" height="62" viewBox="0 0 24 24" fill="none">
               <defs>
@@ -32,17 +35,44 @@
       </div>
 
       <div class="splash-update" id="splash-update" hidden>
-        <div class="splash-update-logo">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z" fill="rgba(13,140,255,0.12)" stroke="#0d8cff" stroke-width="1.4"/>
-            <path d="M8.5 9 H15.5 M12 9 V16" stroke="#00c2ff" stroke-width="1.6" stroke-linecap="round"/>
+        <div class="splash-beam"></div>
+        <div class="splash-logo-wrap">
+          <span class="splash-halo"></span>
+          <svg class="splash-ring-svg" width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">
+            <defs>
+              <linearGradient id="splash-ring-grad" x1="0" y1="0" x2="132" y2="132">
+                <stop offset="0" stop-color="#0d8cff"/><stop offset="1" stop-color="#00e0ff"/>
+              </linearGradient>
+            </defs>
+            <circle cx="66" cy="66" r="64" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2.4"/>
+            <circle id="splash-update-ring" cx="66" cy="66" r="64" fill="none" stroke="url(#splash-ring-grad)" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="402.12" stroke-dashoffset="402.12" transform="rotate(-90 66 66)"/>
           </svg>
+          <span class="splash-ring splash-ring-a"></span>
+          <span class="splash-orbit splash-orbit-a"></span>
+          <div class="splash-logo">
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
+              <defs>
+                <linearGradient id="splash-grad-update" x1="0" y1="0" x2="24" y2="24">
+                  <stop offset="0" stop-color="#0d8cff"/><stop offset="1" stop-color="#00d4ff"/>
+                </linearGradient>
+              </defs>
+              <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z" fill="rgba(13,140,255,0.12)" stroke="url(#splash-grad-update)" stroke-width="1.4"/>
+              <path d="M8.5 9 H15.5 M12 9 V16" stroke="url(#splash-grad-update)" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
         </div>
-        <div class="splash-update-title">Обновление</div>
-        <div class="splash-update-version">TMLauncher <b id="splash-update-version">—</b></div>
+        <div class="splash-brand">TMLauncher</div>
+        <div class="splash-update-pill">
+          <span class="splash-update-pill-dot"></span>
+          <span>Обновление</span>
+          <b id="splash-update-version">—</b>
+        </div>
         <div class="splash-update-status" id="splash-update-status">Проверяю обновление…</div>
-        <div class="splash-update-progress"><div id="splash-update-bar"></div></div>
-        <div class="splash-update-percent" id="splash-update-percent">0%</div>
+        <div class="splash-update-progress-row">
+          <div class="splash-update-progress"><div id="splash-update-bar"></div></div>
+          <div class="splash-update-percent" id="splash-update-percent">0%</div>
+        </div>
+        <div class="splash-update-hint">Не закрывай лаунчер</div>
       </div>
     </div>
   </div>
