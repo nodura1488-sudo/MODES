@@ -13,6 +13,8 @@
     // окно
     minimize: () => invoke("win_minimize"),
     close: () => invoke("win_close"),
+    windowSplash: () => invoke("win_splash"),
+    windowReady: () => invoke("win_ready"),
 
     // данные
     getModes: () => invoke("modes_get"),

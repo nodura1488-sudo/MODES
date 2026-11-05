@@ -173,9 +173,24 @@ pub async fn install_update(app: AppHandle, url: String) -> Result<(), String> {
         })?;
 
         let installer_path = installer.to_string_lossy().replace('\'', "''");
+        let restart = std::env::current_exe()
+            .ok()
+            .filter(|path| {
+                path.file_name()
+                    .and_then(|name| name.to_str())
+                    .map(|name| name.eq_ignore_ascii_case("tm-launcher.exe"))
+                    .unwrap_or(false)
+            })
+            .map(|path| {
+                format!(
+                    " Start-Sleep -Milliseconds 500; Start-Process -FilePath '{}';",
+                    path.to_string_lossy().replace('\'', "''")
+                )
+            })
+            .unwrap_or_default();
         let script = format!(
-            "Start-Sleep -Seconds 3; Start-Process -FilePath '{}' -ArgumentList '/S' -Wait; Remove-Item -LiteralPath '{}' -Force -ErrorAction SilentlyContinue",
-            installer_path, installer_path
+            "Start-Sleep -Seconds 3; Start-Process -FilePath '{}' -ArgumentList '/S' -Wait;{} Remove-Item -LiteralPath '{}' -Force -ErrorAction SilentlyContinue",
+            installer_path, restart, installer_path
         );
 
         let mut command = Command::new("powershell");

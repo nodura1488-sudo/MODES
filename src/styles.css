@@ -1847,3 +1847,86 @@ body::before {
   from { opacity: 0; transform: translateY(8px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* ============ SPLASH ANIMATION V2 ============ */
+#splash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at 50% 48%, #000 0%, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle at 50% 48%, #000 0%, transparent 68%);
+  animation: splashGrid 18s linear infinite;
+  opacity: 0.5;
+}
+.splash-glow { z-index: 0; }
+.splash-inner { z-index: 2; }
+.splash-logo-wrap {
+  position: relative;
+  width: 126px;
+  height: 126px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+.splash-logo { position: relative; z-index: 2; }
+.splash-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.splash-ring-a {
+  width: 98px;
+  height: 98px;
+  border: 1px solid rgba(13, 140, 255, 0.16);
+  border-top-color: rgba(0, 194, 255, 0.85);
+  border-right-color: rgba(13, 140, 255, 0.35);
+  box-shadow: 0 0 22px rgba(13, 140, 255, 0.12);
+  animation: splashRing 3.8s linear infinite;
+}
+.splash-ring-b {
+  width: 124px;
+  height: 124px;
+  border: 1px dashed rgba(0, 194, 255, 0.15);
+  animation: splashRingReverse 10s linear infinite;
+}
+.splash-brand {
+  background: linear-gradient(90deg, #f3f3f5 0%, #8fd0ff 38%, #f3f3f5 70%, #f3f3f5 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: splashBrand 3.4s ease-in-out infinite;
+}
+.splash-progress {
+  position: relative;
+  overflow: hidden;
+}
+.splash-progress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: translateX(-100%);
+  animation: splashProgressShine 1.4s ease-in-out infinite;
+}
+@keyframes splashRing { to { transform: rotate(360deg); } }
+@keyframes splashRingReverse { to { transform: rotate(-360deg); } }
+@keyframes splashBrand {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes splashProgressShine {
+  0% { transform: translateX(-100%); }
+  65%, 100% { transform: translateX(100%); }
+}
+@keyframes splashGrid {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 0 42px, 42px 0; }
+}

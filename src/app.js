@@ -143,6 +143,7 @@ const els = {
 init();
 
 async function init() {
+  if (api && api.windowSplash) api.windowSplash().catch(() => {});
   bindWindowButtons();
   bindModals();
   bindSidebar();
@@ -197,7 +198,7 @@ async function init() {
     S.loading = false;
     renderStore();
     renderLibrary();
-    finishSplash();
+    await finishStartup();
     toast('Не удалось загрузить данные: ' + err, 'error');
   }
 
@@ -227,7 +228,9 @@ function finishSplash() {
   }, wait);
 }
 
-setTimeout(finishSplash, 12000);
+setTimeout(() => {
+  if (!S.autoUpdating) finishStartup();
+}, 12000);
 
 // ---------------------------------------------------------------- окно
 
@@ -1166,6 +1169,15 @@ async function checkLauncherUpdate() {
   }
 }
 
+async function finishStartup() {
+  try {
+    if (api.windowReady) await api.windowReady();
+  } catch (_) {
+    // Окно уже могло быть закрыто.
+  }
+  finishSplash();
+}
+
 async function handleStartupUpdate() {
   const info = await checkLauncherUpdate();
   if (info && info.installerUrl) {
@@ -1176,7 +1188,7 @@ async function handleStartupUpdate() {
     els.updateChipText.textContent = `Обновление ${info.latest}`;
     els.updateChip.hidden = false;
   }
-  finishSplash();
+  await finishStartup();
 }
 
 function showSplashUpdate(info) {
@@ -1233,7 +1245,7 @@ async function startAutoUpdate(info) {
     els.updateChipText.textContent = `Обновление ${info.latest}`;
     els.updateChip.hidden = false;
     toast('Автообновление не удалось: ' + err, 'error');
-    finishSplash();
+    await finishStartup();
   } finally {
     if (typeof unlisten === 'function') unlisten();
   }

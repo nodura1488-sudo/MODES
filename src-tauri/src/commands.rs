@@ -83,6 +83,40 @@ pub fn win_close(window: Window, state: State<'_, AppState>) -> Result<(), Strin
     window.close().map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+pub fn win_splash(window: Window) -> Result<(), String> {
+    window
+        .set_min_size(Some(tauri::LogicalSize::new(360.0, 520.0)))
+        .map_err(|e| e.to_string())?;
+    window
+        .set_size(tauri::LogicalSize::new(380.0, 620.0))
+        .map_err(|e| e.to_string())?;
+    window.set_resizable(false).map_err(|e| e.to_string())?;
+    window.center().map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn win_ready(window: Window, state: State<'_, AppState>) -> Result<(), String> {
+    let (width, height) = {
+        let store = state.store.lock().unwrap();
+        (
+            store.settings.launcher_width.max(980.0) as f64,
+            store.settings.launcher_height.max(640.0) as f64,
+        )
+    };
+    window
+        .set_min_size(Some(tauri::LogicalSize::new(980.0, 640.0)))
+        .map_err(|e| e.to_string())?;
+    window
+        .set_size(tauri::LogicalSize::new(width, height))
+        .map_err(|e| e.to_string())?;
+    window.set_resizable(true).map_err(|e| e.to_string())?;
+    window.center().map_err(|e| e.to_string())?;
+    let _ = window.set_focus();
+    Ok(())
+}
+
 // ---------------------------------------------------------------- данные
 
 #[tauri::command]

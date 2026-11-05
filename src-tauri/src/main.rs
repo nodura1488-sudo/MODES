@@ -20,6 +20,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             commands::win_minimize,
             commands::win_close,
+            commands::win_splash,
+            commands::win_ready,
             commands::modes_get,
             commands::modes_refresh,
             commands::state_get,
