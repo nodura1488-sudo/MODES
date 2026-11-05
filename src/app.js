@@ -60,6 +60,12 @@ const els = {
   splash: $('splash'),
   splashSub: $('splash-sub'),
   splashBar: $('splash-progress-bar'),
+  splashNormal: $('splash-normal'),
+  splashUpdate: $('splash-update'),
+  splashUpdateVersion: $('splash-update-version'),
+  splashUpdateStatus: $('splash-update-status'),
+  splashUpdateBar: $('splash-update-bar'),
+  splashUpdatePercent: $('splash-update-percent'),
   sideLibCount: $('side-lib-count'),
   sideInstalledCount: $('side-installed-count'),
   storeView: $('store-view'),
@@ -96,8 +102,6 @@ const els = {
   updateLatest: $('update-latest'),
   updateNotes: $('update-notes'),
   btnUpdateDownload: $('btn-update-download'),
-  autoUpdate: $('auto-update'),
-  autoUpdateText: $('auto-update-text'),
   toast: $('toast'),
   detailBack: $('detail-back'),
   detailImg: $('detail-img'),
@@ -179,8 +183,7 @@ async function init() {
     renderLibrary();
     updateSidebar();
     requestAnimationFrame(() => { $('app').scrollTop = 0; });
-    finishSplash();
-    checkLauncherUpdate();
+    handleStartupUpdate();
 
     if (api.refreshSession) {
       api.refreshSession().then((acc) => {
@@ -204,7 +207,7 @@ async function init() {
 
 let splashFinished = false;
 function finishSplash() {
-  if (splashFinished) return;
+  if (splashFinished || S.autoUpdating) return;
   splashFinished = true;
   const elapsed = performance.now() - SPLASH_START;
   const wait = Math.max(0, 680 - elapsed);
@@ -1148,47 +1151,91 @@ function bindUpdateModal() {
 }
 
 async function checkLauncherUpdate() {
-  if (!api.checkUpdate) return;
+  if (!api.checkUpdate) return null;
   try {
     const info = await api.checkUpdate();
     if (!info || !info.available) {
       els.updateChip.hidden = true;
-      return;
+      return null;
     }
     S.updateInfo = info;
-    if (info.installerUrl) {
-      startAutoUpdate(info);
-    } else {
-      els.updateChipText.textContent = `Обновление ${info.latest}`;
-      els.updateChip.hidden = false;
-    }
+    return info;
   } catch (_) {
     els.updateChip.hidden = true;
+    return null;
   }
+}
+
+async function handleStartupUpdate() {
+  const info = await checkLauncherUpdate();
+  if (info && info.installerUrl) {
+    startAutoUpdate(info);
+    return;
+  }
+  if (info) {
+    els.updateChipText.textContent = `Обновление ${info.latest}`;
+    els.updateChip.hidden = false;
+  }
+  finishSplash();
+}
+
+function showSplashUpdate(info) {
+  if (els.splashNormal) els.splashNormal.hidden = true;
+  if (els.splashUpdate) els.splashUpdate.hidden = false;
+  if (els.splashUpdateVersion) els.splashUpdateVersion.textContent = `v${info.latest}`;
+  if (els.splashUpdateBar) els.splashUpdateBar.style.width = '0%';
+  if (els.splashUpdatePercent) els.splashUpdatePercent.textContent = '0%';
+  if (els.splashUpdateStatus) {
+    els.splashUpdateStatus.textContent = `Скачиваю обновление ${info.latest}…`;
+  }
+}
+
+function setSplashProgress(percent, status) {
+  const value = Math.max(0, Math.min(100, Math.round(percent || 0)));
+  if (els.splashUpdateBar) els.splashUpdateBar.style.width = `${value}%`;
+  if (els.splashUpdatePercent) els.splashUpdatePercent.textContent = `${value}%`;
+  if (status && els.splashUpdateStatus) els.splashUpdateStatus.textContent = status;
+}
+
+function hideSplashUpdate() {
+  if (els.splashUpdate) els.splashUpdate.hidden = true;
+  if (els.splashNormal) els.splashNormal.hidden = false;
 }
 
 async function startAutoUpdate(info) {
   if (S.autoUpdating) return;
   S.autoUpdating = true;
   els.updateChip.hidden = true;
-  if (els.autoUpdate) {
-    els.autoUpdate.hidden = false;
-    els.autoUpdateText.textContent = `Скачиваю версию ${info.latest}…`;
-  }
+  showSplashUpdate(info);
+
+  let unlisten = null;
   try {
-    await api.installUpdate(info.installerUrl);
-    if (els.autoUpdateText) {
-      els.autoUpdateText.textContent = 'Устанавливаю обновление. Лаунчер сейчас закроется…';
+    if (api.onUpdateProgress) {
+      unlisten = await api.onUpdateProgress((payload) => {
+        const total = Number(payload && payload.total) || 0;
+        const downloaded = Number(payload && payload.downloaded) || 0;
+        const percent = total > 0 ? Math.min(100, Math.round((downloaded / total) * 100)) : 0;
+        const status = total > 0
+          ? `Скачивание… ${formatBytes(downloaded)} из ${formatBytes(total)}`
+          : 'Скачивание обновления…';
+        setSplashProgress(percent, status);
+      });
     }
+
+    await api.installUpdate(info.installerUrl);
+    setSplashProgress(100, 'Устанавливаю обновление. Лаунчер сейчас закроется…');
     setTimeout(() => {
       api.close().catch(() => {});
-    }, 1600);
+    }, 1500);
   } catch (err) {
     S.autoUpdating = false;
-    if (els.autoUpdate) els.autoUpdate.hidden = true;
+    hideSplashUpdate();
     els.updateChipText.textContent = `Обновление ${info.latest}`;
     els.updateChip.hidden = false;
     toast('Автообновление не удалось: ' + err, 'error');
+    finishSplash();
+  } finally {
+    if (typeof unlisten === 'function') unlisten();
   }
 }
 

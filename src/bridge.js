@@ -28,6 +28,7 @@
     checkUpdate: () => invoke("check_update"),
     downloadUpdate: (url) => invoke("download_update", { url }),
     installUpdate: (url) => invoke("install_update", { url }),
+    onUpdateProgress: (cb) => listen("update:progress", (e) => cb(e.payload)),
 
     // аккаунты
     getAccounts: () => invoke("accounts_get"),

@@ -1,11 +1,12 @@
 use reqwest::blocking::Client;
 use serde::Serialize;
-use serde_json::Value;
-use std::fs::{self, File};
-use std::io::copy;
+use serde_json::{json, Value};
+use std::fs::File;
+use std::io::{Read, Write};
 use std::path::PathBuf;
 use std::process::Command;
 use std::time::Duration;
+use tauri::{AppHandle, Emitter};
 
 const REPO: &str = "tommy-whinston/TMLauncher";
 
@@ -22,7 +23,7 @@ pub struct UpdateInfo {
 
 fn client() -> Client {
     Client::builder()
-        .timeout(Duration::from_secs(30))
+        .timeout(Duration::from_secs(120))
         .user_agent("TMLauncher/0.4 (Rust)")
         .build()
         .unwrap_or_else(|_| Client::new())
@@ -112,7 +113,10 @@ pub async fn check_update() -> Result<UpdateInfo, String> {
     .map_err(|e| format!("Не удалось проверить обновление: {e}"))?
 }
 
-fn download_installer(url: &str) -> Result<PathBuf, String> {
+fn download_installer(
+    url: &str,
+    mut on_progress: impl FnMut(u64, u64),
+) -> Result<PathBuf, String> {
     if !url.starts_with("https://github.com/") {
         return Err("Некорректная ссылка на обновление".to_string());
     }
@@ -124,16 +128,32 @@ fn download_installer(url: &str) -> Result<PathBuf, String> {
     if !response.status().is_success() {
         return Err(format!("GitHub ответил {}", response.status()));
     }
+
+    let total = response.content_length().unwrap_or(0);
     let mut file = File::create(&path).map_err(|e| format!("Не удалось создать файл: {e}"))?;
-    copy(&mut response, &mut file).map_err(|e| format!("Не удалось сохранить: {e}"))?;
-    drop(file);
+    let mut downloaded = 0u64;
+    let mut buffer = [0u8; 64 * 1024];
+    loop {
+        let read = response
+            .read(&mut buffer)
+            .map_err(|e| format!("Не удалось скачать установщик: {e}"))?;
+        if read == 0 {
+            break;
+        }
+        file.write_all(&buffer[..read])
+            .map_err(|e| format!("Не удалось сохранить установщик: {e}"))?;
+        downloaded += read as u64;
+        on_progress(downloaded, total);
+    }
+    file.flush()
+        .map_err(|e| format!("Не удалось сохранить установщик: {e}"))?;
     Ok(path)
 }
 
 #[tauri::command]
 pub async fn download_update(url: String) -> Result<String, String> {
     tauri::async_runtime::spawn_blocking(move || {
-        let path = download_installer(&url)?;
+        let path = download_installer(&url, |_, _| {})?;
         open::that(&path).map_err(|e| format!("Не удалось запустить установщик: {e}"))?;
         Ok(path.to_string_lossy().to_string())
     })
@@ -142,25 +162,24 @@ pub async fn download_update(url: String) -> Result<String, String> {
 }
 
 #[tauri::command]
-pub async fn install_update(url: String) -> Result<(), String> {
+pub async fn install_update(app: AppHandle, url: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || {
-        let installer = download_installer(&url)?;
-        let script = std::env::temp_dir().join("TMLauncher-auto-update.cmd");
-        let content = format!(
-            "@echo off\r\n\
-             timeout /t 3 /nobreak >nul\r\n\
-             start \"\" /wait \"{}\" /S\r\n\
-             del \"{}\" >nul 2>nul\r\n\
-             del \"%~f0\" >nul 2>nul\r\n",
-            installer.display(),
-            installer.display()
-        );
-        fs::write(&script, content)
-            .map_err(|e| format!("Не удалось подготовить обновление: {e}"))?;
+        let progress_app = app.clone();
+        let installer = download_installer(&url, move |downloaded, total| {
+            let _ = progress_app.emit(
+                "update:progress",
+                json!({ "downloaded": downloaded, "total": total }),
+            );
+        })?;
 
-        let mut command = Command::new("cmd");
-        command.args(["/C", "start", "", "/min"]);
-        command.arg(&script);
+        let installer_path = installer.to_string_lossy().replace('\'', "''");
+        let script = format!(
+            "Start-Sleep -Seconds 3; Start-Process -FilePath '{}' -ArgumentList '/S' -Wait; Remove-Item -LiteralPath '{}' -Force -ErrorAction SilentlyContinue",
+            installer_path, installer_path
+        );
+
+        let mut command = Command::new("powershell");
+        command.args(["-NoProfile", "-WindowStyle", "Hidden", "-Command", &script]);
         #[cfg(windows)]
         {
             use std::os::windows::process::CommandExt;
