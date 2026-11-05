@@ -1616,7 +1616,7 @@ body::before {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  margin-top: 0;
+  margin: 0;
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -1648,7 +1648,8 @@ body::before {
 .detail-folder {
   flex-shrink: 0;
   height: auto;
-  min-height: 48px;
+  min-height: 0;
+  align-self: stretch;
   padding: 0 16px;
   gap: 8px;
 }
