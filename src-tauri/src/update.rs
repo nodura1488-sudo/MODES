@@ -1,9 +1,10 @@
 use reqwest::blocking::Client;
 use serde::Serialize;
 use serde_json::Value;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::copy;
 use std::path::PathBuf;
+use std::process::Command;
 use std::time::Duration;
 
 const REPO: &str = "tommy-whinston/TMLauncher";
@@ -111,28 +112,65 @@ pub async fn check_update() -> Result<UpdateInfo, String> {
     .map_err(|e| format!("Не удалось проверить обновление: {e}"))?
 }
 
-#[tauri::command]
-pub async fn download_update(url: String) -> Result<String, String> {
+fn download_installer(url: &str) -> Result<PathBuf, String> {
     if !url.starts_with("https://github.com/") {
         return Err("Некорректная ссылка на обновление".to_string());
     }
-    tauri::async_runtime::spawn_blocking(move || {
-        let path: PathBuf = std::env::temp_dir().join("TMLauncher-Setup-latest.exe");
-        let mut response = client()
-            .get(&url)
-            .send()
-            .map_err(|e| format!("Не удалось скачать установщик: {e}"))?;
-        if !response.status().is_success() {
-            return Err(format!("GitHub ответил {}", response.status()));
-        }
-        let mut file =
-            File::create(&path).map_err(|e| format!("Не удалось создать файл: {e}"))?;
-        copy(&mut response, &mut file).map_err(|e| format!("Не удалось сохранить: {e}"))?;
-        drop(file);
+    let path: PathBuf = std::env::temp_dir().join("TMLauncher-Setup-latest.exe");
+    let mut response = client()
+        .get(url)
+        .send()
+        .map_err(|e| format!("Не удалось скачать установщик: {e}"))?;
+    if !response.status().is_success() {
+        return Err(format!("GitHub ответил {}", response.status()));
+    }
+    let mut file = File::create(&path).map_err(|e| format!("Не удалось создать файл: {e}"))?;
+    copy(&mut response, &mut file).map_err(|e| format!("Не удалось сохранить: {e}"))?;
+    drop(file);
+    Ok(path)
+}
 
+#[tauri::command]
+pub async fn download_update(url: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let path = download_installer(&url)?;
         open::that(&path).map_err(|e| format!("Не удалось запустить установщик: {e}"))?;
         Ok(path.to_string_lossy().to_string())
     })
     .await
     .map_err(|e| format!("Не удалось скачать обновление: {e}"))?
+}
+
+#[tauri::command]
+pub async fn install_update(url: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let installer = download_installer(&url)?;
+        let script = std::env::temp_dir().join("TMLauncher-auto-update.cmd");
+        let content = format!(
+            "@echo off\r\n\
+             timeout /t 3 /nobreak >nul\r\n\
+             start \"\" /wait \"{}\" /S\r\n\
+             del \"{}\" >nul 2>nul\r\n\
+             del \"%~f0\" >nul 2>nul\r\n",
+            installer.display(),
+            installer.display()
+        );
+        fs::write(&script, content)
+            .map_err(|e| format!("Не удалось подготовить обновление: {e}"))?;
+
+        let mut command = Command::new("cmd");
+        command.args(["/C", "start", "", "/min"]);
+        command.arg(&script);
+        #[cfg(windows)]
+        {
+            use std::os::windows::process::CommandExt;
+            command.creation_flags(0x08000000);
+        }
+        command
+            .spawn()
+            .map_err(|e| format!("Не удалось запустить установщик: {e}"))?;
+        Ok(())
+    })
+    .await
+    .map_err(|e| format!("Не удалось установить обновление: {e}"))?
 }

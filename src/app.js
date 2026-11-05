@@ -52,7 +52,8 @@ const S = {
   section: 'store',
   detailFrom: null,
   dataDir: '',
-  updateInfo: null
+  updateInfo: null,
+  autoUpdating: false
 };
 
 const els = {
@@ -98,6 +99,8 @@ const els = {
   updateLatest: $('update-latest'),
   updateNotes: $('update-notes'),
   btnUpdateDownload: $('btn-update-download'),
+  autoUpdate: $('auto-update'),
+  autoUpdateText: $('auto-update-text'),
   toast: $('toast'),
   detailBack: $('detail-back'),
   detailImg: $('detail-img'),
@@ -1211,10 +1214,39 @@ async function checkLauncherUpdate() {
       return;
     }
     S.updateInfo = info;
-    els.updateChipText.textContent = `Обновление ${info.latest}`;
-    els.updateChip.hidden = false;
+    if (info.installerUrl) {
+      startAutoUpdate(info);
+    } else {
+      els.updateChipText.textContent = `Обновление ${info.latest}`;
+      els.updateChip.hidden = false;
+    }
   } catch (_) {
     els.updateChip.hidden = true;
+  }
+}
+
+async function startAutoUpdate(info) {
+  if (S.autoUpdating) return;
+  S.autoUpdating = true;
+  els.updateChip.hidden = true;
+  if (els.autoUpdate) {
+    els.autoUpdate.hidden = false;
+    els.autoUpdateText.textContent = `Скачиваю версию ${info.latest}…`;
+  }
+  try {
+    await api.installUpdate(info.installerUrl);
+    if (els.autoUpdateText) {
+      els.autoUpdateText.textContent = 'Устанавливаю обновление. Лаунчер сейчас закроется…';
+    }
+    setTimeout(() => {
+      api.close().catch(() => {});
+    }, 1600);
+  } catch (err) {
+    S.autoUpdating = false;
+    if (els.autoUpdate) els.autoUpdate.hidden = true;
+    els.updateChipText.textContent = `Обновление ${info.latest}`;
+    els.updateChip.hidden = false;
+    toast('Автообновление не удалось: ' + err, 'error');
   }
 }
 

@@ -47,6 +47,7 @@ fn main() {
             commands::game_open_mode_folder,
             update::check_update,
             update::download_update,
+            update::install_update,
         ])
         .setup(|app| {
             if let Some(window) = app.get_webview_window("main") {
