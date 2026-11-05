@@ -3,6 +3,9 @@
 const api = window.tm;
 const $ = (id) => document.getElementById(id);
 
+// WebView2 показывает своё меню (назад, сохранить как, печать) — в лаунчере оно не нужно.
+document.addEventListener('contextmenu', (event) => event.preventDefault());
+
 const LOADER_LABELS = {
   vanilla: 'Vanilla',
   forge: 'Forge',
