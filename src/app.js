@@ -169,14 +169,24 @@ async function init() {
   updateSidebar();
   if (els.splashSub) els.splashSub.textContent = 'Загружаем режимы и аккаунт…';
 
+  const startupUpdate = checkLauncherUpdate();
+
   try {
-    const [modes, state, settings, accounts, current] = await Promise.all([
-      api.getModes(),
+    const [cachedModes, state, settings, accounts, current] = await Promise.all([
+      api.getCachedModes ? api.getCachedModes() : Promise.resolve([]),
       api.getState(),
       api.getSettings(),
       api.getAccounts(),
       api.getCurrentAccount()
     ]);
+    let modes = Array.isArray(cachedModes) ? cachedModes : [];
+    if (!modes.length) {
+      try {
+        modes = await api.getModes();
+      } catch (_) {
+        modes = [];
+      }
+    }
     S.modes = Array.isArray(modes) ? modes : [];
     S.state = state || {};
     S.settings = settings || null;
@@ -188,7 +198,18 @@ async function init() {
     renderLibrary();
     updateSidebar();
     requestAnimationFrame(() => { $('app').scrollTop = 0; });
-    handleStartupUpdate();
+
+    if (S.modes.length) {
+      api.refreshModes().then((fresh) => {
+        if (!Array.isArray(fresh) || !fresh.length) return;
+        S.modes = fresh;
+        renderStore();
+        renderLibrary();
+        updateSidebar();
+      }).catch(() => {});
+    }
+
+    await handleStartupUpdate(startupUpdate);
 
     if (api.refreshSession) {
       api.refreshSession().then((acc) => {
@@ -1182,17 +1203,50 @@ async function finishStartup() {
   finishSplash();
 }
 
-async function handleStartupUpdate() {
-  const info = await checkLauncherUpdate();
+async function handleStartupUpdate(pending) {
+  const info = await withTimeout(pending, 900);
   if (info && info.installerUrl) {
     startAutoUpdate(info);
     return;
   }
   if (info) {
-    els.updateChipText.textContent = `Обновление ${info.latest}`;
-    els.updateChip.hidden = false;
+    showUpdateChip(info);
+  } else if (info === undefined) {
+    pending.then((late) => {
+      if (late) showUpdateChip(late);
+    }).catch(() => {});
   }
   await finishStartup();
+}
+
+function showUpdateChip(info) {
+  els.updateChipText.textContent = `Обновление ${info.latest}`;
+  els.updateChip.hidden = false;
+}
+
+function withTimeout(promise, ms) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      resolve(undefined);
+    }, ms);
+    promise.then(
+      (value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      },
+      () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(null);
+      }
+    );
+  });
 }
 
 function showSplashUpdate(info) {
@@ -1253,7 +1307,7 @@ async function startAutoUpdate(info) {
     setSplashProgress(100, 'Устанавливаю обновление. Лаунчер сейчас закроется…');
     setTimeout(() => {
       api.close().catch(() => {});
-    }, 1500);
+    }, 800);
   } catch (err) {
     S.autoUpdating = false;
     hideSplashUpdate();

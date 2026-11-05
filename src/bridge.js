@@ -18,6 +18,7 @@
 
     // данные
     getModes: () => invoke("modes_get"),
+    getCachedModes: () => invoke("modes_cached"),
     refreshModes: () => invoke("modes_refresh"),
     getState: () => invoke("state_get"),
     getSettings: () => invoke("settings_get"),

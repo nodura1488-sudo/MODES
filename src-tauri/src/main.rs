@@ -23,6 +23,7 @@ fn main() {
             commands::win_splash,
             commands::win_ready,
             commands::modes_get,
+            commands::modes_cached,
             commands::modes_refresh,
             commands::state_get,
             commands::settings_get,

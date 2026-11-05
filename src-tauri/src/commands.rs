@@ -125,6 +125,12 @@ pub async fn modes_get(state: State<'_, AppState>) -> Result<Vec<Mode>, String> 
 }
 
 #[tauri::command]
+pub fn modes_cached(state: State<'_, AppState>) -> Result<Vec<Mode>, String> {
+    let store = state.store.lock().unwrap();
+    Ok(store.read_cached_modes())
+}
+
+#[tauri::command]
 pub async fn modes_refresh(state: State<'_, AppState>) -> Result<Vec<Mode>, String> {
     Ok(load_modes(state.inner()).await)
 }

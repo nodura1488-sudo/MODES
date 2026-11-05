@@ -173,6 +173,7 @@ pub async fn install_update(app: AppHandle, url: String) -> Result<(), String> {
         })?;
 
         let installer_path = installer.to_string_lossy().replace('\'', "''");
+        let pid = std::process::id();
         let restart = std::env::current_exe()
             .ok()
             .filter(|path| {
@@ -183,14 +184,14 @@ pub async fn install_update(app: AppHandle, url: String) -> Result<(), String> {
             })
             .map(|path| {
                 format!(
-                    " Start-Sleep -Milliseconds 500; Start-Process -FilePath '{}';",
+                    " Start-Sleep -Milliseconds 150; Start-Process -FilePath '{}';",
                     path.to_string_lossy().replace('\'', "''")
                 )
             })
             .unwrap_or_default();
         let script = format!(
-            "Start-Sleep -Seconds 3; Start-Process -FilePath '{}' -ArgumentList '/S' -Wait;{} Remove-Item -LiteralPath '{}' -Force -ErrorAction SilentlyContinue",
-            installer_path, restart, installer_path
+            "Wait-Process -Id {} -Timeout 20 -ErrorAction SilentlyContinue; Start-Process -FilePath '{}' -ArgumentList '/S' -Wait;{} Remove-Item -LiteralPath '{}' -Force -ErrorAction SilentlyContinue",
+            pid, installer_path, restart, installer_path
         );
 
         let mut command = Command::new("powershell");
