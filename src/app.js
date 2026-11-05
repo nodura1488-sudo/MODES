@@ -32,7 +32,7 @@ const UPDATE_TAGS = {
 };
 
 const ART_CACHE = new Map();
-const DEFAULT_ACCENT = '#0d8cff';
+const DEFAULT_ACCENT = '#e5322b';
 const SPLASH_START = performance.now();
 
 const S = {
