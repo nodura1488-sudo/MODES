@@ -454,6 +454,14 @@ body::after {
   color: #f4eee8;
 }
 .card-sub { color: #9b9189; font-size: 10.5px; letter-spacing: 0.4px; }
+.card-release {
+  margin-top: 4px;
+  color: #b87966;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
 .card-desc { color: #a79e96; font-size: 12px; }
 .card-size {
   color: #8b817a;

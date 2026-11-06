@@ -608,6 +608,7 @@ async function handleCardAction(modeId, action) {
 function modeCardHtml(mode, withMenu = false) {
   const st = cardStatus(mode);
   const installed = isInstalled(mode);
+  const released = modeReleaseDate(mode);
   const tags = modeTags(mode, 3)
     .map((t) => `<span>${escapeHtml(t)}</span>`)
     .join('');
@@ -627,6 +628,7 @@ function modeCardHtml(mode, withMenu = false) {
       <div class="card-body">
         <div class="card-title">${escapeHtml(mode.title || 'Без названия')}</div>
         <div class="card-sub">${escapeHtml(cardSub(mode))}</div>
+        ${released ? `<div class="card-release">Вышла ${escapeHtml(formatUpdateDate(released))}</div>` : ''}
         <div class="card-desc">${escapeHtml(modeDescription(mode))}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ''}
         <div class="card-foot">
@@ -665,6 +667,17 @@ function tagPill(tag) {
 
 function formatUpdateDate(value) {
   return String(value || '').replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3.$2.$1');
+}
+
+function modeReleaseDate(mode) {
+  const direct = String((mode && mode.releaseDate) || '').trim();
+  if (direct) return direct;
+  const history = Array.isArray(mode && mode.history) ? mode.history : [];
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const date = String((history[index] && history[index].date) || '').trim();
+    if (date) return date;
+  }
+  return '';
 }
 
 function latestUpdateEntry(mode) {
@@ -1002,12 +1015,14 @@ function renderDetail() {
     .join('');
 
   const latest = latestUpdateEntry(mode);
-  const updated = latest && latest.date ? formatUpdateDate(latest.date) : '—';
+  const updated = latest && latest.date ? formatUpdateDate(latest.date) : '-';
+  const released = modeReleaseDate(mode);
   els.detailMeta.innerHTML = [
-    ['Версия', 'v' + (mode.version || '—')],
-    ['Minecraft', mode.mcVersion || '—'],
+    ['Версия', 'v' + (mode.version || '-')],
+    ['Minecraft', mode.mcVersion || '-'],
     ['Загрузчик', loaderLabel(mode)],
-    ['Размер', mode.size || '—'],
+    ['Размер', mode.size || '-'],
+    ['Вышла', released ? formatUpdateDate(released) : '-'],
     ['Обновлено', updated]
   ].map(([label, value]) => `
     <div class="meta-item">

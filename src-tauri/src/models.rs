@@ -22,6 +22,7 @@ pub struct Mode {
     pub title: String,
     pub mc_version: String,
     pub version: String,
+    pub release_date: Option<String>,
     pub version_id: Option<String>,
     #[serde(default = "default_loader")]
     pub loader: String,
@@ -45,6 +46,7 @@ impl Default for Mode {
             title: String::new(),
             mc_version: String::new(),
             version: String::new(),
+            release_date: None,
             version_id: None,
             loader: default_loader(),
             loader_version: None,
