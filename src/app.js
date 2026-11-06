@@ -393,8 +393,91 @@ function cardSub(mode) {
   return `${modeSub(mode)}${mode.version ? ` · v${mode.version}` : ''}`;
 }
 
-function modeDescription(mode) {
-  return (mode.description || '').trim() || 'Описание пока не заполнено.';
+function modeShortDescription(mode) {
+  const short = String((mode && mode.shortDescription) || '').trim();
+  if (short) return short;
+  const full = String((mode && mode.description) || '').trim();
+  if (!full) return 'Описание пока не заполнено.';
+  return stripRichText(full).slice(0, 260) || 'Описание пока не заполнено.';
+}
+
+function modeFullDescription(mode) {
+  return String((mode && mode.description) || '').trim() || modeShortDescription(mode);
+}
+
+function stripRichText(value) {
+  return String(value || '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/^#{1,6}\s+.*$/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^\s*[-*]\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function renderRichText(value) {
+  const text = String(value || '').replace(/\r\n?/g, '\n').trim();
+  if (!text) return '<p>Описание пока не заполнено.</p>';
+
+  const inline = (raw) => escapeHtml(raw)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/(^|[\s(])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+  const lines = text.split('\n');
+  const blocks = [];
+  let index = 0;
+  while (index < lines.length) {
+    const line = lines[index];
+    if (!line.trim()) {
+      index += 1;
+      continue;
+    }
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      const tag = heading[1].length === 1 ? 'h2' : heading[1].length === 2 ? 'h3' : 'h4';
+      blocks.push(`<${tag}>${inline(heading[2].replace(/\*\*/g, ''))}</${tag}>`);
+      index += 1;
+      continue;
+    }
+    if (/^[-*]\s+/.test(line)) {
+      const items = [];
+      while (index < lines.length && /^[-*]\s+/.test(lines[index])) {
+        items.push(`<li>${inline(lines[index].replace(/^[-*]\s+/, ''))}</li>`);
+        index += 1;
+      }
+      blocks.push(`<ul>${items.join('')}</ul>`);
+      continue;
+    }
+    if (/^\d+[.)]\s+/.test(line)) {
+      const items = [];
+      while (index < lines.length && /^\d+[.)]\s+/.test(lines[index])) {
+        items.push(`<li>${inline(lines[index].replace(/^\d+[.)]\s+/, ''))}</li>`);
+        index += 1;
+      }
+      blocks.push(`<ol>${items.join('')}</ol>`);
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      const quote = [];
+      while (index < lines.length && /^>\s?/.test(lines[index])) {
+        quote.push(inline(lines[index].replace(/^>\s?/, '')));
+        index += 1;
+      }
+      blocks.push(`<blockquote>${quote.join('<br>')}</blockquote>`);
+      continue;
+    }
+    const paragraph = [];
+    while (index < lines.length && lines[index].trim()
+      && !/^(#{1,3}\s|[-*]\s|\d+[.)]\s|>\s?)/.test(lines[index])) {
+      paragraph.push(inline(lines[index]));
+      index += 1;
+    }
+    if (paragraph.length) blocks.push(`<p>${paragraph.join('<br>')}</p>`);
+  }
+  return blocks.join('');
 }
 
 function modeTags(mode, limit = 3) {
@@ -423,6 +506,7 @@ function matchesSearch(mode) {
   const haystack = [
     mode.title,
     mode.description,
+    mode.shortDescription,
     mode.mcVersion,
     mode.loader,
     ...(Array.isArray(mode.tags) ? mode.tags : [])
@@ -514,7 +598,7 @@ function renderFeatured(mode) {
   els.featuredImg.src = imageSrc(mode);
   wireImage(els.featuredImg, mode);
   els.featuredTitle.textContent = mode.title || 'Без названия';
-  els.featuredDesc.textContent = modeDescription(mode);
+  els.featuredDesc.textContent = modeShortDescription(mode);
   els.featuredTags.innerHTML = modeTags(mode, 4)
     .map((t) => `<span>${escapeHtml(t)}</span>`)
     .join('');
@@ -629,7 +713,7 @@ function modeCardHtml(mode, withMenu = false) {
         <div class="card-title">${escapeHtml(mode.title || 'Без названия')}</div>
         <div class="card-sub">${escapeHtml(cardSub(mode))}</div>
         ${released ? `<div class="card-release">Вышла ${escapeHtml(formatUpdateDate(released))}</div>` : ''}
-        <div class="card-desc">${escapeHtml(modeDescription(mode))}</div>
+        <div class="card-desc">${escapeHtml(modeShortDescription(mode))}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ''}
         <div class="card-foot">
           <span class="card-size">${escapeHtml(mode.size || '—')}</span>
@@ -1043,7 +1127,7 @@ function renderDetail() {
       <span class="meta-value">${escapeHtml(value)}</span>
     </div>`).join('');
 
-  els.detailDesc.textContent = modeDescription(mode);
+  els.detailDesc.innerHTML = renderRichText(modeFullDescription(mode));
   renderChangelog(mode);
   els.reqSize.textContent = mode.size || '—';
   renderSpotlight(mode);
