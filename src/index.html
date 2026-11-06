@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="color-scheme" content="dark">
-  <title>TMLauncher</title>
+  <title>TMStore</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="theme.css">
 </head>
@@ -30,7 +30,7 @@
             </svg>
           </div>
         </div>
-        <div class="splash-brand">TMLauncher</div>
+        <div class="splash-brand">TMStore</div>
         <div class="splash-sub" id="splash-sub">Загружаем режимы и аккаунт…</div>
         <div class="splash-progress"><div id="splash-progress-bar"></div></div>
       </div>
@@ -62,7 +62,7 @@
             </svg>
           </div>
         </div>
-        <div class="splash-brand">TMLauncher</div>
+        <div class="splash-brand">TMStore</div>
         <div class="splash-update-pill">
           <span class="splash-update-pill-dot"></span>
           <span>Обновление</span>
@@ -91,7 +91,7 @@
           <path d="M8.5 9 H15.5 M12 9 V16" stroke="url(#logo-grad)" stroke-width="1.7" stroke-linecap="round"/>
         </svg>
       </span>
-      <span class="brand-name">TMLauncher</span>
+      <span class="brand-name">TMStore</span>
     </div>
     <div class="nav-drag" data-tauri-drag-region></div>
 
@@ -164,14 +164,9 @@
     <section id="store-view">
       <div class="store-dashboard">
         <div class="dashboard-copy">
-          <div class="eyebrow">TMLauncher</div>
+          <div class="eyebrow">TMStore</div>
           <h1>Магазин режимов</h1>
-          <p>Выбирай сборки, ставь одной кнопкой и следи за обновлениями.</p>
-        </div>
-        <div class="dashboard-stats">
-          <div class="dash-stat"><span>Режимов</span><b id="store-stat-total">0</b></div>
-          <div class="dash-stat"><span>Установлено</span><b id="store-stat-installed">0</b></div>
-          <div class="dash-stat"><span>Обновлений</span><b id="store-stat-updates">0</b></div>
+          <p>Выбирай режимы, ставь одной кнопкой и следи за обновлениями.</p>
         </div>
       </div>
 
@@ -201,9 +196,9 @@
               <button type="button" data-store-filter="crowdfunding">Сбор на релиз</button>
             </div>
             <select id="store-sort" class="sort-select">
-              <option value="default">По умолчанию</option>
+              <option value="date" selected>По дате</option>
               <option value="title">По названию</option>
-              <option value="updated">По обновлению</option>
+              <option value="default">По умолчанию</option>
             </select>
           </div>
         </div>
@@ -229,26 +224,16 @@
     <section id="library-view" hidden>
       <div class="library-head">
         <div class="dashboard-copy">
-          <div class="eyebrow">TMLauncher</div>
+          <div class="eyebrow">TMStore</div>
           <h1>Библиотека</h1>
-          <p>Твои режимы и сборки. Всё, что установлено, всегда под рукой.</p>
+          <p>Твоя коллекция режимов. Всё, что добавлено, всегда под рукой.</p>
         </div>
         <div class="dashboard-stats">
           <div class="dash-stat"><span>В библиотеке</span><b id="library-stat-total">0</b></div>
           <div class="dash-stat"><span>Установлено</span><b id="library-stat-installed">0</b></div>
+          <div class="dash-stat"><span>Обновлений</span><b id="library-stat-updates">0</b></div>
         </div>
       </div>
-
-      <section class="library-continue" id="library-continue" hidden>
-        <img id="library-continue-img" alt="">
-        <div class="library-continue-shade"></div>
-        <div class="library-continue-content">
-          <span class="spotlight-label">Продолжить</span>
-          <b id="library-continue-title">—</b>
-          <span id="library-continue-sub"></span>
-          <button class="btn btn-primary" id="library-continue-open" type="button">Открыть</button>
-        </div>
-      </section>
 
       <div class="shelf-head catalog-head">
         <div class="shelf-title"><h2>Все режимы</h2><span class="count" id="library-count"></span></div>
@@ -260,9 +245,9 @@
             <button type="button" data-library-filter="crowdfunding">Сбор на релиз</button>
           </div>
           <select id="library-sort" class="sort-select">
-            <option value="default">По умолчанию</option>
+            <option value="date" selected>По дате</option>
             <option value="title">По названию</option>
-            <option value="updated">По обновлению</option>
+            <option value="default">По умолчанию</option>
           </select>
         </div>
       </div>
@@ -409,11 +394,6 @@
       </div>
 
       <div id="settings-launcher" class="settings-pane" hidden>
-        <div class="field">
-          <label class="check standalone"><input type="checkbox" id="set-minimize-on-launch" checked> Сворачивать лаунчер при запуске игры</label>
-          <div class="hint">Лаунчер свернётся, когда Minecraft начнёт запускаться.</div>
-        </div>
-
         <div class="field">
           <label>Папка данных лаунчера</label>
           <div class="row">

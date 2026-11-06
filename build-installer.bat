@@ -1,5 +1,5 @@
 @echo off
-title TMLauncher - installer
+title TMStore - installer
 cd /d "%~dp0"
 
 if not exist "node_modules\.bin\tauri.cmd" (
@@ -16,7 +16,7 @@ if exist "src-tauri\target-msvc\release\bundle\nsis\*.exe" del /Q "src-tauri\tar
 call "node_modules\.bin\tauri.cmd" build
 if errorlevel 1 goto :fail
 
-copy /Y "src-tauri\target-msvc\release\tm-launcher.exe" "TMLauncher.exe" >nul
+copy /Y "src-tauri\target-msvc\release\tm-launcher.exe" "TMStore.exe" >nul
 if errorlevel 1 goto :fail
 
 set "SETUP="
@@ -26,11 +26,11 @@ if not defined SETUP (
   goto :fail
 )
 
-copy /Y "%SETUP%" "TMLauncher Setup.exe" >nul
+copy /Y "%SETUP%" "TMStore Setup.exe" >nul
 if errorlevel 1 goto :fail
 
 echo.
-echo [TM] Done: "TMLauncher.exe" and "TMLauncher Setup.exe"
+echo [TM] Done: "TMStore.exe" and "TMStore Setup.exe"
 if /I not "%~1"=="--no-pause" pause
 exit /b 0
 

@@ -1,5 +1,5 @@
 @echo off
-title TMLauncher - build
+title TMStore - build
 cd /d "%~dp0"
 
 call "%~dp0build-env.bat"
@@ -10,11 +10,11 @@ cd /d "%~dp0src-tauri"
 "%CARGO%" build --release
 if errorlevel 1 goto :fail
 
-copy /Y "target-msvc\release\tm-launcher.exe" "..\TMLauncher.exe" >nul
+copy /Y "target-msvc\release\tm-launcher.exe" "..\TMStore.exe" >nul
 if errorlevel 1 goto :fail
 
 echo.
-echo [TM] Done: "TMLauncher.exe"
+echo [TM] Done: "TMStore.exe"
 if /I not "%~1"=="--no-pause" pause
 exit /b 0
 

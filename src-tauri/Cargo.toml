@@ -1,7 +1,7 @@
 [package]
 name = "tm-launcher"
-version = "0.4.29"
-description = "TMLauncher — майнкрафт-лаунчер с режимами и аккаунтами Ely.by"
+version = "0.4.30"
+description = "TMStore - Minecraft mode store with Ely.by accounts"
 authors = ["TM"]
 license = "MIT"
 edition = "2021"

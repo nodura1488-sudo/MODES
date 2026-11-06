@@ -773,9 +773,24 @@ fn launch(
         .spawn()
         .map_err(|e| format!("Не удалось запустить Java: {}", format_error(e)))?;
     on_event(GameEvent::Launched);
-    let code = child
-        .wait()
-        .map_err(|e| format!("Ошибка ожидания процесса игры: {e}"))?;
-    on_event(GameEvent::Exit(code.code().unwrap_or(-1)));
+    let mut code = -1;
+    loop {
+        if cancelled(cancel) {
+            let _ = child.kill();
+            if let Ok(status) = child.wait() {
+                code = status.code().unwrap_or(-1);
+            }
+            break;
+        }
+        match child.try_wait() {
+            Ok(Some(status)) => {
+                code = status.code().unwrap_or(-1);
+                break;
+            }
+            Ok(None) => std::thread::sleep(Duration::from_millis(150)),
+            Err(e) => return Err(format!("Ошибка ожидания процесса игры: {e}")),
+        }
+    }
+    on_event(GameEvent::Exit(code));
     Ok(())
 }

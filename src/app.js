@@ -67,10 +67,9 @@ const S = {
   updateInfo: null,
   autoUpdating: false,
   storeFilter: 'all',
-  storeSort: 'default',
+  storeSort: 'date',
   libraryFilter: 'all',
-  librarySort: 'default',
-  continueId: null,
+  librarySort: 'date',
   pendingPlay: null
 };
 
@@ -87,9 +86,6 @@ const els = {
   splashUpdateRing: $('splash-update-ring'),
   sideLibCount: $('side-lib-count'),
   sideInstalledCount: $('side-installed-count'),
-  storeStatTotal: $('store-stat-total'),
-  storeStatInstalled: $('store-stat-installed'),
-  storeStatUpdates: $('store-stat-updates'),
   storeFilters: $('store-filters'),
   storeSort: $('store-sort'),
   storeView: $('store-view'),
@@ -98,13 +94,9 @@ const els = {
   libraryCount: $('library-count'),
   libraryStatTotal: $('library-stat-total'),
   libraryStatInstalled: $('library-stat-installed'),
+  libraryStatUpdates: $('library-stat-updates'),
   libraryFilters: $('library-filters'),
   librarySort: $('library-sort'),
-  libraryContinue: $('library-continue'),
-  libraryContinueImg: $('library-continue-img'),
-  libraryContinueTitle: $('library-continue-title'),
-  libraryContinueSub: $('library-continue-sub'),
-  libraryContinueOpen: $('library-continue-open'),
   libraryEmpty: $('library-empty'),
   libraryEmptyTitle: $('library-empty-title'),
   libraryEmptySub: $('library-empty-sub'),
@@ -174,7 +166,6 @@ const els = {
   setHeight: $('set-height'),
   setFullscreen: $('set-fullscreen'),
   setJvmFlags: $('set-jvm-flags'),
-  setMinimizeOnLaunch: $('set-minimize-on-launch'),
   setDataDir: $('set-data-dir')
 };
 
@@ -309,7 +300,7 @@ function bindCatalogControls() {
     if (!container) return;
     container.querySelectorAll(`[data-${attr}]`).forEach((button) => {
       button.onclick = () => {
-        S[key] = button.dataset[attr];
+        S[key] = button.getAttribute(`data-${attr}`);
         render();
       };
     });
@@ -328,17 +319,12 @@ function bindCatalogControls() {
       renderLibrary();
     };
   }
-  if (els.libraryContinueOpen) {
-    els.libraryContinueOpen.onclick = () => {
-      if (S.continueId) openDetail(S.continueId);
-    };
-  }
 }
 
 function syncFilterButtons(container, attr, active) {
   if (!container) return;
   container.querySelectorAll(`[data-${attr}]`).forEach((button) => {
-    button.classList.toggle('active', button.dataset[attr] === active);
+    button.classList.toggle('active', button.getAttribute(`data-${attr}`) === active);
   });
 }
 
@@ -356,20 +342,18 @@ function modeUpdatedAt(mode) {
 
 function sortCatalog(list, sort) {
   if (sort === 'title') return sortByTitle(list);
-  if (sort === 'updated') {
+  if (sort === 'date' || sort === 'updated') {
     return [...list].sort((a, b) => modeUpdatedAt(b).localeCompare(modeUpdatedAt(a)));
   }
   return sortModes(list);
 }
 
 function updateDashboardStats() {
-  if (els.storeStatTotal) els.storeStatTotal.textContent = String(S.modes.length);
-  if (els.storeStatInstalled) els.storeStatInstalled.textContent = String(S.modes.filter((mode) => isInstalled(mode)).length);
-  if (els.storeStatUpdates) els.storeStatUpdates.textContent = String(S.modes.filter((mode) => isUpdate(mode)).length);
-  if (els.libraryStatTotal) els.libraryStatTotal.textContent = String(S.modes.filter((mode) => inLibrary(mode)).length);
-  if (els.libraryStatInstalled) els.libraryStatInstalled.textContent = String(S.modes.filter((mode) => inLibrary(mode) && isInstalled(mode)).length);
+  const modes = S.modes.filter((mode) => inLibrary(mode));
+  if (els.libraryStatTotal) els.libraryStatTotal.textContent = String(modes.length);
+  if (els.libraryStatInstalled) els.libraryStatInstalled.textContent = String(modes.filter((mode) => isInstalled(mode)).length);
+  if (els.libraryStatUpdates) els.libraryStatUpdates.textContent = String(modes.filter((mode) => isUpdate(mode)).length);
 }
-
 
 function bindStore() {
   els.featuredOpen.onclick = () => {
@@ -662,7 +646,7 @@ function renderStore() {
     const result = sortCatalog(filterModes().filter((mode) => modePassesFilter(mode, S.storeFilter)), S.storeSort);
     els.catalogTitle.textContent = 'Результаты поиска';
     els.modesCount.textContent = String(result.length);
-    renderModeGrid(els.modesGrid, result);
+    renderModeGrid(els.modesGrid, result, true);
     setEmpty(
       result.length === 0,
       'Ничего не найдено',
@@ -687,7 +671,7 @@ function renderStore() {
   };
   els.catalogTitle.textContent = titles[S.storeFilter] || 'Все режимы';
   els.modesCount.textContent = String(list.length);
-  renderModeGrid(els.modesGrid, list);
+  renderModeGrid(els.modesGrid, list, true);
   setEmpty(
     list.length === 0,
     'Здесь пока пусто',
@@ -706,7 +690,6 @@ function renderLibrary() {
   );
   els.libraryCount.textContent = String(list.length);
   renderModeGrid(els.libraryGrid, list, true, true);
-  renderLibraryContinue();
   const showEmpty = list.length === 0;
   els.libraryEmpty.hidden = !showEmpty;
   if (showEmpty) {
@@ -716,29 +699,6 @@ function renderLibrary() {
       : 'Добавь режим в библиотеку, чтобы он появился здесь';
   }
   updateSidebarCounts();
-}
-
-function renderLibraryContinue() {
-  if (!els.libraryContinue) return;
-  const installed = S.modes
-    .filter((mode) => inLibrary(mode) && isInstalled(mode) && matchesSearch(mode))
-    .sort((a, b) => {
-      const aTime = Number((S.state[a.id] && S.state[a.id].installedAt) || 0);
-      const bTime = Number((S.state[b.id] && S.state[b.id].installedAt) || 0);
-      return bTime - aTime;
-    });
-  const mode = installed[0];
-  if (!mode || S.search) {
-    els.libraryContinue.hidden = true;
-    S.continueId = null;
-    return;
-  }
-  S.continueId = mode.id;
-  els.libraryContinue.hidden = false;
-  els.libraryContinueImg.src = imageSrc(mode);
-  wireImage(els.libraryContinueImg, mode);
-  els.libraryContinueTitle.textContent = mode.title || 'Режим';
-  els.libraryContinueSub.textContent = `${modeSub(mode)} · ${mode.size || '—'}`;
 }
 
 function renderFeatured(mode) {
@@ -764,11 +724,10 @@ function renderModeGrid(container, list, withMenu = false, playMode = false) {
     const menuBtn = e.target.closest('.card-menu-btn');
     if (menuBtn) {
       e.stopPropagation();
-      const menu = menuBtn.closest('.mode-card').querySelector('.card-menu');
-      if (!menu) return;
-      const wasHidden = menu.hidden;
-      closeCardMenus();
-      menu.hidden = !wasHidden;
+      const card = menuBtn.closest('.mode-card');
+      if (!card || !card.dataset.id) return;
+      const rect = menuBtn.getBoundingClientRect();
+      openCardContext(card, rect.right - 208, rect.bottom + 6, playMode);
       return;
     }
     const action = e.target.closest('[data-card-action]');
@@ -812,6 +771,17 @@ async function handleCardAction(modeId, action, autoPlay = false) {
 
   if (action === 'play') {
     await startMode(mode, autoPlay);
+    return;
+  }
+
+  if (action === 'stop') {
+    try {
+      await api.stopGame();
+      S.status = 'Закрываю игру…';
+      toast('Закрываю игру…', 'info');
+    } catch (err) {
+      toast('Не удалось закрыть игру: ' + err, 'error');
+    }
     return;
   }
 
@@ -883,10 +853,10 @@ async function handleCardAction(modeId, action, autoPlay = false) {
 
 function libraryStateMeta(mode) {
   const action = computeAction(mode);
-  if (action === 'running') return { cls: 'running', label: 'Запущено', icon: 'running' };
-  if (action === 'update') return { cls: 'update', label: 'Обновить', icon: 'update' };
-  if (action === 'play') return { cls: 'ready', label: 'Готово к игре', icon: 'play' };
-  return { cls: 'install', label: 'Установить', icon: 'install' };
+  if (action === 'running') return { cls: 'running', label: 'Запущено', icon: 'stop', action: 'stop' };
+  if (action === 'update') return { cls: 'update', label: 'Обновить', icon: 'update', action: 'play' };
+  if (action === 'play') return { cls: 'ready', label: 'Готово к игре', icon: 'play', action: 'play' };
+  return { cls: 'install', label: 'Установить', icon: 'install', action: 'play' };
 }
 
 function cardPlayIcon(kind) {
@@ -896,8 +866,8 @@ function cardPlayIcon(kind) {
   if (kind === 'update') {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v6h-6"/></svg>';
   }
-  if (kind === 'running') {
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="8" opacity=".45"/></svg>';
+  if (kind === 'stop') {
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.8" fill="currentColor"/></svg>';
   }
   return '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.5v13a1 1 0 0 0 1.53.85l10-6.5a1 1 0 0 0 0-1.7l-10-6.5a1 1 0 0 0-1.53.85Z"/></svg>';
 }
@@ -915,15 +885,9 @@ function modeCardHtml(mode, withMenu = false, playMode = false) {
     <article class="mode-card ${installed ? 'installed' : ''}" data-id="${escapeHtml(mode.id)}">
       <div class="card-media">
         <img src="${escapeHtml(imageSrc(mode))}" alt="" loading="lazy" data-fallback>
-        ${playMode ? `<button class="card-play state-${stateMeta.cls}" data-card-action="play" type="button" aria-label="${escapeHtml(stateMeta.label)}: ${escapeHtml(mode.title || 'режим')}" ${stateMeta.cls === 'running' ? 'disabled' : ''}>${cardPlayIcon(stateMeta.icon)}</button>` : ''}
+        ${playMode ? `<button class="card-play state-${stateMeta.cls}" data-card-action="${stateMeta.action}" type="button" aria-label="${escapeHtml(stateMeta.action === 'stop' ? 'Закрыть игру' : stateMeta.label)}: ${escapeHtml(mode.title || 'режим')}">${cardPlayIcon(stateMeta.icon)}</button>` : ''}
         <div class="card-badge ${st.cls}">${st.text}</div>
-        ${withMenu ? `
-          <button class="card-menu-btn" type="button" title="Действия" aria-label="Действия">⋯</button>
-          <div class="card-menu" hidden>
-            ${installed ? '<button type="button" data-card-action="folder">Открыть папку</button>' : ''}
-            <button type="button" data-card-action="hide">Убрать из библиотеки</button>
-            ${installed ? '<button type="button" data-card-action="uninstall" class="danger">Удалить с устройства</button>' : ''}
-          </div>` : ''}
+        ${withMenu ? `<button class="card-menu-btn" type="button" title="Действия" aria-label="Действия">⋯</button>` : ''}
       </div>
       <div class="card-body">
         <div class="card-title">${escapeHtml(mode.title || 'Без названия')}</div>
@@ -1106,7 +1070,12 @@ function bindDetail() {
       toast('Дождитесь завершения текущей операции', 'warn');
       return;
     }
-    if (S.running === mode.id) return;
+    if (S.running === mode.id) {
+      await api.stopGame();
+      S.status = 'Закрываю игру…';
+      toast('Закрываю игру…', 'info');
+      return;
+    }
     const action = computeAction(mode);
     if (action === 'running') return;
     if (action === 'add') {
@@ -1222,18 +1191,33 @@ function openCardContext(card, x, y, playMode) {
   if (!els.cardContext) return;
   const mode = modeById(card.dataset.id);
   if (!mode) return;
+  const action = computeAction(mode);
   const installed = isInstalled(mode);
   const inLib = inLibrary(mode);
-  const actions = [
-    { action: 'play', label: installed ? 'Играть' : 'Установить', primary: true }
-  ];
+  const actions = [];
+
+  if (action === 'running') {
+    actions.push({ action: 'stop', label: 'Закрыть игру', primary: true, danger: true });
+  } else {
+    const label = action === 'update'
+      ? 'Обновить'
+      : action === 'play'
+        ? 'Играть'
+        : action === 'add'
+          ? 'Добавить в библиотеку'
+          : 'Установить';
+    actions.push({ action: 'play', label, primary: true });
+  }
+
   if (playMode) actions.push({ action: 'store', label: 'Найти в магазине' });
   if (installed) actions.push({ action: 'folder', label: 'Открыть папку' });
   actions.push({
     action: inLib ? 'hide' : 'addlib',
     label: inLib ? 'Убрать из библиотеки' : 'Добавить в библиотеку'
   });
-  if (installed) actions.push({ action: 'uninstall', label: 'Удалить с устройства', danger: true });
+  if (installed && action !== 'running') {
+    actions.push({ action: 'uninstall', label: 'Удалить с устройства', danger: true });
+  }
 
   els.cardContext.innerHTML = actions.map((item) => `
     <button type="button" data-context-action="${item.action}" class="${item.primary ? 'primary' : ''} ${item.danger ? 'danger' : ''}">
@@ -1481,10 +1465,17 @@ function updateDetailAction() {
   }
 
   const action = computeAction(mode);
-  els.detailAction.textContent = actionLabel(action);
-  els.detailAction.className = 'btn btn-primary btn-big btn-block';
-  els.detailAction.disabled = action === 'running';
-  els.detailStatus.textContent = defaultStatus(mode);
+  if (action === 'running') {
+    els.detailAction.textContent = 'Закрыть игру';
+    els.detailAction.className = 'btn btn-danger btn-big btn-block';
+    els.detailAction.disabled = false;
+    els.detailStatus.textContent = 'Игра запущена';
+  } else {
+    els.detailAction.textContent = actionLabel(action);
+    els.detailAction.className = 'btn btn-primary btn-big btn-block';
+    els.detailAction.disabled = false;
+    els.detailStatus.textContent = defaultStatus(mode);
+  }
   els.detailProgress.hidden = true;
   els.detailProgressBar.style.width = '0%';
 }
@@ -1537,9 +1528,6 @@ function onGameEvent(ev) {
       renderStore();
       renderLibrary();
       if (S.view === 'detail' && isCurrent) renderDetail();
-      if (S.settings && S.settings.minimizeOnLaunch !== false) {
-        api.minimize().catch(() => {});
-      }
       break;
     }
     case 'exit': {
@@ -2080,8 +2068,7 @@ function bindSettings() {
         width: Number(els.setWidth.value) || 925,
         height: Number(els.setHeight.value) || 530,
         fullscreen: els.setFullscreen.checked,
-        jvmFlags: els.setJvmFlags.checked,
-        minimizeOnLaunch: els.setMinimizeOnLaunch.checked
+        jvmFlags: els.setJvmFlags.checked
       });
       S.settings = s;
       closeModals();
@@ -2111,7 +2098,6 @@ function fillSettingsForm() {
   els.setHeight.value = s.height || 530;
   els.setFullscreen.checked = !!s.fullscreen;
   els.setJvmFlags.checked = s.jvmFlags !== false;
-  els.setMinimizeOnLaunch.checked = s.minimizeOnLaunch !== false;
   els.setDataDir.value = S.dataDir || '';
 }
 

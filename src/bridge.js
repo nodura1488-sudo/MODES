@@ -47,6 +47,7 @@
     // игра
     install: (modeId) => invoke("game_install", { modeId }),
     play: (modeId) => invoke("game_play", { modeId }),
+    stopGame: () => invoke("game_cancel"),
     cancel: () => invoke("game_cancel"),
     uninstall: (modeId) => invoke("game_uninstall", { modeId }),
     setLibrary: (modeId, library) => invoke("game_set_library", { modeId, library }),

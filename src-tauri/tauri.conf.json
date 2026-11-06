@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "TMLauncher",
-  "version": "0.4.29",
+  "productName": "TMStore",
+  "version": "0.4.30",
   "identifier": "gg.tm.launcher",
   "build": {
     "frontendDist": "../src"
@@ -11,7 +11,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "TMLauncher",
+        "title": "TMStore",
         "width": 380,
         "height": 620,
         "minWidth": 360,
@@ -33,7 +33,9 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis"],
+    "targets": [
+      "nsis"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -41,15 +43,19 @@
       "icons/icon.ico"
     ],
     "publisher": "TM",
-    "shortDescription": "TMLauncher",
-    "longDescription": "TMLauncher — лаунчер Minecraft с режимами и аккаунтами Ely.by",
+    "shortDescription": "TMStore",
+    "longDescription": "TMStore — магазин режимов Minecraft с поддержкой аккаунтов Ely.by",
     "copyright": "© TM",
     "category": "Game",
     "windows": {
       "nsis": {
         "installMode": "currentUser",
-        "languages": ["Russian", "English"],
-        "displayLanguageSelector": false
+        "languages": [
+          "Russian",
+          "English"
+        ],
+        "displayLanguageSelector": false,
+        "installerHooks": "nsis/hooks.nsh"
       }
     }
   }

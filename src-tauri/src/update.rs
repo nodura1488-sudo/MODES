@@ -24,7 +24,7 @@ pub struct UpdateInfo {
 fn client() -> Client {
     Client::builder()
         .timeout(Duration::from_secs(120))
-        .user_agent("TMLauncher/0.4 (Rust)")
+        .user_agent("TMStore/1.0 (Rust)")
         .build()
         .unwrap_or_else(|_| Client::new())
 }
@@ -120,7 +120,7 @@ fn download_installer(
     if !url.starts_with("https://github.com/") {
         return Err("Некорректная ссылка на обновление".to_string());
     }
-    let path: PathBuf = std::env::temp_dir().join("TMLauncher-Setup-latest.exe");
+    let path: PathBuf = std::env::temp_dir().join("TMStore-Setup-latest.exe");
     let mut response = client()
         .get(url)
         .send()
@@ -179,7 +179,10 @@ pub async fn install_update(app: AppHandle, url: String) -> Result<(), String> {
             .filter(|path| {
                 path.file_name()
                     .and_then(|name| name.to_str())
-                    .map(|name| name.eq_ignore_ascii_case("tm-launcher.exe"))
+                    .map(|name| {
+                        name.eq_ignore_ascii_case("tm-launcher.exe")
+                            || name.eq_ignore_ascii_case("tmstore.exe")
+                    })
                     .unwrap_or(false)
             })
             .map(|path| {
