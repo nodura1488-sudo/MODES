@@ -230,8 +230,8 @@ fn run(
     cancel: &AtomicBool,
     on_event: &mut dyn FnMut(GameEvent),
 ) -> Result<(), String> {
-    status(on_event, "Подготовка…");
-    status(on_event, "Подбираю Java…");
+    status(on_event, "Подготовка");
+    status(on_event, "Подготовка");
     let java_choice = select_java(settings, &mode.mc_version)?;
     let mut effective_settings = settings.clone();
     effective_settings.java_path = java_choice.javaw.to_string_lossy().to_string();
@@ -406,7 +406,7 @@ fn with_java_on_path<T>(settings: &Settings, f: impl FnOnce() -> T) -> T {
 }
 
 fn verify_java(settings: &Settings, on_event: &mut dyn FnMut(GameEvent)) -> Result<(), String> {
-    status(on_event, "Проверяю Java…");
+    status(on_event, "Подготовка");
     let java = java_for_install(settings);
     let mut command = Command::new(&java);
     command
@@ -561,7 +561,7 @@ fn install_profile(
                 .join(&id)
                 .join(format!("{id}.json"));
             if json.exists() {
-                status(on_event, "Проверяю файлы Minecraft…");
+                status(on_event, "Установка игры");
                 let request = InstallRequest::vanilla(mode.mc_version.clone());
                 let mut reporter = progress_reporter(on_event, cancel);
                 with_java_on_path(settings, || {
@@ -578,7 +578,7 @@ fn install_profile(
         loader: loader_spec(mode),
         java: JavaInstallPolicy::Auto,
     };
-    status(on_event, "Устанавливаю файлы Minecraft…");
+    status(on_event, "Установка игры");
     let mut reporter = progress_reporter(on_event, cancel);
     let result = with_java_on_path(settings, || {
         launcher.install_with_progress(request, &mut reporter)
@@ -618,6 +618,12 @@ fn progress_reporter<'a>(
                 span = next_span;
                 done = 0;
                 percent = percent.max(base);
+                let label = match stage {
+                    InstallStage::ExtractNatives => "Распаковка файлов",
+                    InstallStage::Verify => "Проверка файлов",
+                    _ => "Установка игры",
+                };
+                on_event(GameEvent::Status(label.to_string()));
                 on_event(GameEvent::Progress {
                     task: percent as u64,
                     total: 100,
@@ -677,7 +683,7 @@ fn ensure_authlib_injector(
     {
         return Ok(path);
     }
-    status(on_event, "Загрузка authlib-injector для скинов Ely.by…");
+    status(on_event, "Подготовка");
     let cancel = AtomicBool::new(false);
     crate::net::download_file(AUTHLIB_INJECTOR_URL, &path, None, &cancel, |_, _| {})?;
     Ok(path)
@@ -691,7 +697,7 @@ fn launch(
     cancel: &AtomicBool,
     on_event: &mut dyn FnMut(GameEvent),
 ) -> Result<(), String> {
-    status(on_event, "Готовлю запуск…");
+    status(on_event, "Запуск игры");
     let launcher = Launcher::new(settings.dir.clone());
     let version = launcher
         .load_version(version_id)

@@ -57,6 +57,7 @@ const S = {
   running: null,
   progress: 0,
   status: '',
+  stage: '',
   search: '',
   loading: true,
   refreshing: false,
@@ -884,7 +885,8 @@ function libraryStateMeta(mode) {
   if (S.busy && S.busy.modeId === mode.id) {
     const percent = Math.max(0, Math.min(100, Math.round((Number(S.progress) || 0) * 100)));
     const kind = S.busy.action === 'update' ? 'update' : S.busy.action === 'play' ? 'ready' : 'install';
-    const prefix = kind === 'update' ? 'Обновление' : kind === 'ready' ? 'Запуск' : 'Установка';
+    const stage = String(S.stage || '').trim();
+    const prefix = stage || (kind === 'update' ? 'Обновление' : kind === 'ready' ? 'Запуск' : 'Установка');
     return {
       cls: kind,
       label: `${prefix} ${percent}%`,
@@ -1149,6 +1151,7 @@ function bindDetail() {
 
     S.busy = { modeId: mode.id, action };
     S.progress = 0;
+    S.stage = '';
     updateCardProgress();
     S.status = action === 'play' ? 'Подготовка к запуску…' : 'Загрузка файлов…';
     updateDetailAction();
@@ -1205,6 +1208,7 @@ async function startMode(mode, autoPlay = false) {
 
   S.busy = { modeId: mode.id, action };
   S.progress = 0;
+  S.stage = '';
   S.status = action === 'play' ? 'Запускаю Minecraft…' : 'Устанавливаю режим…';
   if (S.view === 'detail') updateDetailAction();
   S.pendingPlay = action !== 'play' && autoPlay ? mode.id : null;
@@ -1538,13 +1542,14 @@ function onGameEvent(ev) {
         ? ev.payload.task / ev.payload.total
         : 0;
       S.progress = Math.max(0, Math.min(1, p));
-      S.status = `Загрузка: ${Math.round(S.progress * 100)}%`;
       updateCardProgress();
       if (isCurrent) updateDetailAction();
       break;
     }
     case 'status': {
       S.status = String(ev.payload || '');
+      S.stage = S.status;
+      updateCardProgress();
       if (isCurrent) updateDetailAction();
       break;
     }
@@ -1552,6 +1557,7 @@ function onGameEvent(ev) {
       const shouldPlay = !!(mode && S.pendingPlay === mode.id);
       S.pendingPlay = null;
       S.busy = null;
+      S.stage = '';
       S.progress = 1;
       S.status = 'Установлено';
       if (mode) {
@@ -1567,6 +1573,7 @@ function onGameEvent(ev) {
     }
     case 'launched': {
       S.busy = null;
+      S.stage = '';
       S.running = ev.modeId;
       S.progress = 1;
       S.status = 'Игра запущена';
@@ -1592,6 +1599,7 @@ function onGameEvent(ev) {
     case 'exit': {
       S.running = null;
       S.busy = null;
+      S.stage = '';
       S.progress = 0;
       S.status = ev.payload === 0 ? 'Игра закрыта' : `Игра завершилась (код ${ev.payload})`;
       renderStore();
@@ -1602,6 +1610,7 @@ function onGameEvent(ev) {
     case 'cancelled': {
       S.pendingPlay = null;
       S.busy = null;
+      S.stage = '';
       S.progress = 0;
       S.status = 'Отменено';
       toast('Операция отменена', 'warn');
@@ -1613,6 +1622,7 @@ function onGameEvent(ev) {
     case 'error': {
       S.pendingPlay = null;
       S.busy = null;
+      S.stage = '';
       S.progress = 0;
       if (S.running === ev.modeId) S.running = null;
       S.status = 'Ошибка';

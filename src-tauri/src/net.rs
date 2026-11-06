@@ -154,10 +154,21 @@ pub struct FileMeta {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase", default)]
+pub struct ArchiveMeta {
+    pub path: String,
+    pub size: u64,
+    pub sha256: Option<String>,
+    pub files: u64,
+    pub bytes: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase", default)]
 pub struct Manifest {
     pub mode: String,
     pub version: String,
     pub generated_at: Option<String>,
+    pub archive: Option<ArchiveMeta>,
     pub files: HashMap<String, FileMeta>,
     #[serde(skip)]
     pub branch: String,
@@ -180,6 +191,16 @@ fn parse_manifest(value: Value) -> Result<Manifest, String> {
             }
         })
         .collect();
+    if let Some(archive) = manifest.archive.as_mut() {
+        archive.path = archive
+            .path
+            .replace('\\', "/")
+            .trim_start_matches("./")
+            .to_string();
+        if archive.path.is_empty() {
+            archive.path = "build.zip".to_string();
+        }
+    }
     Ok(manifest)
 }
 
@@ -249,6 +270,7 @@ pub fn fetch_manifest(
                         mode: mode_id.to_string(),
                         version: String::new(),
                         generated_at: None,
+                        archive: None,
                         files,
                         branch: branch.to_string(),
                     });
@@ -335,6 +357,119 @@ pub fn download_file(
 }
 
 /// Инкрементальный синк сборки по манифесту: качаем изменённое, удаляем лишнее.
+fn extract_archive(zip_path: &Path, dest: &Path) -> Result<(), String> {
+    let file = fs::File::open(zip_path)
+        .map_err(|e| format!("Не удалось открыть архив: {e}"))?;
+    let mut archive =
+        zip::ZipArchive::new(file).map_err(|e| format!("Не удалось прочитать архив: {e}"))?;
+    for index in 0..archive.len() {
+        let mut entry = archive
+            .by_index(index)
+            .map_err(|e| format!("Ошибка файла архива: {e}"))?;
+        if entry.is_dir() {
+            continue;
+        }
+        let Some(relative) = entry.enclosed_name() else {
+            continue;
+        };
+        let relative = relative.to_string_lossy().replace('\\', "/");
+        let Some(out) = safe_join(dest, &relative) else {
+            continue;
+        };
+        if let Some(parent) = out.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| format!("Не удалось создать папку: {e}"))?;
+        }
+        let mut target = fs::File::create(&out)
+            .map_err(|e| format!("Не удалось создать файл: {e}"))?;
+        std::io::copy(&mut entry, &mut target)
+            .map_err(|e| format!("Не удалось распаковать файл: {e}"))?;
+    }
+    Ok(())
+}
+
+fn sync_build_archive(
+    mode: &Mode,
+    settings: &Settings,
+    game_dir: &Path,
+    manifest: &Manifest,
+    archive: &ArchiveMeta,
+    branch: &str,
+    local_path: &Path,
+    local: &Manifest,
+    cancel: &AtomicBool,
+    on_event: &mut dyn FnMut(GameEvent),
+) -> Result<(), String> {
+    let same = local.version == manifest.version
+        && local.archive.as_ref().and_then(|item| item.sha256.as_deref())
+            == archive.sha256.as_deref()
+        && local.files.len() == manifest.files.len();
+    if same {
+        on_event(GameEvent::Status("Сборка готова".into()));
+        return Ok(());
+    }
+
+    let mut to_delete: Vec<String> = local
+        .files
+        .keys()
+        .filter(|rel| !manifest.files.contains_key(*rel))
+        .cloned()
+        .collect();
+    to_delete.sort();
+    if !to_delete.is_empty() {
+        on_event(GameEvent::Status("Установка сборки".into()));
+        for rel in &to_delete {
+            if let Some(path) = safe_join(game_dir, rel) {
+                let _ = fs::remove_file(path);
+            }
+        }
+        crate::util::prune_empty_dirs(game_dir);
+    }
+
+    on_event(GameEvent::Status("Установка сборки".into()));
+    let temp = std::env::temp_dir().join(format!(
+        "tmstore-{}-{}.zip",
+        mode.id,
+        std::process::id()
+    ));
+    let url = raw_url(&settings.github_repo, branch, &["modes", &mode.id, &archive.path])?;
+    let mut last_emit = 0u64;
+    let download = download_file(
+        &url,
+        &temp,
+        Some(&settings.github_token),
+        cancel,
+        |done, total| {
+            if done == total || done.saturating_sub(last_emit) >= 256 * 1024 {
+                last_emit = done;
+                on_event(GameEvent::Progress {
+                    task: done,
+                    total: total.max(done),
+                });
+            }
+        },
+    );
+    if let Err(err) = download {
+        let _ = fs::remove_file(&temp);
+        return Err(err);
+    }
+
+    if let Some(expected) = archive.sha256.as_deref().filter(|hash| !hash.is_empty()) {
+        let actual = sha256_file(&temp)?;
+        if !actual.eq_ignore_ascii_case(expected) {
+            let _ = fs::remove_file(&temp);
+            return Err("Файлы сборки повреждены".to_string());
+        }
+    }
+
+    on_event(GameEvent::Status("Распаковка файлов".into()));
+    let extracted = extract_archive(&temp, game_dir);
+    let _ = fs::remove_file(&temp);
+    extracted?;
+    write_json(local_path, manifest)?;
+    Ok(())
+}
+
 pub fn sync_build(
     mode: &Mode,
     settings: &Settings,
@@ -342,7 +477,7 @@ pub fn sync_build(
     cancel: &AtomicBool,
     on_event: &mut dyn FnMut(GameEvent),
 ) -> Result<(), String> {
-    on_event(GameEvent::Status("Проверяю обновления…".into()));
+    on_event(GameEvent::Status("Проверка сборки".into()));
 
     let mut manifest = fetch_manifest(
         &settings.github_repo,
@@ -360,6 +495,21 @@ pub fn sync_build(
     };
     let local_path = game_dir.join(".manifest.json");
     let local: Manifest = crate::util::read_json(&local_path).unwrap_or_default();
+
+    if let Some(archive) = manifest.archive.clone() {
+        return sync_build_archive(
+            mode,
+            settings,
+            game_dir,
+            &manifest,
+            &archive,
+            &branch,
+            &local_path,
+            &local,
+            cancel,
+            on_event,
+        );
+    }
 
     let mut to_download: Vec<String> = Vec::new();
     for (rel, meta) in &manifest.files {
@@ -380,7 +530,7 @@ pub fn sync_build(
     to_delete.sort();
 
     if to_download.is_empty() && to_delete.is_empty() {
-        on_event(GameEvent::Status("Сборка актуальна".into()));
+        on_event(GameEvent::Status("Сборка готова".into()));
         write_json(&local_path, &manifest)?;
         return Ok(());
     }
@@ -391,7 +541,7 @@ pub fn sync_build(
         .sum();
     let mut done_bytes = 0u64;
 
-    on_event(GameEvent::Status("Скачивание сборки…".into()));
+    on_event(GameEvent::Status("Установка сборки".into()));
     for rel in &to_download {
         if cancel.load(Ordering::Relaxed) {
             return Err("Операция отменена".to_string());
@@ -434,10 +584,7 @@ pub fn sync_build(
     }
 
     if !to_delete.is_empty() {
-        on_event(GameEvent::Status(format!(
-            "Удаляю устаревшие файлы ({})…",
-            to_delete.len()
-        )));
+        on_event(GameEvent::Status("Установка сборки".into()));
         for rel in &to_delete {
             if let Some(path) = safe_join(game_dir, rel) {
                 let _ = fs::remove_file(path);
