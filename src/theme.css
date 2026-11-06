@@ -897,6 +897,24 @@ select option { background: #161616; }
 .progress-bar {
   background: linear-gradient(90deg, #e5322b, #ff7a1f);
   box-shadow: 0 0 12px rgba(229, 50, 43, 0.5);
+  transition: width 0.3s ease;
+}
+
+/* ============ LIBRARY ============ */
+
+#library-view .grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+#library-view .mode-card { border-radius: 10px; }
+#library-view .card-media { aspect-ratio: 16 / 9; }
+#library-view .card-body { padding: 16px 18px 18px; }
+#library-view .card-title { font-size: 17px; }
+#library-view .card-desc { display: none; }
+#library-view .card-body .tags { display: none; }
+#library-view .card-foot { padding-top: 12px; }
+@media (max-width: 900px) {
+  #library-view .grid { grid-template-columns: 1fr; }
 }
 
 /* ============ SPLASH ============ */
