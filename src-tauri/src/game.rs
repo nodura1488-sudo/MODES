@@ -11,7 +11,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use std::time::{Duration, Instant};
 use tauri::Emitter;
 
@@ -35,6 +35,154 @@ fn hide_console(command: &mut Command) -> &mut Command {
         command.creation_flags(CREATE_NO_WINDOW);
     }
     command
+}
+
+#[derive(Clone)]
+struct JavaInstall {
+    javaw: PathBuf,
+    major: u32,
+}
+
+fn required_java_major(mc_version: &str) -> u32 {
+    let mut parts = mc_version.split('.');
+    let major: u32 = parts.next().and_then(|v| v.parse().ok()).unwrap_or(1);
+    if major != 1 {
+        return 21;
+    }
+    let minor: u32 = parts.next().and_then(|v| v.parse().ok()).unwrap_or(20);
+    let patch: u32 = parts.next().and_then(|v| v.parse().ok()).unwrap_or(0);
+    if minor <= 16 {
+        8
+    } else if minor < 20 || (minor == 20 && patch < 5) {
+        17
+    } else {
+        21
+    }
+}
+
+fn parse_java_major(output: &str) -> Option<u32> {
+    let line = output.lines().find(|line| line.contains("version \""))?;
+    let version = line.split("version \"").nth(1)?.split('"').next()?;
+    let mut parts = version.split('.');
+    let first: u32 = parts.next()?.parse().ok()?;
+    if first == 1 {
+        parts.next()?.parse().ok()
+    } else {
+        Some(first)
+    }
+}
+
+fn java_major(java: &Path) -> Option<u32> {
+    let mut command = Command::new(java);
+    command.arg("-version");
+    hide_console(&mut command);
+    let output = command.output().ok()?;
+    let text = String::from_utf8_lossy(&output.stderr);
+    parse_java_major(&text).or_else(|| parse_java_major(&String::from_utf8_lossy(&output.stdout)))
+}
+
+fn java_from_java_exe(java: PathBuf) -> Option<JavaInstall> {
+    let major = java_major(&java)?;
+    let javaw = java.with_file_name("javaw.exe");
+    Some(JavaInstall {
+        javaw: if javaw.exists() { javaw } else { java },
+        major,
+    })
+}
+
+fn java_candidate_dirs() -> Vec<PathBuf> {
+    let mut roots: Vec<PathBuf> = Vec::new();
+    if cfg!(windows) {
+        roots.extend([
+            PathBuf::from(r"C:\Program Files\Java"),
+            PathBuf::from(r"C:\Program Files (x86)\Java"),
+            PathBuf::from(r"C:\Program Files\Eclipse Adoptium"),
+            PathBuf::from(r"C:\Program Files\Microsoft"),
+            PathBuf::from(r"C:\Program Files\Zulu"),
+            PathBuf::from(r"C:\Program Files\Amazon Corretto"),
+            PathBuf::from(r"C:\Program Files\BellSoft"),
+            PathBuf::from(r"C:\Program Files\Semeru"),
+        ]);
+        if let Some(local) = std::env::var_os("LOCALAPPDATA") {
+            roots.push(PathBuf::from(local).join("Programs").join("Eclipse Adoptium"));
+        }
+        if let Some(home) = std::env::var_os("USERPROFILE") {
+            roots.push(PathBuf::from(home).join(".jdks"));
+        }
+    }
+    if let Some(java_home) = std::env::var_os("JAVA_HOME") {
+        roots.push(PathBuf::from(java_home));
+    }
+    if let Some(path) = std::env::var_os("PATH") {
+        roots.extend(std::env::split_paths(&path));
+    }
+
+    let mut candidates = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+    for root in roots {
+        let mut check = |path: PathBuf| {
+            let key = path.to_string_lossy().to_lowercase();
+            if path.is_file() && seen.insert(key) {
+                candidates.push(path);
+            }
+        };
+        check(root.join("bin").join("java.exe"));
+        if let Ok(entries) = fs::read_dir(&root) {
+            for entry in entries.flatten() {
+                let home = entry.path();
+                check(home.join("bin").join("java.exe"));
+            }
+        }
+    }
+    candidates
+}
+
+fn installed_javas() -> &'static Vec<JavaInstall> {
+    static CACHE: OnceLock<Vec<JavaInstall>> = OnceLock::new();
+    CACHE.get_or_init(|| {
+        java_candidate_dirs()
+            .into_iter()
+            .filter_map(java_from_java_exe)
+            .collect()
+    })
+}
+
+fn select_java(settings: &Settings, mc_version: &str) -> Result<JavaInstall, String> {
+    let required = required_java_major(mc_version);
+    let custom = settings.java_path.trim();
+    if !custom.is_empty() {
+        let raw = PathBuf::from(custom);
+        let java = if raw.is_dir() {
+            raw.join("bin").join("java.exe")
+        } else {
+            raw
+        };
+        if java.exists() {
+            if let Some(found) = java_from_java_exe(java.clone()) {
+                if found.major == required || (required >= 17 && found.major > required) {
+                    return Ok(found);
+                }
+            }
+        }
+    }
+
+    let javas = installed_javas();
+    if let Some(found) = javas.iter().find(|java| java.major == required) {
+        return Ok(found.clone());
+    }
+    if required >= 17 {
+        if let Some(found) = javas
+            .iter()
+            .filter(|java| java.major > required)
+            .min_by_key(|java| java.major)
+        {
+            return Ok(found.clone());
+        }
+    }
+
+    Err(format!(
+        "Для Minecraft {mc_version} нужна Java {required}. Установи Java {required} или укажи путь к ней в настройках."
+    ))
 }
 
 pub fn start(
@@ -83,6 +231,11 @@ fn run(
     on_event: &mut dyn FnMut(GameEvent),
 ) -> Result<(), String> {
     status(on_event, "Подготовка…");
+    status(on_event, "Подбираю Java…");
+    let java_choice = select_java(settings, &mode.mc_version)?;
+    let mut effective_settings = settings.clone();
+    effective_settings.java_path = java_choice.javaw.to_string_lossy().to_string();
+    let settings = &effective_settings;
     let game_dir = resolve_game_dir(mode, settings);
     fs::create_dir_all(&game_dir).map_err(|e| format!("Не удалось создать папку режима: {e}"))?;
 
@@ -214,8 +367,31 @@ fn with_java_on_path<T>(settings: &Settings, f: impl FnOnce() -> T) -> T {
     let Some(parent) = java.parent() else {
         return f();
     };
+    let mut path_dir = parent.to_path_buf();
+
+    // Forge/NeoForge installer запускается ядром как `java`. Подсовываем
+    // javaw под именем java.exe, чтобы не открывалось окно консоли.
+    #[cfg(windows)]
+    {
+        let javaw = java.with_file_name("javaw.exe");
+        if javaw.exists() {
+            let shim = Path::new(&settings.dir).join("runtime").join("java-shim");
+            if fs::create_dir_all(&shim).is_ok() {
+                let target = shim.join("java.exe");
+                if fs::copy(&javaw, &target).is_ok() {
+                    path_dir = shim;
+                } else {
+                    let _ = fs::remove_file(&target);
+                    if fs::copy(&javaw, &target).is_ok() {
+                        path_dir = shim;
+                    }
+                }
+            }
+        }
+    }
+
     let old_path = std::env::var_os("PATH");
-    let mut paths = vec![parent.to_path_buf()];
+    let mut paths = vec![path_dir];
     if let Some(old) = &old_path {
         paths.extend(std::env::split_paths(old));
     }
@@ -240,7 +416,7 @@ fn verify_java(settings: &Settings, on_event: &mut dyn FnMut(GameEvent)) -> Resu
     hide_console(&mut command);
     let mut child = command.spawn().map_err(|e| {
         format!(
-            "Java не найдена: {}. Установи Java 17+ или укажи путь в настройках",
+            "Java не найдена: {}. Установи подходящую Java (8/17/21) или укажи путь в настройках",
             format_error(e)
         )
     })?;
@@ -262,7 +438,7 @@ fn verify_java(settings: &Settings, on_event: &mut dyn FnMut(GameEvent)) -> Resu
                     .next()
                     .unwrap_or("java -version завершилась с ошибкой");
                 return Err(format!(
-                    "Java не запускается: {first}. Установи Java 17+ или укажи путь в настройках"
+                    "Java не запускается: {first}. Установи подходящую Java (8/17/21) или укажи путь в настройках"
                 ));
             }
             Ok(None) => {
@@ -349,6 +525,21 @@ fn loader_spec(mode: &Mode) -> Option<LoaderSpec> {
     }
 }
 
+fn ensure_launcher_profiles(settings: &Settings) -> Result<(), String> {
+    let path = Path::new(&settings.dir).join("launcher_profiles.json");
+    if path.exists() {
+        return Ok(());
+    }
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("Не удалось создать папку Minecraft: {e}"))?;
+    }
+    let data = r#"{"profiles":{},"selectedProfile":"","clientToken":"","authenticationDatabase":{},"launcherVersion":{"name":"2.1.1","format":21}}"#;
+    fs::write(&path, data)
+        .map_err(|e| format!("Не удалось создать launcher_profiles.json: {e}"))?;
+    Ok(())
+}
+
 fn install_profile(
     mode: &Mode,
     settings: &Settings,
@@ -358,6 +549,7 @@ fn install_profile(
     if mode.mc_version.trim().is_empty() {
         return Err("В режиме не указана версия Minecraft".to_string());
     }
+    ensure_launcher_profiles(settings)?;
     let launcher = Launcher::new(settings.dir.clone());
 
     // Forge не переустанавливаем каждый запуск: если профиль уже есть,
