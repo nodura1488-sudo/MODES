@@ -234,53 +234,6 @@ pub fn fetch_manifest(
         }
     }
 
-    // Fallback: если сборку залили руками, собираем список по git tree.
-    for branch in ["main", "master"] {
-        let mut url = api_url(repo, &["git", "trees", branch])?;
-        url.query_pairs_mut().append_pair("recursive", "1");
-        match get_json(url.as_str(), token) {
-            Ok(data) => {
-                let prefix = format!("modes/{mode_id}/");
-                let mut files = HashMap::new();
-                if let Some(tree) = data.get("tree").and_then(Value::as_array) {
-                    for item in tree {
-                        if item.get("type").and_then(Value::as_str) != Some("blob") {
-                            continue;
-                        }
-                        let Some(path) = item.get("path").and_then(Value::as_str) else {
-                            continue;
-                        };
-                        let Some(rel) = path.strip_prefix(&prefix) else {
-                            continue;
-                        };
-                        if rel.is_empty() || rel == "manifest.json" {
-                            continue;
-                        }
-                        files.insert(
-                            rel.to_string(),
-                            FileMeta {
-                                sha256: None,
-                                size: item.get("size").and_then(Value::as_u64).unwrap_or(0),
-                            },
-                        );
-                    }
-                }
-                if !files.is_empty() {
-                    return Ok(Manifest {
-                        mode: mode_id.to_string(),
-                        version: String::new(),
-                        generated_at: None,
-                        archive: None,
-                        files,
-                        branch: branch.to_string(),
-                    });
-                }
-                last_error = Some(format!("в репозитории нет папки modes/{mode_id}/"));
-            }
-            Err(err) => last_error = Some(err),
-        }
-    }
-
     Err(format!(
         "Сборка «{mode_title}» не найдена в репозитории. Залей файлы в modes/{mode_id}/ или публикуй кнопкой «+».{}",
         last_error
@@ -405,7 +358,7 @@ fn sync_build_archive(
             == archive.sha256.as_deref()
         && local.files.len() == manifest.files.len();
     if same {
-        on_event(GameEvent::Status("Сборка готова".into()));
+        on_event(GameEvent::Status("Режим готов".into()));
         return Ok(());
     }
 
@@ -417,7 +370,7 @@ fn sync_build_archive(
         .collect();
     to_delete.sort();
     if !to_delete.is_empty() {
-        on_event(GameEvent::Status("Установка сборки".into()));
+        on_event(GameEvent::Status("Установка режима".into()));
         for rel in &to_delete {
             if let Some(path) = safe_join(game_dir, rel) {
                 let _ = fs::remove_file(path);
@@ -426,7 +379,7 @@ fn sync_build_archive(
         crate::util::prune_empty_dirs(game_dir);
     }
 
-    on_event(GameEvent::Status("Установка сборки".into()));
+    on_event(GameEvent::Status("Установка режима".into()));
     let temp = std::env::temp_dir().join(format!(
         "tmstore-{}-{}.zip",
         mode.id,
@@ -458,7 +411,7 @@ fn sync_build_archive(
         let actual = sha256_file(&temp)?;
         if !actual.eq_ignore_ascii_case(expected) {
             let _ = fs::remove_file(&temp);
-            return Err("Файлы сборки повреждены".to_string());
+            return Err("Файлы режима повреждены".to_string());
         }
     }
 
@@ -477,7 +430,7 @@ pub fn sync_build(
     cancel: &AtomicBool,
     on_event: &mut dyn FnMut(GameEvent),
 ) -> Result<(), String> {
-    on_event(GameEvent::Status("Проверка сборки".into()));
+    on_event(GameEvent::Status("Проверка режима".into()));
 
     let mut manifest = fetch_manifest(
         &settings.github_repo,
@@ -496,105 +449,21 @@ pub fn sync_build(
     let local_path = game_dir.join(".manifest.json");
     let local: Manifest = crate::util::read_json(&local_path).unwrap_or_default();
 
-    if let Some(archive) = manifest.archive.clone() {
-        return sync_build_archive(
-            mode,
-            settings,
-            game_dir,
-            &manifest,
-            &archive,
-            &branch,
-            &local_path,
-            &local,
-            cancel,
-            on_event,
-        );
-    }
-
-    let mut to_download: Vec<String> = Vec::new();
-    for (rel, meta) in &manifest.files {
-        let same = local.files.get(rel).map_or(false, |lf| {
-            meta.sha256.is_none() || lf.sha256.as_deref() == meta.sha256.as_deref()
-        });
-        if !same {
-            to_download.push(rel.clone());
-        }
-    }
-    to_download.sort();
-    let mut to_delete: Vec<String> = local
-        .files
-        .keys()
-        .filter(|rel| !manifest.files.contains_key(*rel))
-        .cloned()
-        .collect();
-    to_delete.sort();
-
-    if to_download.is_empty() && to_delete.is_empty() {
-        on_event(GameEvent::Status("Сборка готова".into()));
-        write_json(&local_path, &manifest)?;
-        return Ok(());
-    }
-
-    let total_bytes: u64 = to_download
-        .iter()
-        .map(|rel| manifest.files.get(rel).map(|m| m.size).unwrap_or(0))
-        .sum();
-    let mut done_bytes = 0u64;
-
-    on_event(GameEvent::Status("Установка сборки".into()));
-    for rel in &to_download {
-        if cancel.load(Ordering::Relaxed) {
-            return Err("Операция отменена".to_string());
-        }
-        let Some(dest) = safe_join(game_dir, rel) else {
-            return Err(format!("Опасный путь в манифесте: {rel}"));
-        };
-        let url = raw_url(&settings.github_repo, &branch, &["modes", &mode.id, rel])?;
-        let meta = manifest.files.get(rel).cloned().unwrap_or_default();
-        let mut last_task = 0u64;
-        download_file(
-            &url,
-            &dest,
-            Some(&settings.github_token),
-            cancel,
-            |done, total| {
-                let base = done_bytes;
-                let _ = total;
-                if done.saturating_sub(last_task) >= 256 * 1024 || done == meta.size {
-                    last_task = done;
-                    on_event(GameEvent::Progress {
-                        task: base + done,
-                        total: total_bytes.max(base + done),
-                    });
-                }
-            },
-        )?;
-        if let Some(expected) = meta.sha256.as_deref().filter(|s| !s.is_empty()) {
-            let hash = sha256_file(&dest)?;
-            if !hash.eq_ignore_ascii_case(expected) {
-                let _ = fs::remove_file(&dest);
-                return Err(format!("Файл повреждён при скачивании: {rel}"));
-            }
-        }
-        done_bytes += meta.size;
-        on_event(GameEvent::Progress {
-            task: done_bytes,
-            total: total_bytes.max(done_bytes),
-        });
-    }
-
-    if !to_delete.is_empty() {
-        on_event(GameEvent::Status("Установка сборки".into()));
-        for rel in &to_delete {
-            if let Some(path) = safe_join(game_dir, rel) {
-                let _ = fs::remove_file(path);
-            }
-        }
-        crate::util::prune_empty_dirs(game_dir);
-    }
-
-    write_json(&local_path, &manifest)?;
-    Ok(())
+    let Some(archive) = manifest.archive.clone() else {
+        return Err("Этот режим использует старый формат. Перепубликуйте его в TMPublisher.".to_string());
+    };
+    sync_build_archive(
+        mode,
+        settings,
+        game_dir,
+        &manifest,
+        &archive,
+        &branch,
+        &local_path,
+        &local,
+        cancel,
+        on_event,
+    )
 }
 
 
