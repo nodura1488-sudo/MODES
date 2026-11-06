@@ -33,7 +33,7 @@ const UPDATE_TAGS = {
 
 const MODE_STATUS = {
   development: { label: 'В разработке', cls: 'development' },
-  crowdfunding: { label: 'Краудфандинг', cls: 'crowdfunding' }
+  crowdfunding: { label: 'Сбор на релиз', cls: 'crowdfunding' }
 };
 
 function modeStatusMeta(mode) {
