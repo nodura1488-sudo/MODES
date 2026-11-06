@@ -65,7 +65,12 @@ const S = {
   detailFrom: null,
   dataDir: '',
   updateInfo: null,
-  autoUpdating: false
+  autoUpdating: false,
+  storeFilter: 'all',
+  storeSort: 'default',
+  libraryFilter: 'all',
+  librarySort: 'default',
+  continueId: null
 };
 
 const els = {
@@ -81,10 +86,24 @@ const els = {
   splashUpdateRing: $('splash-update-ring'),
   sideLibCount: $('side-lib-count'),
   sideInstalledCount: $('side-installed-count'),
+  storeStatTotal: $('store-stat-total'),
+  storeStatInstalled: $('store-stat-installed'),
+  storeStatUpdates: $('store-stat-updates'),
+  storeFilters: $('store-filters'),
+  storeSort: $('store-sort'),
   storeView: $('store-view'),
   libraryView: $('library-view'),
   libraryGrid: $('library-grid'),
   libraryCount: $('library-count'),
+  libraryStatTotal: $('library-stat-total'),
+  libraryStatInstalled: $('library-stat-installed'),
+  libraryFilters: $('library-filters'),
+  librarySort: $('library-sort'),
+  libraryContinue: $('library-continue'),
+  libraryContinueImg: $('library-continue-img'),
+  libraryContinueTitle: $('library-continue-title'),
+  libraryContinueSub: $('library-continue-sub'),
+  libraryContinueOpen: $('library-continue-open'),
   libraryEmpty: $('library-empty'),
   libraryEmptyTitle: $('library-empty-title'),
   libraryEmptySub: $('library-empty-sub'),
@@ -167,6 +186,7 @@ async function init() {
   bindModals();
   bindSidebar();
   bindStore();
+  bindCatalogControls();
   bindDetail();
   bindSettings();
   bindAccountModal();
@@ -282,6 +302,73 @@ function bindWindowButtons() {
 
 // ---------------------------------------------------------------- store
 
+function bindCatalogControls() {
+  const bind = (container, attr, key, render) => {
+    if (!container) return;
+    container.querySelectorAll(`[data-${attr}]`).forEach((button) => {
+      button.onclick = () => {
+        S[key] = button.dataset[attr];
+        render();
+      };
+    });
+  };
+  bind(els.storeFilters, 'store-filter', 'storeFilter', renderStore);
+  bind(els.libraryFilters, 'library-filter', 'libraryFilter', renderLibrary);
+  if (els.storeSort) {
+    els.storeSort.onchange = () => {
+      S.storeSort = els.storeSort.value;
+      renderStore();
+    };
+  }
+  if (els.librarySort) {
+    els.librarySort.onchange = () => {
+      S.librarySort = els.librarySort.value;
+      renderLibrary();
+    };
+  }
+  if (els.libraryContinueOpen) {
+    els.libraryContinueOpen.onclick = () => {
+      if (S.continueId) openDetail(S.continueId);
+    };
+  }
+}
+
+function syncFilterButtons(container, attr, active) {
+  if (!container) return;
+  container.querySelectorAll(`[data-${attr}]`).forEach((button) => {
+    button.classList.toggle('active', button.dataset[attr] === active);
+  });
+}
+
+function modePassesFilter(mode, filter) {
+  if (filter === 'installed') return isInstalled(mode);
+  if (filter === 'development') return mode.status === 'development';
+  if (filter === 'crowdfunding') return mode.status === 'crowdfunding';
+  return true;
+}
+
+function modeUpdatedAt(mode) {
+  const latest = latestUpdateEntry(mode);
+  return String((latest && latest.date) || modeReleaseDate(mode) || '');
+}
+
+function sortCatalog(list, sort) {
+  if (sort === 'title') return sortByTitle(list);
+  if (sort === 'updated') {
+    return [...list].sort((a, b) => modeUpdatedAt(b).localeCompare(modeUpdatedAt(a)));
+  }
+  return sortModes(list);
+}
+
+function updateDashboardStats() {
+  if (els.storeStatTotal) els.storeStatTotal.textContent = String(S.modes.length);
+  if (els.storeStatInstalled) els.storeStatInstalled.textContent = String(S.modes.filter((mode) => isInstalled(mode)).length);
+  if (els.storeStatUpdates) els.storeStatUpdates.textContent = String(S.modes.filter((mode) => isUpdate(mode)).length);
+  if (els.libraryStatTotal) els.libraryStatTotal.textContent = String(S.modes.filter((mode) => inLibrary(mode)).length);
+  if (els.libraryStatInstalled) els.libraryStatInstalled.textContent = String(S.modes.filter((mode) => inLibrary(mode) && isInstalled(mode)).length);
+}
+
+
 function bindStore() {
   els.featuredOpen.onclick = () => {
     if (S.featuredId) openDetail(S.featuredId);
@@ -358,7 +445,9 @@ function showSection(section) {
   els.detailView.hidden = true;
   updateSidebar();
   if (S.section === 'library') renderLibrary(); else renderStore();
-  $('app').scrollTop = 0;
+  requestAnimationFrame(() => {
+    $('app').scrollTop = 0;
+  });
 }
 
 function updateSidebar() {
@@ -555,17 +644,19 @@ function renderStore() {
     return;
   }
   els.loadingState.hidden = true;
+  updateDashboardStats();
+  syncFilterButtons(els.storeFilters, 'store-filter', S.storeFilter);
 
   if (searchActive) {
     els.featured.hidden = true;
-    const result = sortModes(filterModes());
+    const result = sortCatalog(filterModes().filter((mode) => modePassesFilter(mode, S.storeFilter)), S.storeSort);
     els.catalogTitle.textContent = 'Результаты поиска';
     els.modesCount.textContent = String(result.length);
     renderModeGrid(els.modesGrid, result);
     setEmpty(
       result.length === 0,
       'Ничего не найдено',
-      'Попробуй изменить запрос или обновить список режимов'
+      'Попробуй изменить запрос или выбрать другой фильтр'
     );
     return;
   }
@@ -574,34 +665,70 @@ function renderStore() {
   S.featuredId = featured ? featured.id : null;
   renderFeatured(featured);
 
-  const list = sortModes(S.modes);
-  els.catalogTitle.textContent = 'Все режимы';
+  const list = sortCatalog(
+    S.modes.filter((mode) => modePassesFilter(mode, S.storeFilter)),
+    S.storeSort
+  );
+  const titles = {
+    all: 'Все режимы',
+    installed: 'Установленные',
+    development: 'В разработке',
+    crowdfunding: 'Сбор на релиз'
+  };
+  els.catalogTitle.textContent = titles[S.storeFilter] || 'Все режимы';
   els.modesCount.textContent = String(list.length);
   renderModeGrid(els.modesGrid, list);
   setEmpty(
     list.length === 0,
-    'Режимов пока нет',
-    'Список появится, когда в репозитории будет modes.json'
+    'Здесь пока пусто',
+    'Попробуй другой фильтр или обнови каталог'
   );
   updateSidebarCounts();
 }
 
 function renderLibrary() {
   if (!els.libraryView) return;
-  const list = sortModes(
-    S.modes.filter((mode) => inLibrary(mode) && matchesSearch(mode))
+  updateDashboardStats();
+  syncFilterButtons(els.libraryFilters, 'library-filter', S.libraryFilter);
+  const list = sortCatalog(
+    S.modes.filter((mode) => inLibrary(mode) && matchesSearch(mode) && modePassesFilter(mode, S.libraryFilter)),
+    S.librarySort
   );
   els.libraryCount.textContent = String(list.length);
   renderModeGrid(els.libraryGrid, list, true);
+  renderLibraryContinue();
   const showEmpty = list.length === 0;
   els.libraryEmpty.hidden = !showEmpty;
   if (showEmpty) {
     els.libraryEmptyTitle.textContent = S.search ? 'Ничего не найдено' : 'Библиотека пуста';
     els.libraryEmptySub.textContent = S.search
-      ? 'Попробуй изменить запрос'
-      : 'Добавь режим в библиотеку из магазина, и он появится здесь';
+      ? 'Попробуй изменить запрос или выбрать другой фильтр'
+      : 'Добавь режим в библиотеку, чтобы он появился здесь';
   }
   updateSidebarCounts();
+}
+
+function renderLibraryContinue() {
+  if (!els.libraryContinue) return;
+  const installed = S.modes
+    .filter((mode) => inLibrary(mode) && isInstalled(mode) && matchesSearch(mode))
+    .sort((a, b) => {
+      const aTime = Number((S.state[a.id] && S.state[a.id].installedAt) || 0);
+      const bTime = Number((S.state[b.id] && S.state[b.id].installedAt) || 0);
+      return bTime - aTime;
+    });
+  const mode = installed[0];
+  if (!mode || S.search) {
+    els.libraryContinue.hidden = true;
+    S.continueId = null;
+    return;
+  }
+  S.continueId = mode.id;
+  els.libraryContinue.hidden = false;
+  els.libraryContinueImg.src = imageSrc(mode);
+  wireImage(els.libraryContinueImg, mode);
+  els.libraryContinueTitle.textContent = mode.title || 'Режим';
+  els.libraryContinueSub.textContent = `${modeSub(mode)} · ${mode.size || '—'}`;
 }
 
 function renderFeatured(mode) {

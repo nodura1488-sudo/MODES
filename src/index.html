@@ -162,6 +162,19 @@
 
     <main id="app">
     <section id="store-view">
+      <div class="store-dashboard">
+        <div class="dashboard-copy">
+          <div class="eyebrow">TMLauncher</div>
+          <h1>Магазин режимов</h1>
+          <p>Выбирай сборки, ставь одной кнопкой и следи за обновлениями.</p>
+        </div>
+        <div class="dashboard-stats">
+          <div class="dash-stat"><span>Режимов</span><b id="store-stat-total">0</b></div>
+          <div class="dash-stat"><span>Установлено</span><b id="store-stat-installed">0</b></div>
+          <div class="dash-stat"><span>Обновлений</span><b id="store-stat-updates">0</b></div>
+        </div>
+      </div>
+
       <section id="featured" class="featured">
         <img id="featured-img" alt="">
         <div class="featured-shade"></div>
@@ -178,9 +191,21 @@
       </section>
 
       <section id="catalog-section" class="shelf">
-        <div class="shelf-head">
-          <h2 id="catalog-title">Все режимы</h2>
-          <span class="count" id="modes-count"></span>
+        <div class="shelf-head catalog-head">
+          <div class="shelf-title"><h2 id="catalog-title">Все режимы</h2><span class="count" id="modes-count"></span></div>
+          <div class="catalog-controls">
+            <div class="filter-chips" id="store-filters">
+              <button type="button" data-store-filter="all" class="active">Все</button>
+              <button type="button" data-store-filter="installed">Установленные</button>
+              <button type="button" data-store-filter="development">В разработке</button>
+              <button type="button" data-store-filter="crowdfunding">Сбор на релиз</button>
+            </div>
+            <select id="store-sort" class="sort-select">
+              <option value="default">По умолчанию</option>
+              <option value="title">По названию</option>
+              <option value="updated">По обновлению</option>
+            </select>
+          </div>
         </div>
         <div id="modes-grid" class="grid"></div>
         <div class="empty" id="empty-state" hidden>
@@ -202,9 +227,44 @@
     </section>
 
     <section id="library-view" hidden>
-      <div class="shelf-head">
-        <h2>Библиотека</h2>
-        <span class="count" id="library-count"></span>
+      <div class="library-head">
+        <div class="dashboard-copy">
+          <div class="eyebrow">TMLauncher</div>
+          <h1>Библиотека</h1>
+          <p>Твои режимы и сборки. Всё, что установлено, всегда под рукой.</p>
+        </div>
+        <div class="dashboard-stats">
+          <div class="dash-stat"><span>В библиотеке</span><b id="library-stat-total">0</b></div>
+          <div class="dash-stat"><span>Установлено</span><b id="library-stat-installed">0</b></div>
+        </div>
+      </div>
+
+      <section class="library-continue" id="library-continue" hidden>
+        <img id="library-continue-img" alt="">
+        <div class="library-continue-shade"></div>
+        <div class="library-continue-content">
+          <span class="spotlight-label">Продолжить</span>
+          <b id="library-continue-title">—</b>
+          <span id="library-continue-sub"></span>
+          <button class="btn btn-primary" id="library-continue-open" type="button">Открыть</button>
+        </div>
+      </section>
+
+      <div class="shelf-head catalog-head">
+        <div class="shelf-title"><h2>Все режимы</h2><span class="count" id="library-count"></span></div>
+        <div class="catalog-controls">
+          <div class="filter-chips" id="library-filters">
+            <button type="button" data-library-filter="all" class="active">Все</button>
+            <button type="button" data-library-filter="installed">Установленные</button>
+            <button type="button" data-library-filter="development">В разработке</button>
+            <button type="button" data-library-filter="crowdfunding">Сбор на релиз</button>
+          </div>
+          <select id="library-sort" class="sort-select">
+            <option value="default">По умолчанию</option>
+            <option value="title">По названию</option>
+            <option value="updated">По обновлению</option>
+          </select>
+        </div>
       </div>
       <div id="library-grid" class="grid"></div>
       <div class="empty" id="library-empty" hidden>
