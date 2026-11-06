@@ -1161,6 +1161,32 @@ body::before {
   50% { opacity: 0.45; transform: scale(0.78); }
 }
 
+.card-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  height: 5px;
+  overflow: hidden;
+  background: rgba(4, 4, 4, 0.75);
+}
+.card-progress[hidden] { display: none; }
+.card-progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #ff3b2f, #ffb056, #ff3b2f);
+  background-size: 200% 100%;
+  box-shadow: 0 0 14px rgba(255, 84, 22, 0.8);
+  transition: width 0.2s ease;
+  animation: cardProgressFlow 1.6s linear infinite;
+}
+@keyframes cardProgressFlow {
+  from { background-position: 0 0; }
+  to { background-position: 200% 0; }
+}
+
 .card-context {
   position: fixed;
   z-index: 400;

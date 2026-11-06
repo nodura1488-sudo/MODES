@@ -755,6 +755,20 @@ function renderModeGrid(container, list, withMenu = false, playMode = false) {
     const card = img.closest('.mode-card');
     wireImage(img, card ? modeById(card.dataset.id) : null);
   });
+  updateCardProgress();
+}
+
+function updateCardProgress() {
+  document.querySelectorAll('[data-card-progress]').forEach((bar) => {
+    const card = bar.closest('.mode-card');
+    const active = !!(S.busy && card && S.busy.modeId === card.dataset.id);
+    bar.hidden = !active;
+    if (!active) return;
+    const percent = Math.max(0, Math.min(100, Math.round((Number(S.progress) || 0) * 100)));
+    bar.setAttribute('aria-valuenow', String(percent));
+    const fill = bar.querySelector('span');
+    if (fill) fill.style.width = `${percent}%`;
+  });
 }
 
 function closeCardMenus() {
@@ -887,6 +901,7 @@ function modeCardHtml(mode, withMenu = false, playMode = false) {
         <img src="${escapeHtml(imageSrc(mode))}" alt="" loading="lazy" data-fallback>
         ${playMode ? `<button class="card-play state-${stateMeta.cls}" data-card-action="${stateMeta.action}" type="button" aria-label="${escapeHtml(stateMeta.action === 'stop' ? 'Закрыть игру' : stateMeta.label)}: ${escapeHtml(mode.title || 'режим')}">${cardPlayIcon(stateMeta.icon)}</button>` : ''}
         <div class="card-badge ${st.cls}">${st.text}</div>
+        ${playMode ? `<div class="card-progress" data-card-progress role="progressbar" aria-label="Прогресс" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><span></span></div>` : ''}
         ${withMenu ? `<button class="card-menu-btn" type="button" title="Действия" aria-label="Действия">⋯</button>` : ''}
       </div>
       <div class="card-body">
@@ -1107,6 +1122,7 @@ function bindDetail() {
 
     S.busy = { modeId: mode.id, action };
     S.progress = 0;
+    updateCardProgress();
     S.status = action === 'play' ? 'Подготовка к запуску…' : 'Загрузка файлов…';
     updateDetailAction();
 
@@ -1165,6 +1181,7 @@ async function startMode(mode, autoPlay = false) {
   S.status = action === 'play' ? 'Запускаю Minecraft…' : 'Устанавливаю режим…';
   if (S.view === 'detail') updateDetailAction();
   S.pendingPlay = action !== 'play' && autoPlay ? mode.id : null;
+  updateCardProgress();
   toast(action === 'play' ? 'Запускаю режим…' : 'Устанавливаю режим…', 'info');
 
   let res;
@@ -1176,6 +1193,7 @@ async function startMode(mode, autoPlay = false) {
   if (!res || !res.ok) {
     S.busy = null;
     S.pendingPlay = null;
+    updateCardProgress();
     S.status = 'Ошибка';
     if (S.view === 'detail') updateDetailAction();
     toast((res && res.error) || 'Не удалось выполнить действие', 'error');
@@ -1494,6 +1512,7 @@ function onGameEvent(ev) {
         : 0;
       S.progress = Math.max(0, Math.min(1, p));
       S.status = `Загрузка: ${Math.round(S.progress * 100)}%`;
+      updateCardProgress();
       if (isCurrent) updateDetailAction();
       break;
     }
