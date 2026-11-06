@@ -462,6 +462,41 @@ body::after {
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
+.card-status-row { margin-top: 7px; }
+.mode-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.mode-status.development {
+  color: #ffc06a;
+  border: 1px solid rgba(255, 154, 61, 0.45);
+  background: rgba(255, 154, 61, 0.1);
+}
+.mode-status.crowdfunding {
+  color: #ff9c86;
+  border: 1px solid rgba(229, 50, 43, 0.5);
+  background: rgba(229, 50, 43, 0.14);
+  box-shadow: 0 0 14px rgba(229, 50, 43, 0.12);
+}
+.tags .mode-status {
+  border-radius: 4px;
+  background: rgba(255, 154, 61, 0.1);
+  border: 1px solid rgba(255, 154, 61, 0.45);
+  color: #ffc06a;
+  font-size: 8.5px;
+}
+.tags .mode-status.crowdfunding {
+  background: rgba(229, 50, 43, 0.14);
+  border-color: rgba(229, 50, 43, 0.5);
+  color: #ff9c86;
+}
 .card-desc { color: #a79e96; font-size: 12px; }
 .card-size {
   color: #8b817a;
@@ -716,6 +751,7 @@ body::after {
   background: #ff5a2c;
   box-shadow: 0 0 12px rgba(229, 50, 43, 0.6);
 }
+.detail-content #more-section { margin-top: 36px; }
 .changelog-toggle {
   color: #ff8a5c;
   border-color: rgba(229, 50, 43, 0.3);

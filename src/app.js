@@ -31,6 +31,15 @@ const UPDATE_TAGS = {
   tech: { label: 'Техническое', cls: 'tech' }
 };
 
+const MODE_STATUS = {
+  development: { label: 'В разработке', cls: 'development' },
+  crowdfunding: { label: 'Краудфандинг', cls: 'crowdfunding' }
+};
+
+function modeStatusMeta(mode) {
+  return MODE_STATUS[String((mode && mode.status) || '')] || null;
+}
+
 const ART_CACHE = new Map();
 const DEFAULT_ACCENT = '#e5322b';
 const SPLASH_START = performance.now();
@@ -693,6 +702,7 @@ function modeCardHtml(mode, withMenu = false) {
   const st = cardStatus(mode);
   const installed = isInstalled(mode);
   const released = modeReleaseDate(mode);
+  const status = modeStatusMeta(mode);
   const tags = modeTags(mode, 3)
     .map((t) => `<span>${escapeHtml(t)}</span>`)
     .join('');
@@ -712,6 +722,7 @@ function modeCardHtml(mode, withMenu = false) {
       <div class="card-body">
         <div class="card-title">${escapeHtml(mode.title || 'Без названия')}</div>
         <div class="card-sub">${escapeHtml(cardSub(mode))}</div>
+        ${status ? `<div class="card-status-row"><span class="mode-status ${status.cls}">${status.label}</span></div>` : ''}
         ${released ? `<div class="card-release">Вышла ${escapeHtml(formatUpdateDate(released))}</div>` : ''}
         <div class="card-desc">${escapeHtml(modeShortDescription(mode))}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ''}
@@ -1110,6 +1121,10 @@ function renderDetail() {
     .filter(Boolean)
     .map((t) => `<span>${escapeHtml(t)}</span>`)
     .join('');
+  const modeStatus = modeStatusMeta(mode);
+  if (modeStatus) {
+    els.detailTags.insertAdjacentHTML('afterbegin', `<span class="mode-status ${modeStatus.cls}">${modeStatus.label}</span>`);
+  }
 
   const latest = latestUpdateEntry(mode);
   const updated = latest && latest.date ? formatUpdateDate(latest.date) : '-';
