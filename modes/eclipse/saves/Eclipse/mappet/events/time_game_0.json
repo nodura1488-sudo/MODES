@@ -1,0 +1,41 @@
+{
+    "Main": "178799eb-a23a-44bf-b48c-9dc5b91d5d72",
+    "Nodes": [
+        {
+            "Type": "command",
+            "Command": "/effect @a[team=crew] minecraft:instant_damage 1 0",
+            "X": 70,
+            "Title": "",
+            "Y": 88,
+            "Id": "3c29bfad-bba7-4480-a135-07c8a37fd470"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 2,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "time_game",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 66,
+            "Title": "time_game == 0",
+            "Y": -58,
+            "Relations": [
+                "3c29bfad-bba7-4480-a135-07c8a37fd470"
+            ],
+            "Id": "178799eb-a23a-44bf-b48c-9dc5b91d5d72"
+        }
+    ]
+}

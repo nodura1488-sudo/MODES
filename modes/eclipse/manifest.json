@@ -1,0 +1,711 @@
+{
+  "mode": "eclipse",
+  "version": "1.0.0",
+  "generatedAt": "2026-11-06T12:23:06.961Z",
+  "files": {
+    "ModularWarfare/mod_config.json": {
+      "sha256": "2fe36b599fbcd1c30f5bf874a44d781717fdcf9e5f53c7e5873fe89bd8a21ea0",
+      "size": 936
+    },
+    "ModularWarfare/operation-contentpack.zip": {
+      "sha256": "13de8cbe77f1533a68b7eab1e974cdc4ad6941785599a6e07810e0782567a01d",
+      "size": 3074629
+    },
+    "config/chameleon/models/AlienLay/AlienSit.geo.json": {
+      "sha256": "740015d617171e4ba4064c5b75d5ff93fb1f2cb4de8120b25c4aa6597afca5dd",
+      "size": 59152
+    },
+    "config/chameleon/models/AlienLay/animations/AlienLay.animation.json": {
+      "sha256": "398bb28f2fafcf8678c9230e1c4c64f8f09eb559d73dd51bb5ce24f501e75bc7",
+      "size": 9898
+    },
+    "config/chameleon/models/AlienLay/skins/texture.png": {
+      "sha256": "af52c61d03889fb2ffb5abd378f18d94781472a39aa25183f16685f09b485b9f",
+      "size": 4416
+    },
+    "config/chameleon/models/AlienStand/AlienStand.geo.json": {
+      "sha256": "740015d617171e4ba4064c5b75d5ff93fb1f2cb4de8120b25c4aa6597afca5dd",
+      "size": 59152
+    },
+    "config/chameleon/models/AlienStand/animations/AlienStand.animation.json": {
+      "sha256": "d48af7bd9a7a1c98488d491ef032100b8c404a50e6d35d3900ef454b39082dcf",
+      "size": 18504
+    },
+    "config/chameleon/models/AlienStand/skins/texture.png": {
+      "sha256": "af52c61d03889fb2ffb5abd378f18d94781472a39aa25183f16685f09b485b9f",
+      "size": 4416
+    },
+    "config/voicechat/voicechat-client.properties": {
+      "sha256": "fcb6466f08f55b311edb6a5afbbac07a8293d70b8a92ea43073d717898833b3f",
+      "size": 4861
+    },
+    "config/voicechat/voicechat-server.properties": {
+      "sha256": "c0b0e48e6299b43258b3379d37e935b03bd11e46a25bc4864ac2a1f52a43facf",
+      "size": 2442
+    },
+    "mods/BlockBuster.jar": {
+      "sha256": "2c30454dfe4d93748a363646f1dff79a8e420a68e384b91c1c0d73ae39a0b967",
+      "size": 1870123
+    },
+    "mods/CSL.jar": {
+      "sha256": "a15d45d40324f46c2b502754088f21d8d3ba23db29d03d2bb7b9deaa98790148",
+      "size": 177301
+    },
+    "mods/CTMMC.jar": {
+      "sha256": "433f441dc9c0aa75a4168df832900720ddadac1f22cc3bba4e4f25ca789b268b",
+      "size": 199045
+    },
+    "mods/Chameleon.jar": {
+      "sha256": "d4365e084bb15bab6c63c49431e4ec8ad19fab546b8763fdde7c7d1f2cffb74e",
+      "size": 119164
+    },
+    "mods/ChiselMC.jar": {
+      "sha256": "64c62f20a89939db2c03d47737c7bd371d8bd8c10ae42e2e8c63432ae89db2c7",
+      "size": 4755282
+    },
+    "mods/Corpse.jar": {
+      "sha256": "d3993121fb8a11cd50b20b18bd259e9b5b11ffd57e2559415ab06ceb6751958e",
+      "size": 67966
+    },
+    "mods/CreativeCore.jar": {
+      "sha256": "423220081e5d66eab253a966814e49e4fe9c16a1f051cb1e2213bee9109707a3",
+      "size": 1320474
+    },
+    "mods/EclipseMOD.jar": {
+      "sha256": "088830d28a5e05bd3a036d5d05111cc5fd1286348162a366b885998368c43795",
+      "size": 5795930
+    },
+    "mods/FlatColoredBlocks.jar": {
+      "sha256": "4e1f658082cbdce9f16fcb6ca089bfcb8acd3bdd28abf9db40ad1e630609613b",
+      "size": 136082
+    },
+    "mods/LittleTiles.jar": {
+      "sha256": "ec1000aa08db37f1144228f5b1a2a1b9b47247dbd7dfa6c0554da6bd3f0f1158",
+      "size": 1941449
+    },
+    "mods/Mappet.jar": {
+      "sha256": "0d23229b73cc771dc97223f315e743b868f2f8a72aff88efe93dd922b1c0bd0e",
+      "size": 1259480
+    },
+    "mods/McLib.jar": {
+      "sha256": "5a16d922ae3eadcaaa38e1eab5856bdec490f616076e0dce7077e8978ae4812e",
+      "size": 737227
+    },
+    "mods/MetaMorph.jar": {
+      "sha256": "5196c0fba76ed301ad0727978190420ff1a43848309982ab674631bc572e5a0d",
+      "size": 402341
+    },
+    "mods/ModularWarfare.jar": {
+      "sha256": "349de1f3c188b7b4c37d007e112f3a8968863d5c85089d84b93b0b8a584d8989",
+      "size": 24589099
+    },
+    "mods/Nashorn.jar": {
+      "sha256": "fbabd4851b52f2aa3cbb6baec541544b94763fe13eccfc3ca16cfdd3eda54f3b",
+      "size": 2022531
+    },
+    "mods/SoundFilters.jar": {
+      "sha256": "6d9981db6aa738d025c732ff6457184abfa29d29b0035ee61069c56000e4a977",
+      "size": 43194
+    },
+    "mods/voicechat-forge-1.12.2-2.6.10.jar": {
+      "sha256": "9c5efe5d85025ca250099e0da45c52d66121fd44c3ce681ec9067249f4c1dc83",
+      "size": 5844532
+    },
+    "resourcepacks/RP_TommyV2.zip": {
+      "sha256": "a43c8814411e0c555f444d9f495db8dd1da78e110ef81bebe0f14cdaa269d264",
+      "size": 5966373
+    },
+    "saves/Eclipse/data/scoreboard.dat": {
+      "sha256": "e3abb384f14fcefb9391200c5e48504f4d7cbf78ef0f0c869174a465fa3a557e",
+      "size": 2849
+    },
+    "saves/Eclipse/icon.png": {
+      "sha256": "5f709ea4c9a598d39ed2166d738e305ddbae4583a97c4449c70175af7cf5695f",
+      "size": 4435
+    },
+    "saves/Eclipse/level.dat": {
+      "sha256": "d767a949d9472c9e9995b6e2c88aace15665cce5d12cc164bb35e185dd0a7e98",
+      "size": 30028
+    },
+    "saves/Eclipse/mappet/events/death.json": {
+      "sha256": "e28a92a0d4e92f68b0089ba4de6f9f937a4a013b984ea07aba45682103c9b99c",
+      "size": 7065
+    },
+    "saves/Eclipse/mappet/events/gamemode3.json": {
+      "sha256": "420691f5db8fcf8631ab2ab8f618083f1cba48b92cf6b993c0d17393824f1d3e",
+      "size": 589
+    },
+    "saves/Eclipse/mappet/events/gameover.json": {
+      "sha256": "f7f759f20c9839d4bca97c3c95ddee443a29af4645b60d81342fcaf433145601",
+      "size": 9380
+    },
+    "saves/Eclipse/mappet/events/gettasks.json": {
+      "sha256": "7407e942b6ecc4ea23d120f502d88de8b1a4163379650b0765441cf58c8c8b12",
+      "size": 3193
+    },
+    "saves/Eclipse/mappet/events/lay_alien.json": {
+      "sha256": "ce686c0c1ea2f2c59c7dd28a752b783aa7b1f36d26997278fec839822a7acc5d",
+      "size": 1536
+    },
+    "saves/Eclipse/mappet/events/lift_1_to_2.json": {
+      "sha256": "7ceacc916ff73c39efc428dab42d7b550f80bafb807e377e0b3298281df25dd3",
+      "size": 5644
+    },
+    "saves/Eclipse/mappet/events/lift_2_to_1.json": {
+      "sha256": "35ed659ab14b8f94d0a222b471ef6ef26505e774406d970494a0e057f1ab7647",
+      "size": 5449
+    },
+    "saves/Eclipse/mappet/events/lift_2_to_3.json": {
+      "sha256": "d381b3796ba1778a198aec0237295ed2910b46620b08ed2f04cd76ea80166057",
+      "size": 5217
+    },
+    "saves/Eclipse/mappet/events/lift_3_to_2.json": {
+      "sha256": "3ab0cd6028fa6f2270081cc77f210f74f112b684665eb2a72b72ae6e6e4fe74d",
+      "size": 5418
+    },
+    "saves/Eclipse/mappet/events/rand_distant.json": {
+      "sha256": "8d235fd547954853b5d6879a53b926af7e47df99f9877014aa8a5bd24942d25d",
+      "size": 3587
+    },
+    "saves/Eclipse/mappet/events/rand_pcalien.json": {
+      "sha256": "538eea401ed2db20c8884cf55939e8b9593038e0d2128bb36561d8b7ae06ea8d",
+      "size": 2043
+    },
+    "saves/Eclipse/mappet/events/rand_shitok.json": {
+      "sha256": "5cfd86560e5b29e443d223a0db38e479163efa985ddffa2ad91a657330c150d9",
+      "size": 3021
+    },
+    "saves/Eclipse/mappet/events/random1.json": {
+      "sha256": "946c0f2742ccd1b7d06406895790026e5e9cfb06b337d0356ea48bfd0841ccae",
+      "size": 20709
+    },
+    "saves/Eclipse/mappet/events/random2.json": {
+      "sha256": "ccdecc134134470f6b044622cfa0ee90d909ab2f6ee5cd5def11f58b9c369a27",
+      "size": 20686
+    },
+    "saves/Eclipse/mappet/events/random3.json": {
+      "sha256": "2884b4683248bb77cf75625ed49cc7ecc79a1002a90627b964d1ea9de3059883",
+      "size": 20672
+    },
+    "saves/Eclipse/mappet/events/random_loot.json": {
+      "sha256": "227477c5e9bab380ccd28a898da84fa66d481b794a5c01e65518d29c8fca5a41",
+      "size": 63979
+    },
+    "saves/Eclipse/mappet/events/random_tp_msr.json": {
+      "sha256": "675a916b49e0d56ebce041efc53a2b01d32c0a8174cab510ca5f8c10d3a807c6",
+      "size": 5554
+    },
+    "saves/Eclipse/mappet/events/random_tp_msr1.json": {
+      "sha256": "9f87752c78c6db2bc9da63a7d15a1a0619c8e5ac2d4b8893297902984615850a",
+      "size": 934
+    },
+    "saves/Eclipse/mappet/events/random_tp_msr2.json": {
+      "sha256": "a9411d2dddcb023cde025cfe9fbbfad1f3df3b78e0dc0619d924b861b6a14d6f",
+      "size": 935
+    },
+    "saves/Eclipse/mappet/events/respawn.json": {
+      "sha256": "bf52bb269b598f62ee00b801940d660b6e3edeec90b7d59fa4f3d60ac2505e2b",
+      "size": 7920
+    },
+    "saves/Eclipse/mappet/events/sabotage.json": {
+      "sha256": "00602e100f40c2d941acc8e45182fcbf730cb3ef1d6e09509301016ca35ce21d",
+      "size": 1239
+    },
+    "saves/Eclipse/mappet/events/sposob.json": {
+      "sha256": "7ade7247a732a56678ac0960ae652287daf0d448b524d81b69916388d6d58e2c",
+      "size": 4387
+    },
+    "saves/Eclipse/mappet/events/start.json": {
+      "sha256": "187fc9563a60c16649a52110b2eddbbf1b7ba3a1e34da018533a7d11a6ed5f89",
+      "size": 33867
+    },
+    "saves/Eclipse/mappet/events/testforalive.json": {
+      "sha256": "50a2af22f6283fda3c4d637364bf659feeb6c7291a172cb2216b0d63ae32fd50",
+      "size": 12720
+    },
+    "saves/Eclipse/mappet/events/time_game.json": {
+      "sha256": "a5f0982cac5ffd715c1039d1b36482b3f786907d932cc3117ff140d1b70e3f5c",
+      "size": 17162
+    },
+    "saves/Eclipse/mappet/events/time_game_0.json": {
+      "sha256": "cc9bb0dc1b5b8f0b5a111618f0028f0cf926a94b98db1a80d9af1438ef6b1af5",
+      "size": 1229
+    },
+    "saves/Eclipse/mappet/events/time_kd.json": {
+      "sha256": "fc705cd9c854a46359327294f7cf5d44e46aa3915b7dc15daf9329ae4f9d8f65",
+      "size": 5497
+    },
+    "saves/Eclipse/mappet/events/time_live.json": {
+      "sha256": "bad38285652a65eb74402a9497147c248f4c83851c436b3c4bd39fa665fd2f51",
+      "size": 3346
+    },
+    "saves/Eclipse/mappet/events/time_sabotage.json": {
+      "sha256": "a3393f6d1c60c806cd905e0c92721654da04c43ecb6d42d650f8e3dfea118a18",
+      "size": 4861
+    },
+    "saves/Eclipse/mappet/events/time_vorota.json": {
+      "sha256": "e5a559004571520c6e4fd55a574cbf26b7f08941cbac2e8ad0bea7728ca6afe3",
+      "size": 10232
+    },
+    "saves/Eclipse/mappet/huds/attack.json": {
+      "sha256": "06c086ada4126c54ed6aff60d70d5e8620489984c3acbdf5155f428e373eb324",
+      "size": 567
+    },
+    "saves/Eclipse/mappet/huds/defend.json": {
+      "sha256": "90383ab5c039d9ced9f0119d431a7d8ffd3775c7e960c12eca0a583fd088f9a3",
+      "size": 573
+    },
+    "saves/Eclipse/mappet/huds/sposobon.json": {
+      "sha256": "2eafa5a7ad68f3c2677e2977ab2e266c50c055b76453bf78c20e4a2cc4f2d1d2",
+      "size": 610
+    },
+    "saves/Eclipse/mappet/huds/start.json": {
+      "sha256": "bd5cb90134a136fba044e0e4d8a148c95c2a2956e5d521cd2dc43e4c515c4339",
+      "size": 633
+    },
+    "saves/Eclipse/mappet/huds/transition.json": {
+      "sha256": "c33d7c5983ed570528c9279e180a53e0ac64a4f8d0bdaa1d63e9bfabeb57dec6",
+      "size": 2676
+    },
+    "saves/Eclipse/mappet/scripts/guipassword.js": {
+      "sha256": "a52c8bfd076faf6602bb03fda22da09b03089953876e00394119efbad0256e21",
+      "size": 2742
+    },
+    "saves/Eclipse/mappet/scripts/guipassword.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/kd.js": {
+      "sha256": "d852e06c3a01932fdb71c0420367b1687412a7253a1281b02818076f6950f009",
+      "size": 125
+    },
+    "saves/Eclipse/mappet/scripts/kd.json": {
+      "sha256": "ff15c2e64dc9ae2f9a16ebcc3cee08aa5b76d5fcfe3472178984abf426011055",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/lay_alien.js": {
+      "sha256": "d9611cddf299a68e76e507f533e226d05e2eb96c8f196d608b159851e718c133",
+      "size": 893
+    },
+    "saves/Eclipse/mappet/scripts/lay_alien.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/list1.js": {
+      "sha256": "c18745316221612cc8505fb2f5c82eaf68f6796bc2089852fa8e2ac8ac8bacc3",
+      "size": 500
+    },
+    "saves/Eclipse/mappet/scripts/list1.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/mute.js": {
+      "sha256": "fe6e4773a492873cace5acd856cefe9c4734e4f6122fbe5ae3d5d3a30e964fc1",
+      "size": 60
+    },
+    "saves/Eclipse/mappet/scripts/mute.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/rand_parol.js": {
+      "sha256": "a838cb680ede9a5ffd09c98a7f783938a9e2a4da426a593aad64eb5789754852",
+      "size": 2096
+    },
+    "saves/Eclipse/mappet/scripts/rand_parol.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/rand_shitok.js": {
+      "sha256": "76c93d7ecfe2999f521065440a21cdd9a5924aad7745a6452d9325abcdf7100a",
+      "size": 1120
+    },
+    "saves/Eclipse/mappet/scripts/rand_shitok.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/rand_tp_crew.js": {
+      "sha256": "e6b03f5b2be0cfaa849f2da0079402d82823e4287542310334b3e7588a03958a",
+      "size": 756
+    },
+    "saves/Eclipse/mappet/scripts/rand_tp_crew.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/random_safe.js": {
+      "sha256": "b62693bc798fbbcb5aaa8bb8ac940c7ce5ee403186cd94949f15b0f4cfdd4cbd",
+      "size": 2840
+    },
+    "saves/Eclipse/mappet/scripts/random_safe.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/sps.js": {
+      "sha256": "e0ce3c3e3090b74fd3441f07ec461591b053a5bdc1542d43a3c45c758a5edc2f",
+      "size": 2332
+    },
+    "saves/Eclipse/mappet/scripts/sps.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/unmute.js": {
+      "sha256": "fe6e4773a492873cace5acd856cefe9c4734e4f6122fbe5ae3d5d3a30e964fc1",
+      "size": 60
+    },
+    "saves/Eclipse/mappet/scripts/unmute.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/scripts/vote.js": {
+      "sha256": "c746d24014ec6334bf351f80385810453f0dea1a6db0f93e172a1ea0203d859d",
+      "size": 3122
+    },
+    "saves/Eclipse/mappet/scripts/vote.json": {
+      "sha256": "f910be70303e7936e4bbe0271526d0997bc7fe1145621f0f652cdb0294cac5f4",
+      "size": 46
+    },
+    "saves/Eclipse/mappet/settings.json": {
+      "sha256": "c694a46ef1f62b2a914df16f6608648d955ca6566a267b557b2150d9bc8ee639",
+      "size": 7493
+    },
+    "saves/Eclipse/mappet/states.json": {
+      "sha256": "333aecc9cc393787fdb6e3b6553248c739d0afa5442998552712fe3f26132e99",
+      "size": 464
+    },
+    "saves/Eclipse/region/r.-1.-1.mca": {
+      "sha256": "efc015a1579ba998376fb31df15f06cb58cbdaac595956dd1698576d119a356c",
+      "size": 4202496
+    },
+    "saves/Eclipse/region/r.-1.-2.mca": {
+      "sha256": "713057d948b1544d8b22d346736433c96dca0981ee1771c32dcc7858d5a328b8",
+      "size": 3153920
+    },
+    "saves/Eclipse/region/r.-1.-3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-1.-4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-1.0.mca": {
+      "sha256": "cf196686feb9da422739dcb0570bc3c0b6cbb1d853fca6a0b3a3dca4c3410d93",
+      "size": 5042176
+    },
+    "saves/Eclipse/region/r.-1.1.mca": {
+      "sha256": "c549ee722a3ef016d897e878a06f34516b566fa9bdf8289b1bec6f53d6a2032e",
+      "size": 4202496
+    },
+    "saves/Eclipse/region/r.-1.2.mca": {
+      "sha256": "83ae1dd87e08d22cb1f57e3f78fd08e1ac2a24c9e5d2a3f6377eaa00ca66c62d",
+      "size": 270336
+    },
+    "saves/Eclipse/region/r.-1.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-1.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-2.-1.mca": {
+      "sha256": "5ec6865f382c4dcc3bd5a67566f64b926636a7b1fd50ab0732a5717a500fe0e4",
+      "size": 3764224
+    },
+    "saves/Eclipse/region/r.-2.-2.mca": {
+      "sha256": "f0e5633869750eeb1aea7dc41ff494294258ab5d8e5836760b5b91417395b118",
+      "size": 2760704
+    },
+    "saves/Eclipse/region/r.-2.-3.mca": {
+      "sha256": "1f60a00bfd47c7b5af23cd3f81129991817483c1d2229c577d3928468e75bf8e",
+      "size": 188416
+    },
+    "saves/Eclipse/region/r.-2.-4.mca": {
+      "sha256": "572a32f0aceceb1e3cd67e50b0bea09795ef4fb28b3262222af058737d198ca5",
+      "size": 774144
+    },
+    "saves/Eclipse/region/r.-2.0.mca": {
+      "sha256": "bde70bd335c2db565f73d2e5d0b8db6d0653e4133ea1d603e9484751ba8fd1d8",
+      "size": 3862528
+    },
+    "saves/Eclipse/region/r.-2.1.mca": {
+      "sha256": "c9bca6ccfdac12a468161f2a27d99c5bc368e87797754599bcc25b4b58be5ca4",
+      "size": 3678208
+    },
+    "saves/Eclipse/region/r.-2.2.mca": {
+      "sha256": "35b79d18c41ef9ab66683c26f66c8022038dfb8e3944dbf32563f49ab3c52613",
+      "size": 237568
+    },
+    "saves/Eclipse/region/r.-2.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-2.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-3.-1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-3.-2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-3.-3.mca": {
+      "sha256": "03ad7f1e9bb034353cc8ee551f2995a7737acb54766846292e91cae5026735eb",
+      "size": 172032
+    },
+    "saves/Eclipse/region/r.-3.-4.mca": {
+      "sha256": "032f2792ded1ddfb2d37b40f36eb86e36d78cc309e54f76c614ae1ff3699cac9",
+      "size": 704512
+    },
+    "saves/Eclipse/region/r.-3.0.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-3.1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-3.2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-3.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-3.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.-1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.-2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.-3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.-4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.0.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-4.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.-1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.-2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.-3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.-4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.0.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.-5.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.0.-1.mca": {
+      "sha256": "7f76d96c595ab3d4f79d78700d6a3093579f32e9a143fb7ff8255aaaed609c92",
+      "size": 4202496
+    },
+    "saves/Eclipse/region/r.0.-2.mca": {
+      "sha256": "bd576d636c8f0857542cd19b1976ec5c75db1b89e34d0661ce26a2b4f748e95b",
+      "size": 3153920
+    },
+    "saves/Eclipse/region/r.0.-3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.0.-4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.0.0.mca": {
+      "sha256": "199133821498712e7359da85e4e84a2a60939b191f8c4be8da63069e53de387b",
+      "size": 4861952
+    },
+    "saves/Eclipse/region/r.0.1.mca": {
+      "sha256": "aedc9acdce3b8b917359128367b04a654d6fbb2564a2493b509bd8d7bf72cb84",
+      "size": 4202496
+    },
+    "saves/Eclipse/region/r.0.2.mca": {
+      "sha256": "e918ec84ae45c28a3dda575fd97496fecd1a0b5829badd638083cbe4c47830a9",
+      "size": 270336
+    },
+    "saves/Eclipse/region/r.0.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.0.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.1.-1.mca": {
+      "sha256": "733857414324320a0708fa5277c0dd25375fcfe8f0ad3d028b3c376200279f0d",
+      "size": 4071424
+    },
+    "saves/Eclipse/region/r.1.-2.mca": {
+      "sha256": "ff108f166e68582d8e8b0e556c9af415aaabfb87eaa23607894f99d16e03fedb",
+      "size": 3055616
+    },
+    "saves/Eclipse/region/r.1.-3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.1.-4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.1.0.mca": {
+      "sha256": "1d35e27a079e8a7391d0d2376e7d81be472aa004c4d2cca806b72d7df37175fb",
+      "size": 4071424
+    },
+    "saves/Eclipse/region/r.1.1.mca": {
+      "sha256": "1b436a6243916df8d0aa9b6dfe00eac4d93f0ad7d878fb0f5abab7bfb7d6d443",
+      "size": 4124672
+    },
+    "saves/Eclipse/region/r.1.2.mca": {
+      "sha256": "4026f1db062f904c976d4505ee16bc3e8e1c8d11b4e7197f94cda80890926f7e",
+      "size": 643072
+    },
+    "saves/Eclipse/region/r.1.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.1.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.19.4.mca": {
+      "sha256": "a3694ef05d8df8e5837a58986287548aef09e1850413f12232179ee40bc5bf65",
+      "size": 1814528
+    },
+    "saves/Eclipse/region/r.2.-1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.2.-2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.2.-3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.2.-4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.2.0.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.2.1.mca": {
+      "sha256": "28fd37a982f398b9cd74c169076010864d89383ee551bce6b8a2d310b6f9a015",
+      "size": 487424
+    },
+    "saves/Eclipse/region/r.2.2.mca": {
+      "sha256": "adcfb9747c96a894360276bff72c1a1d49ccf8080602c943368355c002acd2ca",
+      "size": 339968
+    },
+    "saves/Eclipse/region/r.2.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.2.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.-1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.-2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.-3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.-4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.0.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.1.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.2.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.3.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "saves/Eclipse/region/r.3.4.mca": {
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "size": 8192
+    },
+    "shaderpacks/BSLOriginal_Eclipse_v8.3.zip": {
+      "sha256": "f5ac248def95f855071189a83ba4e534cdccd572fd1f9a78a6ef24b5556a2190",
+      "size": 1101915
+    },
+    "shaderpacks/BSLOriginal_Eclipse_v8.3.zip.txt": {
+      "sha256": "b6d506c8dd6ad86f7443051e607b953e269d26c1a01fead6dee3ed0fb7682755",
+      "size": 582
+    }
+  }
+}

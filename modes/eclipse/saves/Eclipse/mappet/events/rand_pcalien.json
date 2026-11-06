@@ -1,0 +1,70 @@
+{
+    "Main": "20bbfb4a-03d9-4c61-b44b-bcc3e7e8f187",
+    "Nodes": [
+        {
+            "Type": "command",
+            "Command": "/setblock 27 32 47 eclipsemod:pcsabotaj0 5",
+            "X": -142,
+            "Title": "1",
+            "Y": 226,
+            "Id": "cb5194fa-72d0-4cbb-87df-d91f78f16620"
+        },
+        {
+            "Type": "switch",
+            "Expression": "floor(random(0,2))",
+            "X": 8,
+            "Title": "",
+            "Y": 76,
+            "Relations": [
+                "cb5194fa-72d0-4cbb-87df-d91f78f16620",
+                "44b7356f-0fb5-4a7b-a237-7bf27f5601b2"
+            ],
+            "Id": "40cdacb8-2125-4435-b884-4c3d00ae7834"
+        },
+        {
+            "Type": "command",
+            "Command": "/setblock -18 49 82 eclipsemod:pcsabotaj0 5",
+            "X": 138,
+            "Title": "2",
+            "Y": 222,
+            "Id": "44b7356f-0fb5-4a7b-a237-7bf27f5601b2"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -18 49 82 air",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 27 32 47 air",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -2,
+            "CustomData": "",
+            "Title": "set_air",
+            "Y": -156,
+            "Relations": [
+                "ed9c73f4-40ae-49fa-b03f-e02339e6b6f9"
+            ],
+            "Id": "20bbfb4a-03d9-4c61-b44b-bcc3e7e8f187"
+        },
+        {
+            "Type": "timer",
+            "Timer": 3,
+            "X": 6,
+            "Title": "",
+            "Y": -60,
+            "Relations": [
+                "40cdacb8-2125-4435-b884-4c3d00ae7834"
+            ],
+            "Id": "ed9c73f4-40ae-49fa-b03f-e02339e6b6f9"
+        }
+    ]
+}

@@ -1,0 +1,526 @@
+{
+    "Main": "d2d74dd3-fd54-43fe-9d28-7d586f3de04d",
+    "Nodes": [
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 8 17 90 eclipsemod:fuseblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 2 18 95 eclipsemod:fuseblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -2 16 50 eclipsemod:fuseblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -18 31 26 eclipsemod:fuseblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 11 52 71 eclipsemod:fuseblock 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -27 49 69 eclipsemod:fuseblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 28 49 59 eclipsemod:fuseblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 19 19 105 eclipsemod:fuseblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 23 17 99 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -4 17 81 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -9 15 54 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -11 16 52 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -28 16 58 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -29 31 51 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -18 31 12 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -13 30 9 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 27 32 46 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 8 32 58 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -22 49 50 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 3 49 43 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -22 48 64 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 54 84 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 23 49 62 eclipsemod:moneyblock",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 101,
+            "CustomData": "",
+            "Title": "more",
+            "Y": 462,
+            "Id": "93aa59b2-3087-4af2-b4ae-df40bc7b2048"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 0 15 49 eclipsemod:scovorodablock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 12 16 34 eclipsemod:scovorodablock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -29 31 72 eclipsemod:scovorodablock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 5 32 42 eclipsemod:coldsteelblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 15 31 61 eclipsemod:coldsteelblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 10 18 73 eclipsemod:coldsteelblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 31 18 96 eclipsemod:coldsteelblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -10 31 69 eclipsemod:insrumentblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -2 15 55 eclipsemod:insrumentblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 19 15 40 eclipsemod:insrumentblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -13 49 63 eclipsemod:insrumentblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 43 16 41 eclipsemod:bitablock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 35 18 86 eclipsemod:bitablock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -9 50 63 eclipsemod:bitablock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 13 32 29 eclipsemod:bitablock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 0 50 41 eclipsemod:axegalaxyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -9 18 74 eclipsemod:axegalaxyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -9 18 95 eclipsemod:axegalaxyblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 18 19 38 eclipsemod:katanablock 3",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 82,
+            "CustomData": "",
+            "Title": "weapon",
+            "Y": 345,
+            "Relations": [
+                "93aa59b2-3087-4af2-b4ae-df40bc7b2048"
+            ],
+            "Id": "bf82593b-5875-46e8-a13c-942ea0db4e49"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -28 55 46 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -28 55 44 eclipsemod:healblock 5",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -10 32 25 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 54 83 eclipsemod:healblock 5",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 18 32 57 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -27 32 60 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 20 19 96 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 23 18 106 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 10 18 54 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -33 32 34 eclipsemod:healblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 31 10 eclipsemod:bintblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 8 33 24 eclipsemod:bintblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -14 16 54 eclipsemod:bintblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 19 16 37 eclipsemod:bintblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 23 18 107 eclipsemod:bintblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 27 18 96 eclipsemod:bintblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -12 17 57 eclipsemod:adrenalinblock 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 34 18 67 eclipsemod:adrenalinblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 15 32 62 eclipsemod:adrenalinblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 14 49 46 eclipsemod:adrenalinblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -32 48 44 air",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 79,
+            "CustomData": "",
+            "Title": "medkit",
+            "Y": 217,
+            "Relations": [
+                "bf82593b-5875-46e8-a13c-942ea0db4e49"
+            ],
+            "Id": "609945d1-abe3-4781-b404-ee3c0309a69c"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -18 49 83 eclipsemod:klychfiolblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 35 17 57 eclipsemod:klychfiolblock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 17 50 48 eclipsemod:keysabotajs",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 61 15 62 eclipsemod:keysabotajs",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -42 32 61 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -38 31 58 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -38 32 63 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -38 32 46 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -35 31 69 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 13 32 51 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -19 15 39 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -9 49 67 eclipsemod:keycardd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -33 32 36 eclipsemod:keycardsclad",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 13 48 60 eclipsemod:keycardsclad 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 50 61 eclipsemod:keycardsclad",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 2 48 41 eclipsemod:keycardsclad",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -13 32 72 eclipsemod:keycardsclad",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -13 18 71 eclipsemod:keycardsclad",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 29 18 66 eclipsemod:keycardkom",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 19 49 50 eclipsemod:keycardkom",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 54 15 63 eclipsemod:keycardkom",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -6 31 18 eclipsemod:keycarda",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 8 31 45 eclipsemod:keycarda",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -5 49 48 eclipsemod:keycarda",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -32 54 79 eclipsemod:keycarda",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -17 14 74 eclipsemod:keycarda",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 16 15 30 eclipsemod:keycarda",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 8 18 87 eclipsemod:keycarda",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 6 18 59 eclipsemod:keycarda",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 91,
+            "CustomData": "",
+            "Title": "key_keycard",
+            "Y": 62,
+            "Relations": [
+                "609945d1-abe3-4781-b404-ee3c0309a69c"
+            ],
+            "Id": "d2d74dd3-fd54-43fe-9d28-7d586f3de04d"
+        }
+    ]
+}

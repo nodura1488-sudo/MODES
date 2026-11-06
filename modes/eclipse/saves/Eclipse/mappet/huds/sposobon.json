@@ -1,0 +1,28 @@
+{
+    "Hide": 0b,
+    "Fov": 70.0f,
+    "Morphs": [
+        {
+            "Expire": 0,
+            "Ortho": 0b,
+            "Morph": {
+                "Max": 74,
+                "Color": 16711680,
+                "Label": "Ярость: активирована [a{G}",
+                "Name": "label"
+            },
+            "OrthoY": 0.0f,
+            "Scale": [
+                0.35f,
+                0.35f,
+                0.35f
+            ],
+            "OrthoX": 0.0f,
+            "Translate": [
+                1.6875f,
+                -0.125f,
+                0.125f
+            ]
+        }
+    ]
+}

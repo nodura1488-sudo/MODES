@@ -1,0 +1,233 @@
+{
+    "Main": "e1d5dd46-92fc-4348-9020-b0f0b6902e38",
+    "Nodes": [
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 3,
+                            "Expression": "",
+                            "Value": 150.0d,
+                            "Id": "time_game",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 23,
+            "Title": "time_game >= 150",
+            "Y": -768,
+            "Relations": [
+                "be286c91-312c-4ca7-b8f9-7b4ea56b5231"
+            ],
+            "Id": "6e05b70f-31d5-435a-9e7d-349545f93005"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 3,
+                            "Expression": "",
+                            "Value": 1.0d,
+                            "Id": "crewdies",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 166,
+            "Title": "crewdies >= 1",
+            "Y": -491,
+            "Relations": [
+                "f6a72eee-a2f4-4dd1-9963-aab812859a0e"
+            ],
+            "Id": "7f5f483a-ee5b-4ab4-8a44-a02a6ab2a2a3"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 0,
+                            "Expression": "",
+                            "Value": 150.0d,
+                            "Id": "time_game",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 431,
+            "Title": "time_game < 150",
+            "Y": -733,
+            "Relations": [
+                "43d4480f-b11a-41fb-8be7-243471cc74c8"
+            ],
+            "Id": "60245684-dbc0-42ee-a514-dcc7cdff2ad4"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 0,
+                            "Expression": "",
+                            "Value": 4.0d,
+                            "Id": "respawn",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -40,
+            "Title": "respawn < 4",
+            "Y": -553,
+            "Relations": [
+                "7f5f483a-ee5b-4ab4-8a44-a02a6ab2a2a3"
+            ],
+            "Id": "4789c9ac-b503-4ada-a3c9-512028dc6620"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/tp @r[team=crew,m=3] 21 17 102",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "gamemode 2 @p[x=21,y=17,z=102,r=3,m=!2]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @p[x=21,y=17,z=102,r=3,m=!2] minecraft:slowness 9999 0 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 27 18 96 eclipsemod:notefur 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state add ~ respawn 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state add ~ crewdies 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:keykardvstavka ambient @a 21 17 102 2 2",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_live 240",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_freeze 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/execute @a[x=21,y=17,z=102,r=3,m=!3] ~ ~ ~ /mp script exec @s unmute",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "mp state set crew_death_1 0",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 54,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -388,
+            "Id": "f6a72eee-a2f4-4dd1-9963-aab812859a0e"
+        },
+        {
+            "Type": "command",
+            "Command": "/title @p actionbar {\"text\":\"\\u041d\\u043e\\u0443\\u0442\\u0431\\u0443\\u043a \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442...\",\"color\":\"dark_red\"}",
+            "X": 442,
+            "Title": "1",
+            "Y": -565,
+            "Id": "43d4480f-b11a-41fb-8be7-243471cc74c8"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 2,
+                            "Expression": "",
+                            "Value": 4.0d,
+                            "Id": "comp_live",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 140,
+            "Title": "comp_live == 4",
+            "Y": -658,
+            "Relations": [
+                "4789c9ac-b503-4ada-a3c9-512028dc6620"
+            ],
+            "Id": "be286c91-312c-4ca7-b8f9-7b4ea56b5231"
+        },
+        {
+            "Type": "timer",
+            "Timer": 0,
+            "X": 283,
+            "Title": "",
+            "Y": -979,
+            "Relations": [
+                "6e05b70f-31d5-435a-9e7d-349545f93005",
+                "60245684-dbc0-42ee-a514-dcc7cdff2ad4"
+            ],
+            "Id": "e1d5dd46-92fc-4348-9020-b0f0b6902e38"
+        }
+    ]
+}

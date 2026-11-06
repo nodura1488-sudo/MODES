@@ -1,0 +1,33 @@
+{
+  "enableHitmarker": true,
+  "enableModifiedInventory": true,
+  "enableDynamicCrosshair": true,
+  "enable3DModelsDrops": false,
+  "disableGunInteraction": true,
+  "experimental_hit_reg": true,
+  "UIshowAmmoCount": true,
+  "dropBulletCasing": true,
+  "despawnTimeShellCasing": 10,
+  "despawnTimeItemsDrops": 120,
+  "canShotBreakGlass": false,
+  "dropExtraSlotsOnDeath": true,
+  "kickIfModifiedContentPack": true,
+  "applyKnockback": false,
+  "enableWalkSounds": true,
+  "walkSoundsVolume": 0.3,
+  "autoExtractContentpack": false,
+  "killFeed": {
+    "enableKillFeed": false,
+    "sendDefaultKillMessage": false,
+    "messageDuration": 10,
+    "messageList": [
+      "\u0026a{killer} \u00267killed \u0026c{victim}",
+      "\u0026a{killer} \u0026fdestroyed \u0026c{victim}",
+      "\u0026a{killer} \u0026fshoted \u0026c{victim}"
+    ]
+  },
+  "model_optimization": true,
+  "dev_mode": true,
+  "debug_hits": false,
+  "version": "1.0.19f"
+}

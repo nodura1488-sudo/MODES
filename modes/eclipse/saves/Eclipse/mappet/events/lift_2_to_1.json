@@ -1,0 +1,157 @@
+{
+    "Main": "8743ac4b-4ea4-4f8a-9c51-d1d4d49f8eac",
+    "Nodes": [
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 16 36 eclipsemod:doorlock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 32 36 eclipsemod:doorlock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 32 32 eclipsemod:doorlock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:elevator_close ambient @a -16 32 34 1.5 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:elevator_close ambient @a -16 16 34 1.5 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:lift_go ambient @a -16 32 34 1.5 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:lift_go ambient @a -16 16 34 1.5 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 32 37 eclipsemod:vizovpkm 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 16 37 eclipsemod:vizovpkm 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 32 34 eclipsemod:paneloff 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 16 34 eclipsemod:paneloff 4",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 112,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -362,
+            "Relations": [
+                "58230415-a97b-4d2b-9e6c-503edc670293"
+            ],
+            "Id": "8743ac4b-4ea4-4f8a-9c51-d1d4d49f8eac"
+        },
+        {
+            "Type": "timer",
+            "Timer": 200,
+            "X": 114,
+            "Title": "",
+            "Y": -238,
+            "Relations": [
+                "c0b27b8e-73ac-4d88-9879-d8396a888cd2"
+            ],
+            "Id": "58230415-a97b-4d2b-9e6c-503edc670293"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/tp @e[x=-16,y=32,z=34,r=2] ~ ~-16 ~",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 16 36 eclipsemod:dooropen",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:elevator_open ambient @a -16 16 34 1.5 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:lift_priehal ambient @a -16 16 34 1.5 1",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 114,
+            "CustomData": "",
+            "Title": "2",
+            "Y": -120,
+            "Relations": [
+                "670387f8-0b78-4c8d-a587-ef624ecc41e9"
+            ],
+            "Id": "c0b27b8e-73ac-4d88-9879-d8396a888cd2"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 32 37 eclipsemod:vizov12 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 16 34 eclipsemod:panel1to2 4",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 92,
+            "CustomData": "",
+            "Title": "1",
+            "Y": 183,
+            "Id": "0fa25679-fec9-4a1a-b3f3-1ef8fd7048b6"
+        },
+        {
+            "Type": "timer",
+            "Timer": 100,
+            "X": 108,
+            "Title": "",
+            "Y": 20,
+            "Relations": [
+                "0fa25679-fec9-4a1a-b3f3-1ef8fd7048b6"
+            ],
+            "Id": "670387f8-0b78-4c8d-a587-ef624ecc41e9"
+        }
+    ]
+}

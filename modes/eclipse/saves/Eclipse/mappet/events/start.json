@@ -1,0 +1,880 @@
+{
+    "Main": "e3ea782e-ec8a-4583-9215-0406bf524a64",
+    "Nodes": [
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/clone -9 7 61 -5 5 61 -11 54 60",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/clone -9 7 61 -5 5 61 -25 54 60",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -23 55 51 eclipsemod:vorota0 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/fill -24 56 51 -22 54 51 minecraft:barrier 2 replace air",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 10 49 53 eclipsemod:doorlock 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -21 55 52 eclipsemod:ventil1 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -5 16 55 eclipsemod:doorcodeohrana 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 47 18 95 eclipsemod:upr0 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 27 18 96 eclipsemod:notefur 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 47 18 101 eclipsemod:vorota0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_fgame 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_game 1500",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp hud setup @a start",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a minecraft:regeneration 1 255 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set @a alien 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/execute @a ~ ~ ~ morph @p",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -24 55 43 eclipsemod:keycardupr",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -28 55 45 eclipsemod:keycardupr",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -38 49 66 eclipsemod:vorota0 5",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a minecraft:regeneration 1 255 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -18 49 82 air",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 27 32 47 air",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 44 16 61 eclipsemod:notefur 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 5 32 43 eclipsemod:notefur 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -4 49 70 eclipsemod:notefur 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Script": "random_safe",
+                        "Function": "",
+                        "Type": "script",
+                        "CustomData": "",
+                        "Frequency": 1
+                    },
+                    {
+                        "Script": "rand_parol",
+                        "Function": "",
+                        "Type": "script",
+                        "CustomData": "",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "rand_distant"
+                    },
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "random_loot"
+                    },
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "rand_shitok"
+                    },
+                    {
+                        "Target": {
+                            "Target": 0,
+                            "Selector": ""
+                        },
+                        "Type": "state",
+                        "State": "game",
+                        "Mode": 1,
+                        "Value": 1.0d,
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -24 55 46 eclipsemod:usefuse00 5",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -25 55 45 eclipsemod:doorlock 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -9 16 52 eclipsemod:klychredblock 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -12 16 53 eclipsemod:klychredblock 5",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -275,
+            "CustomData": "",
+            "Title": "заполнение",
+            "Y": -2275,
+            "Relations": [
+                "6e48d56f-a337-4f25-8c56-23ebd9b5503f"
+            ],
+            "Id": "899bb4d7-502a-41f4-bbb4-f5b846d14e1e"
+        },
+        {
+            "Type": "timer",
+            "Timer": 10,
+            "X": -70,
+            "Title": "",
+            "Y": -2249,
+            "Relations": [
+                "ffcc16f1-f2a7-4976-88a3-96b693563c28"
+            ],
+            "Id": "6e48d56f-a337-4f25-8c56-23ebd9b5503f"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/mp hud close @a start",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp hud setup @a transition",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -262,
+            "CustomData": "",
+            "Title": "222",
+            "Y": -1928,
+            "Relations": [
+                "4857ed21-74bc-45a2-bbf4-a7485105f52a",
+                "b75dfc65-2d27-4884-ac3a-4496d9971966"
+            ],
+            "Id": "8597f682-f8e7-4552-929a-debc69e65393"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a[team=crew] minecraft:slowness 9999 0 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a[team=alien] minecraft:strength 9999 1 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a[team=alien] minecraft:health_boost 9999 24 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a[team=alien] minecraft:regeneration 9999 255 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a[team=android] minecraft:slowness 9999 2 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a[team=android] minecraft:resistance 9999 0 true",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -85,
+            "CustomData": "",
+            "Title": "effects",
+            "Y": -1688,
+            "Id": "094b9d0b-407c-4c57-9a6d-81d1c22ef6ff"
+        },
+        {
+            "Type": "timer",
+            "Timer": 20,
+            "X": -86,
+            "Title": "",
+            "Y": -1792,
+            "Relations": [
+                "094b9d0b-407c-4c57-9a6d-81d1c22ef6ff"
+            ],
+            "Id": "b75dfc65-2d27-4884-ac3a-4496d9971966"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join empty @a",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join alien @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join android @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join android @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join android @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players tag @r[team=crew] add med",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players tag @r[team=crew,tag=!med] add gun",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams join crew @r[team=empty]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players set @a[team=alien] alien 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players set @a[team=android] android 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players set @a[team=crew] crew 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players set @a[team=crew] podbor 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/execute @a[team=android] ~ ~ ~ /mp state add ~ msrdies 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/execute @a[team=crew] ~ ~ ~ /mp state add ~ crewdies 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/execute @a[team=alien] ~ ~ ~ /morph @p chameleon.AlienStand {Hitbox:{Eye:0.9f,Sneak:1.8f,Enabled:1b,Height:2.5f},Skin:\"c.s:AlienStand/skins/texture.png\"}",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set @a[team=alien] alien 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a minecraft:jump_boost 10 155 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/effect @a minecraft:slowness 10 155 true",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "testforalive"
+                    },
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "random_tp_msr"
+                    },
+                    {
+                        "Script": "rand_tp_crew",
+                        "Function": "",
+                        "Type": "script",
+                        "CustomData": "",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/execute @a[x=-35,y=31,z=46,r=3] ~ ~ ~ /title @a[team=crew] actionbar [\"\",{\"selector\":\"@p\",\"color\":\"aqua\"},{\"text\":\" командир!\",\"color\":\"dark_purple\"}]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[x=-35,y=31,z=46,r=3] eclipsemod:keya",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -269,
+            "CustomData": "",
+            "Title": "TEAM_AND_TP",
+            "Y": -2118,
+            "Relations": [
+                "ed2a57b0-1e2b-49cc-b5e1-57ae04b3983d",
+                "a9541415-4944-4ef6-8490-17aeda367b22"
+            ],
+            "Id": "ffcc16f1-f2a7-4976-88a3-96b693563c28"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/tp @a -17 19 13",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "gamemode 2 @a",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "effect @a clear",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard teams leave @a",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players reset @e",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/kill @e[type=!player]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "clear @a",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ comp_live 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ comp_set 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ crewdies 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ msrdies 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ respawn 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ sabotage 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ tasks 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_freeze",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_fsab 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_live 240",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_sab 180",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_vfreeze 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_vorota 20",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ msr_death_1 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set @a kd 150",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set @a kd_f 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp script exec @a mute",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set @a goloc 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ goloca 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ crew_death_1 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players tag @a remove med",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/scoreboard players tag @a remove gun",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 63 53 stone",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -434,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -2288,
+            "Relations": [
+                "899bb4d7-502a-41f4-bbb4-f5b846d14e1e",
+                "c676e34f-e89d-4659-8458-2f1607f4bae9"
+            ],
+            "Id": "e3ea782e-ec8a-4583-9215-0406bf524a64"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:nachalo ambient @a -10 26 60 1000 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_game 1500",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ time_fgame 0",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=alien] eclipsemod:alienweapon",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/replaceitem entity @a[team=android] slot.armor.chest modularwarfare:nz.heavy_defend_chest",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/replaceitem entity @a[team=android] slot.armor.head modularwarfare:nz.heavy_defend_head",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/replaceitem entity @a[team=android] slot.armor.legs modularwarfare:nz.heavy_defend_legs",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=android] modularwarfare:alpha",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=android] modularwarfare:alphaammo 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=android] modularwarfare:alphaammo 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=android] eclipsemod:katana",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=android] eclipsemod:keycardandroid",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=android] eclipsemod:heal",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=crew,tag=med] eclipsemod:heal 2",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=crew,tag=med] eclipsemod:bint 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=crew,tag=med] eclipsemod:keyd",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/title @a[team=crew,tag=med] actionbar [\"\",{\"text\":\"\\u0422\\u044b \"},{\"text\":\"\\u043c\\u0435\\u0434\\u0438\\u043a!\",\"color\":\"aqua\"}]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/title @a[team=crew,tag=gun] actionbar [\"\",{\"text\":\"\\u0422\\u044b \"},{\"text\":\"\\u0437\\u0430\\u0449\\u0438\\u0442\\u043d\\u0438\\u043a!\",\"color\":\"red\"}]",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/replaceitem entity @a[team=crew,tag=gun] slot.armor.chest modularwarfare:nz.light_defend_chest",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/replaceitem entity @a[team=crew,tag=gun] slot.armor.legs modularwarfare:nz.light_attack_legs",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=crew,tag=gun] modularwarfare:charlie",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @a[team=crew,tag=gun] modularwarfare:charlieammo 2",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/give @r[team=crew] eclipsemod:nevidimka",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -129,
+            "CustomData": "",
+            "Title": "ОСНОВЫ",
+            "Y": -1995,
+            "Id": "a9541415-4944-4ef6-8490-17aeda367b22"
+        },
+        {
+            "Type": "timer",
+            "Timer": 40,
+            "X": -401,
+            "Title": "",
+            "Y": -1800,
+            "Relations": [
+                "923533fb-d1a6-46be-8aee-fece342d4080"
+            ],
+            "Id": "4857ed21-74bc-45a2-bbf4-a7485105f52a"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/mp hud close @a",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp script exec @a unmute",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp hud setup @a[team=android] attack",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp hud setup @a[team=alien] attack",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp hud setup @a[team=crew] defend",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -396,
+            "CustomData": "",
+            "Title": "111",
+            "Y": -1693,
+            "Id": "923533fb-d1a6-46be-8aee-fece342d4080"
+        },
+        {
+            "Type": "timer",
+            "Timer": 200,
+            "X": -396,
+            "Title": "",
+            "Y": -2001,
+            "Relations": [
+                "8597f682-f8e7-4552-929a-debc69e65393"
+            ],
+            "Id": "ed2a57b0-1e2b-49cc-b5e1-57ae04b3983d"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 34 18 71 eclipsemod:usefuse00 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 33 18 70 eclipsemod:doorlock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 22 18 104 eclipsemod:doorlock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 21 18 103 eclipsemod:usefuse00",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -7 32 64 eclipsemod:usefuse00",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -8 32 65 eclipsemod:doorlock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -1 49 44 eclipsemod:doorlock",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 0 49 45 eclipsemod:usefuse00 3",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -534,
+            "CustomData": "",
+            "Title": "12",
+            "Y": -2107,
+            "Id": "c676e34f-e89d-4659-8458-2f1607f4bae9"
+        }
+    ]
+}

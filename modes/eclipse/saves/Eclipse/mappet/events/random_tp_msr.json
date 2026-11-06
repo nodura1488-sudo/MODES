@@ -1,0 +1,150 @@
+{
+    "Main": "3f5602fd-74fb-42a5-b083-f796c50eaf98",
+    "Nodes": [
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "random_tp_msr1"
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 32 37 eclipsemod:vizovchin 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 16 37 eclipsemod:vizovchin 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 32 36 eclipsemod:doorlock  ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 16 36 eclipsemod:doorlock ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -16 16 36 eclipsemod:doorlock ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 11 49 67 eclipsemod:vizov23 ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 11 32 67 eclipsemod:vizov32",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/tp @r[team=android,x=-17,y=20,z=12,r=10] -37 48 65 -90 -40",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/tp @r[team=android,x=-17,y=20,z=12,r=10] -37 48 66 -90 -40",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/tp @a[team=android,x=-17,y=20,z=12,r=10] -37 48 67 -90 -40",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -114,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -82,
+            "Id": "f128ce84-2912-4b1a-ad7f-2cddb08c7bf9"
+        },
+        {
+            "Type": "switch",
+            "Expression": "floor(random(0,2))",
+            "X": 62,
+            "Title": "",
+            "Y": -252,
+            "Relations": [
+                "f128ce84-2912-4b1a-ad7f-2cddb08c7bf9",
+                "ee4b3b65-4d6f-4d7e-8f83-8193f89c9328"
+            ],
+            "Id": "3f5602fd-74fb-42a5-b083-f796c50eaf98"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "random_tp_msr2"
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 12 32 68 eclipsemod:doorlock ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 12 49 68 eclipsemod:doorlock ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 11 49 67 eclipsemod:vizovchin2  ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock 11 32 67 eclipsemod:vizovchin2 ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 32 37 eclipsemod:vizov12 3",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -15 16 37 eclipsemod:vizov21 3 ",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/tp @r[team=android,x=-17,y=20,z=12,r=10] 63 17 86 90 -40",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/tp @r[team=android,x=-17,y=20,z=12,r=10] 63 17 85 90 -40",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/tp @a[team=android,x=-17,y=20,z=12,r=10] 63 17 84 90 -40",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 172,
+            "CustomData": "",
+            "Title": "2",
+            "Y": -78,
+            "Id": "ee4b3b65-4d6f-4d7e-8f83-8193f89c9328"
+        }
+    ]
+}

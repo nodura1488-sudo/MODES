@@ -1,0 +1,260 @@
+{
+    "Triggers": {
+        "player_close_container": {
+            "Blocks": [
+            ]
+        },
+        "entity_death": {
+            "Blocks": [
+            ]
+        },
+        "server_load": {
+            "Blocks": [
+            ]
+        },
+        "player_journal": {
+            "Blocks": [
+            ]
+        },
+        "player_respawn": {
+            "Blocks": [
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 1,
+                    "Event": "gamemode3"
+                }
+            ]
+        },
+        "block_place": {
+            "Blocks": [
+            ]
+        },
+        "server_tick": {
+            "Blocks": [
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 20,
+                    "Event": "time_game"
+                },
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 20,
+                    "Event": "time_live"
+                },
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 20,
+                    "Event": "time_sabotage"
+                },
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 20,
+                    "Event": "time_vorota"
+                },
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 20,
+                    "Event": "time_game_0"
+                },
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 280,
+                    "Event": "sabotage"
+                },
+                {
+                    "Type": "command",
+                    "Command": "/execute @a[team=alien] ~ ~ ~ /mp event trigger @s time_kd",
+                    "Frequency": 20
+                },
+                {
+                    "Type": "command",
+                    "Command": "/particle portal -10 17.999 67 0.2 0.5 0.2 0.0001 50",
+                    "Frequency": 50
+                },
+                {
+                    "Type": "command",
+                    "Command": "/particle portal -18 54.999 43 0.2 0.7 0.2 0.0001 50",
+                    "Frequency": 50
+                },
+                {
+                    "Type": "command",
+                    "Command": "/particle fireworksSpark -14 49.999 81 0.2 0.7 0.2 0.0001 5",
+                    "Frequency": 50
+                },
+                {
+                    "Type": "command",
+                    "Command": "/particle fireworksSpark 33 18.8 86 0.2 0.7 0.2 0.0001 5",
+                    "Frequency": 50
+                },
+                {
+                    "Type": "command",
+                    "Command": "/clear @a[team=!android] modularwarfare:nz.heavy_defend_head",
+                    "Frequency": 60
+                },
+                {
+                    "Type": "command",
+                    "Command": "/clear @a[team=!android] modularwarfare:nz.heavy_defend_legs",
+                    "Frequency": 60
+                },
+                {
+                    "Type": "command",
+                    "Command": "/clear @a[team=!android] modularwarfare:nz.heavy_defend_chest",
+                    "Frequency": 60
+                },
+                {
+                    "Type": "command",
+                    "Command": "/clear @a[team=alien] eclipsemod:keycardandroid",
+                    "Frequency": 60
+                },
+                {
+                    "Type": "command",
+                    "Command": "/scoreboard players set @a podbor 26157",
+                    "Frequency": 1
+                }
+            ]
+        },
+        "entity_damaged": {
+            "Blocks": [
+            ]
+        },
+        "player_lmb": {
+            "Blocks": [
+            ]
+        },
+        "block_click": {
+            "Blocks": [
+            ]
+        },
+        "block_interact": {
+            "Blocks": [
+            ]
+        },
+        "player_login": {
+            "Blocks": [
+                {
+                    "Type": "command",
+                    "Command": "/mp state set @s goloc 0",
+                    "Frequency": 1
+                }
+            ]
+        },
+        "player_item_interact": {
+            "Blocks": [
+            ]
+        },
+        "block_break": {
+            "Blocks": [
+            ]
+        },
+        "player_logout": {
+            "Blocks": [
+                {
+                    "Type": "command",
+                    "Command": "/mp state set @s goloc 0",
+                    "Frequency": 1
+                }
+            ]
+        },
+        "player_rmb": {
+            "Blocks": [
+            ]
+        },
+        "player_entity_interact": {
+            "Blocks": [
+            ]
+        },
+        "player_chat": {
+            "Blocks": [
+            ]
+        },
+        "player_death": {
+            "Blocks": [
+                {
+                    "Type": "event",
+                    "CustomData": "",
+                    "Frequency": 1,
+                    "Event": "death"
+                }
+            ]
+        },
+        "player_item_pickup": {
+            "Blocks": [
+            ]
+        }
+    },
+    "Hotkeys": {
+        "Hotkeys": [
+            {
+                "Trigger": {
+                    "Blocks": [
+                        {
+                            "Script": "lay_alien",
+                            "Function": "",
+                            "Type": "script",
+                            "CustomData": "",
+                            "Frequency": 1
+                        }
+                    ]
+                },
+                "Toggle": 0b,
+                "Keycode": 44,
+                "Enabled": {
+                    "Condition": {
+                    },
+                    "Mode": 1
+                }
+            },
+            {
+                "Trigger": {
+                    "Blocks": [
+                        {
+                            "Script": "vote",
+                            "Function": "",
+                            "Type": "script",
+                            "CustomData": "",
+                            "Frequency": 1
+                        }
+                    ]
+                },
+                "Toggle": 0b,
+                "Keycode": 37,
+                "Enabled": {
+                    "Condition": {
+                    },
+                    "Mode": 1
+                }
+            },
+            {
+                "Trigger": {
+                    "Blocks": [
+                        {
+                            "Type": "command",
+                            "Command": "/execute @s[team=alien] ~ ~ ~ /mp script exec @s kd",
+                            "Frequency": 1
+                        },
+                        {
+                            "Type": "event",
+                            "CustomData": "",
+                            "Frequency": 1,
+                            "Event": "sposob"
+                        }
+                    ]
+                },
+                "Toggle": 0b,
+                "Keycode": 34,
+                "Enabled": {
+                    "Condition": {
+                    },
+                    "Mode": 1
+                }
+            }
+        ]
+    }
+}

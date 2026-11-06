@@ -1,0 +1,30 @@
+{
+    "Hide": 0b,
+    "Fov": 70.0f,
+    "Morphs": [
+        {
+            "Expire": 0,
+            "Ortho": 0b,
+            "Morph": {
+                "Name": "item",
+                "Stack": {
+                    "id": "blockbuster:dim_green",
+                    "Count": 64b,
+                    "Damage": 7s
+                }
+            },
+            "OrthoY": 0.0f,
+            "Scale": [
+                7.5f,
+                10.0f,
+                1.25f
+            ],
+            "OrthoX": 0.0f,
+            "Translate": [
+                0.0f,
+                0.96875f,
+                0.0f
+            ]
+        }
+    ]
+}

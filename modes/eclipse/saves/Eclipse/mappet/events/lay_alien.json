@@ -1,0 +1,53 @@
+{
+    "Main": "88cc3ecd-9455-4bf0-b05e-706981d377e8",
+    "Nodes": [
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 4,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 2,
+                            "Expression": "",
+                            "Value": 1.0d,
+                            "Id": "alien",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 52,
+            "Title": "alien",
+            "Y": -6,
+            "Relations": [
+                "e7a8379a-d531-4b97-a330-dc92db92ec2b"
+            ],
+            "Id": "88cc3ecd-9455-4bf0-b05e-706981d377e8"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Script": "lay_alien",
+                        "Function": "",
+                        "Type": "script",
+                        "CustomData": "",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 46,
+            "CustomData": "",
+            "Title": "1",
+            "Y": 144,
+            "Id": "e7a8379a-d531-4b97-a330-dc92db92ec2b"
+        }
+    ]
+}

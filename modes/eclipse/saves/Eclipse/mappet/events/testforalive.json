@@ -1,0 +1,402 @@
+{
+    "Main": "4180a1bb-a9c1-4ff1-8033-08b2490df875",
+    "Nodes": [
+        {
+            "Type": "timer",
+            "Timer": 1,
+            "X": -163,
+            "Title": "",
+            "Y": -1433,
+            "Relations": [
+                "f90e59cb-359a-408a-b747-6e3ab94b19e8",
+                "47344720-a723-4f8f-9b46-19b7a0cd8563",
+                "e8320537-15d3-4783-a26f-43f8b121f64f",
+                "2e8c6615-301e-45de-a0cf-e2913b03cf94"
+            ],
+            "Id": "0643b6a8-66f1-4431-9395-97c252958508"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "event",
+                        "CustomData": "",
+                        "Frequency": 1,
+                        "Event": "gameover"
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/setblock -14 17 11 air",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": 409,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -769,
+            "Id": "0fd9bea8-6145-4141-b765-9e68530cb317"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:voice_adndroid_death master @a -10 26 60 1000 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ msr_death_1 1",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -562,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -685,
+            "Id": "cead0d98-c6b2-415e-b589-b8d430b65395"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 1,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "crewdies",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -26,
+            "Title": "crewdies <= 0",
+            "Y": -974,
+            "Relations": [
+                "e6019033-099d-46e5-98e4-9caf8d57e426"
+            ],
+            "Id": "47344720-a723-4f8f-9b46-19b7a0cd8563"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "/playsound eclipsemod:voice_crew_death ambient @a -10 26 60 1000 1",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "/mp state set ~ crew_death_1 1",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -266,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -671,
+            "Id": "1d716cb9-720d-405b-9887-9a5a8912c05b"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 1,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "msrdies",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -561,
+            "Title": "msrdies <= 0",
+            "Y": -1001,
+            "Relations": [
+                "bbb1387f-31f5-4292-8b9a-f5fabdbe274e"
+            ],
+            "Id": "2235d318-d82f-429d-a461-96053def823f"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 2,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "msr_death_1",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -449,
+            "Title": "msr_death_1 == 0",
+            "Y": -1173,
+            "Relations": [
+                "2235d318-d82f-429d-a461-96053def823f"
+            ],
+            "Id": "f90e59cb-359a-408a-b747-6e3ab94b19e8"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 1,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "crewdies",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 192,
+            "Title": "crewdies <= 0",
+            "Y": -981,
+            "Relations": [
+                "ecc954a1-1bd9-45c0-ad34-0683411a01e8"
+            ],
+            "Id": "e8320537-15d3-4783-a26f-43f8b121f64f"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 3,
+                            "Expression": "",
+                            "Value": 1.0d,
+                            "Id": "msrdies",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -27,
+            "Title": "msrdies => 1",
+            "Y": -834,
+            "Relations": [
+                "196f74db-db07-47a4-ad4c-f91771bebf03"
+            ],
+            "Id": "e6019033-099d-46e5-98e4-9caf8d57e426"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 2,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "crew_death_1",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -228,
+            "Title": "crew_death_1 == 0",
+            "Y": -1235,
+            "Relations": [
+                "513b5d59-4e70-4ba4-8ce1-f49dfc2ca977"
+            ],
+            "Id": "2e8c6615-301e-45de-a0cf-e2913b03cf94"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 1,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "crewdies",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -261,
+            "Title": "crewdies <= 0",
+            "Y": -1058,
+            "Relations": [
+                "79aecdfc-8bda-4cab-b284-6e91399f8352"
+            ],
+            "Id": "513b5d59-4e70-4ba4-8ce1-f49dfc2ca977"
+        },
+        {
+            "Type": "trigger",
+            "Trigger": {
+                "Blocks": [
+                    {
+                        "Type": "command",
+                        "Command": "setblock 44 16 61 eclipsemod:endcomp 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "setblock -4 49 70 eclipsemod:endcomp 4",
+                        "Frequency": 1
+                    },
+                    {
+                        "Type": "command",
+                        "Command": "setblock 5 32 43 eclipsemod:endcomp 4",
+                        "Frequency": 1
+                    }
+                ]
+            },
+            "Cancel": 0b,
+            "X": -19,
+            "CustomData": "",
+            "Title": "1",
+            "Y": -676,
+            "Id": "196f74db-db07-47a4-ad4c-f91771bebf03"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 2,
+                            "Expression": "",
+                            "Value": 1.0d,
+                            "Id": "game",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": -153,
+            "Title": "game == 1",
+            "Y": -1574,
+            "Relations": [
+                "0643b6a8-66f1-4431-9395-97c252958508"
+            ],
+            "Id": "4180a1bb-a9c1-4ff1-8033-08b2490df875"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 1,
+                            "Expression": "",
+                            "Value": 0.0d,
+                            "Id": "msrdies",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 204,
+            "Title": "msrdies <= 0",
+            "Y": -830,
+            "Relations": [
+                "dbae33d5-9145-4553-b93c-45a688b2755e"
+            ],
+            "Id": "ecc954a1-1bd9-45c0-ad34-0683411a01e8"
+        },
+        {
+            "Type": "timer",
+            "Timer": 100,
+            "X": -560,
+            "Title": "",
+            "Y": -855,
+            "Relations": [
+                "cead0d98-c6b2-415e-b589-b8d430b65395"
+            ],
+            "Id": "bbb1387f-31f5-4292-8b9a-f5fabdbe274e"
+        },
+        {
+            "Type": "timer",
+            "Timer": 100,
+            "X": -278,
+            "Title": "",
+            "Y": -850,
+            "Relations": [
+                "1d716cb9-720d-405b-9887-9a5a8912c05b"
+            ],
+            "Id": "79aecdfc-8bda-4cab-b284-6e91399f8352"
+        },
+        {
+            "Type": "timer",
+            "Timer": 200,
+            "X": 409,
+            "Title": "",
+            "Y": -937,
+            "Relations": [
+                "0fd9bea8-6145-4141-b765-9e68530cb317"
+            ],
+            "Id": "dbae33d5-9145-4553-b93c-45a688b2755e"
+        }
+    ]
+}

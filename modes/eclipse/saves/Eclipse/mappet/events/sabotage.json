@@ -1,0 +1,41 @@
+{
+    "Main": "4aa9960b-adfc-41a7-9209-7e6a9f741097",
+    "Nodes": [
+        {
+            "Type": "command",
+            "Command": "/playsound eclipsemod:sirena ambient @a -5 40 58 9999999999 1",
+            "X": 30,
+            "Title": "1",
+            "Y": 190,
+            "Id": "5af69e2e-690b-444e-9e05-91082f39750d"
+        },
+        {
+            "Condition": {
+                "Condition": {
+                    "Blocks": [
+                        {
+                            "Not": 0b,
+                            "Target": 0,
+                            "Type": "state",
+                            "Or": 0b,
+                            "Comparison": 2,
+                            "Expression": "",
+                            "Value": 1.0d,
+                            "Id": "sabotage",
+                            "Selector": ""
+                        }
+                    ]
+                },
+                "Mode": 1
+            },
+            "Type": "condition",
+            "X": 28,
+            "Title": "sabotage == 1",
+            "Y": 24,
+            "Relations": [
+                "5af69e2e-690b-444e-9e05-91082f39750d"
+            ],
+            "Id": "4aa9960b-adfc-41a7-9209-7e6a9f741097"
+        }
+    ]
+}
