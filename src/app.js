@@ -70,7 +70,8 @@ const S = {
   storeSort: 'default',
   libraryFilter: 'all',
   librarySort: 'default',
-  continueId: null
+  continueId: null,
+  pendingPlay: null
 };
 
 const els = {
@@ -164,6 +165,7 @@ const els = {
   spotlightLink: $('spotlight-link'),
   moreSection: $('more-section'),
   moreGrid: $('more-grid'),
+  cardContext: $('card-context'),
   ram: $('set-ram'),
   ramOut: $('ram-out'),
   setDir: $('set-dir'),
@@ -405,8 +407,11 @@ function bindStore() {
   };
 
   document.addEventListener('click', (e) => {
+    closeCardContext();
     if (!e.target.closest('.card-menu') && !e.target.closest('.card-menu-btn')) closeCardMenus();
   });
+  const appScroll = $('app');
+  if (appScroll) appScroll.addEventListener('scroll', closeCardContext, true);
 
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -415,6 +420,11 @@ function bindStore() {
       return;
     }
     if (e.key === 'Escape') {
+      if (els.cardContext && !els.cardContext.hidden) {
+        closeCardContext();
+        e.preventDefault();
+        return;
+      }
       if (!document.querySelector('.modal-overlay:not([hidden])')) {
         if (S.view === 'detail') {
           showStore();
@@ -695,7 +705,7 @@ function renderLibrary() {
     S.librarySort
   );
   els.libraryCount.textContent = String(list.length);
-  renderModeGrid(els.libraryGrid, list, true);
+  renderModeGrid(els.libraryGrid, list, true, true);
   renderLibraryContinue();
   const showEmpty = list.length === 0;
   els.libraryEmpty.hidden = !showEmpty;
@@ -748,8 +758,8 @@ function renderFeatured(mode) {
   els.featuredStatus.textContent = st.text;
 }
 
-function renderModeGrid(container, list, withMenu = false) {
-  container.innerHTML = list.map((mode) => modeCardHtml(mode, withMenu)).join('');
+function renderModeGrid(container, list, withMenu = false, playMode = false) {
+  container.innerHTML = list.map((mode) => modeCardHtml(mode, withMenu, playMode)).join('');
   container.onclick = (e) => {
     const menuBtn = e.target.closest('.card-menu-btn');
     if (menuBtn) {
@@ -765,12 +775,22 @@ function renderModeGrid(container, list, withMenu = false) {
     if (action) {
       e.stopPropagation();
       const card = action.closest('.mode-card');
-      if (card && card.dataset.id) handleCardAction(card.dataset.id, action.dataset.cardAction);
+      if (card && card.dataset.id) handleCardAction(card.dataset.id, action.dataset.cardAction, playMode);
       return;
     }
     closeCardMenus();
     const card = e.target.closest('.mode-card');
-    if (card && card.dataset.id) openDetail(card.dataset.id);
+    if (card && card.dataset.id) {
+      if (playMode) startMode(modeById(card.dataset.id), true);
+      else openDetail(card.dataset.id);
+    }
+  };
+  container.oncontextmenu = (e) => {
+    const card = e.target.closest('.mode-card');
+    if (!card || !card.dataset.id) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openCardContext(card, e.clientX, e.clientY, playMode);
   };
   container.querySelectorAll('img[data-fallback]').forEach((img) => {
     const card = img.closest('.mode-card');
@@ -784,10 +804,36 @@ function closeCardMenus() {
   });
 }
 
-async function handleCardAction(modeId, action) {
+async function handleCardAction(modeId, action, autoPlay = false) {
   closeCardMenus();
+  closeCardContext();
   const mode = modeById(modeId);
   if (!mode) return;
+
+  if (action === 'play') {
+    await startMode(mode, autoPlay);
+    return;
+  }
+
+  if (action === 'store') {
+    openModeInStore(modeId);
+    return;
+  }
+
+  if (action === 'addlib') {
+    try {
+      const res = await api.setLibrary(modeId, true);
+      if (!res || !res.ok) throw new Error((res && res.error) || 'Ошибка');
+      const st = S.state[modeId] || { installed: false, version: null, installedAt: 0 };
+      S.state[modeId] = { ...st, library: true, hidden: false };
+      renderStore();
+      renderLibrary();
+      toast('Режим добавлен в библиотеку', 'ok');
+    } catch (err) {
+      toast('Не удалось добавить режим: ' + err, 'error');
+    }
+    return;
+  }
 
   if (action === 'folder') {
     try {
@@ -835,7 +881,7 @@ async function handleCardAction(modeId, action) {
   }
 }
 
-function modeCardHtml(mode, withMenu = false) {
+function modeCardHtml(mode, withMenu = false, playMode = false) {
   const st = cardStatus(mode);
   const installed = isInstalled(mode);
   const released = modeReleaseDate(mode);
@@ -843,16 +889,18 @@ function modeCardHtml(mode, withMenu = false) {
   const tags = modeTags(mode, 3)
     .map((t) => `<span>${escapeHtml(t)}</span>`)
     .join('');
+  const footerLabel = playMode ? (installed ? 'Играть' : 'Установить') : 'Подробнее';
   return `
     <article class="mode-card ${installed ? 'installed' : ''}" data-id="${escapeHtml(mode.id)}">
       <div class="card-media">
         <img src="${escapeHtml(imageSrc(mode))}" alt="" loading="lazy" data-fallback>
+        ${playMode && installed ? `<button class="card-play" data-card-action="play" type="button" aria-label="Играть">▶</button>` : ''}
         <div class="card-badge ${st.cls}">${st.text}</div>
         ${withMenu ? `
-          <button class="card-menu-btn" type="button" title="Действия" aria-label="Действия">⋮</button>
+          <button class="card-menu-btn" type="button" title="Действия" aria-label="Действия">⋯</button>
           <div class="card-menu" hidden>
             ${installed ? '<button type="button" data-card-action="folder">Открыть папку</button>' : ''}
-            <button type="button" data-card-action="hide">Удалить из библиотеки</button>
+            <button type="button" data-card-action="hide">Убрать из библиотеки</button>
             ${installed ? '<button type="button" data-card-action="uninstall" class="danger">Удалить с устройства</button>' : ''}
           </div>` : ''}
       </div>
@@ -864,8 +912,8 @@ function modeCardHtml(mode, withMenu = false) {
         <div class="card-desc">${escapeHtml(modeShortDescription(mode))}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ''}
         <div class="card-foot">
-          <span class="card-size">${escapeHtml(mode.size || '—')}</span>
-          <button class="btn btn-small btn-ghost" type="button" aria-label="Подробнее: ${escapeHtml(mode.title || 'режим')}">Подробнее</button>
+          <span class="card-size">${escapeHtml(mode.size || '-')}</span>
+          <button class="btn btn-small ${playMode ? 'btn-primary' : 'btn-ghost'}" type="button" ${playMode ? 'data-card-action="play"' : ''} aria-label="${footerLabel}: ${escapeHtml(mode.title || 'режим')}">${footerLabel}</button>
         </div>
       </div>
     </article>`;
@@ -1076,6 +1124,108 @@ function bindDetail() {
       updateDetailAction();
       toast((res && res.error) || 'Не удалось запустить операцию', 'error');
     }
+  };
+}
+
+function openModeInStore(id) {
+  if (!modeById(id)) return;
+  S.section = 'store';
+  updateSidebar();
+  openDetail(id);
+}
+
+async function startMode(mode, autoPlay = false) {
+  if (!mode) return;
+  if (S.busy) {
+    toast('Дождись завершения текущей операции', 'warn');
+    return;
+  }
+  if (S.running === mode.id) return;
+  let action = computeAction(mode);
+  if (action === 'running') return;
+  if (action === 'add') {
+    try {
+      const res = await api.setLibrary(mode.id, true);
+      if (!res || !res.ok) throw new Error((res && res.error) || 'Ошибка');
+      const st = S.state[mode.id] || { installed: false, version: null, installedAt: 0 };
+      S.state[mode.id] = { ...st, library: true, hidden: false };
+      renderStore();
+      renderLibrary();
+      toast('Режим добавлен в библиотеку', 'ok');
+    } catch (err) {
+      toast('Не удалось добавить режим: ' + err, 'error');
+      return;
+    }
+    action = computeAction(mode);
+    if (action === 'add' || action === 'running') return;
+    if (action === 'play') {
+      await startMode(mode, autoPlay);
+      return;
+    }
+  }
+  if (!S.current) {
+    openModal('modal-account');
+    toast('Сначала войди в аккаунт Ely.by', 'warn');
+    return;
+  }
+
+  S.busy = { modeId: mode.id, action };
+  S.progress = 0;
+  S.status = action === 'play' ? 'Запускаю Minecraft…' : 'Устанавливаю режим…';
+  if (S.view === 'detail') updateDetailAction();
+  S.pendingPlay = action !== 'play' && autoPlay ? mode.id : null;
+  toast(action === 'play' ? 'Запускаю режим…' : 'Устанавливаю режим…', 'info');
+
+  let res;
+  try {
+    res = action === 'play' ? await api.play(mode.id) : await api.install(mode.id);
+  } catch (err) {
+    res = { ok: false, error: String(err) };
+  }
+  if (!res || !res.ok) {
+    S.busy = null;
+    S.pendingPlay = null;
+    S.status = 'Ошибка';
+    if (S.view === 'detail') updateDetailAction();
+    toast((res && res.error) || 'Не удалось выполнить действие', 'error');
+  }
+}
+
+function closeCardContext() {
+  if (els.cardContext) els.cardContext.hidden = true;
+}
+
+function openCardContext(card, x, y, playMode) {
+  if (!els.cardContext) return;
+  const mode = modeById(card.dataset.id);
+  if (!mode) return;
+  const installed = isInstalled(mode);
+  const inLib = inLibrary(mode);
+  const actions = [
+    { action: 'play', label: installed ? 'Играть' : 'Установить', primary: true }
+  ];
+  if (playMode) actions.push({ action: 'store', label: 'Найти в магазине' });
+  if (installed) actions.push({ action: 'folder', label: 'Открыть папку' });
+  actions.push({
+    action: inLib ? 'hide' : 'addlib',
+    label: inLib ? 'Убрать из библиотеки' : 'Добавить в библиотеку'
+  });
+  if (installed) actions.push({ action: 'uninstall', label: 'Удалить с устройства', danger: true });
+
+  els.cardContext.innerHTML = actions.map((item) => `
+    <button type="button" data-context-action="${item.action}" class="${item.primary ? 'primary' : ''} ${item.danger ? 'danger' : ''}">
+      ${escapeHtml(item.label)}
+    </button>`).join('');
+  els.cardContext.hidden = false;
+  const width = 208;
+  const height = els.cardContext.offsetHeight;
+  els.cardContext.style.left = `${Math.max(8, Math.min(x, window.innerWidth - width - 8))}px`;
+  els.cardContext.style.top = `${Math.max(8, Math.min(y, window.innerHeight - height - 8))}px`;
+  els.cardContext.onclick = (event) => {
+    const button = event.target.closest('[data-context-action]');
+    if (!button) return;
+    closeCardContext();
+    handleCardAction(mode.id, button.dataset.contextAction, playMode);
   };
 }
 
@@ -1339,6 +1489,8 @@ function onGameEvent(ev) {
       break;
     }
     case 'installed': {
+      const shouldPlay = !!(mode && S.pendingPlay === mode.id);
+      S.pendingPlay = null;
       S.busy = null;
       S.progress = 1;
       S.status = 'Установлено';
@@ -1350,6 +1502,7 @@ function onGameEvent(ev) {
       renderStore();
       renderLibrary();
       if (S.view === 'detail' && isCurrent) renderDetail();
+      if (shouldPlay && mode) setTimeout(() => startMode(mode), 250);
       break;
     }
     case 'launched': {
@@ -1377,6 +1530,7 @@ function onGameEvent(ev) {
       break;
     }
     case 'cancelled': {
+      S.pendingPlay = null;
       S.busy = null;
       S.progress = 0;
       S.status = 'Отменено';
@@ -1387,6 +1541,7 @@ function onGameEvent(ev) {
       break;
     }
     case 'error': {
+      S.pendingPlay = null;
       S.busy = null;
       S.progress = 0;
       if (S.running === ev.modeId) S.running = null;
