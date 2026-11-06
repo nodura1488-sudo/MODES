@@ -154,12 +154,21 @@ pub struct FileMeta {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase", default)]
+pub struct ArchivePart {
+    pub path: String,
+    pub size: u64,
+    pub sha256: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase", default)]
 pub struct ArchiveMeta {
     pub path: String,
     pub size: u64,
     pub sha256: Option<String>,
     pub files: u64,
     pub bytes: u64,
+    pub parts: Vec<ArchivePart>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -380,32 +389,78 @@ fn sync_build_archive(
     }
 
     on_event(GameEvent::Status("Установка режима".into()));
+    let parts = if archive.parts.is_empty() {
+        vec![ArchivePart {
+            path: archive.path.clone(),
+            size: archive.size,
+            sha256: archive.sha256.clone(),
+        }]
+    } else {
+        archive.parts.clone()
+    };
+    let total_bytes = parts
+        .iter()
+        .map(|part| part.size)
+        .sum::<u64>()
+        .max(archive.size)
+        .max(1);
     let temp = std::env::temp_dir().join(format!(
         "tmstore-{}-{}.zip",
         mode.id,
         std::process::id()
     ));
-    let url = raw_url(&settings.github_repo, branch, &["modes", &mode.id, &archive.path])?;
-    let mut last_emit = 0u64;
-    let download = download_file(
-        &url,
-        &temp,
-        Some(&settings.github_token),
-        cancel,
-        |done, total| {
-            if done == total || done.saturating_sub(last_emit) >= 256 * 1024 {
-                last_emit = done;
-                on_event(GameEvent::Progress {
-                    task: done,
-                    total: total.max(done),
-                });
-            }
-        },
-    );
-    if let Err(err) = download {
-        let _ = fs::remove_file(&temp);
-        return Err(err);
+    let mut combined = fs::File::create(&temp)
+        .map_err(|e| format!("Не удалось создать файл: {e}"))?;
+    let mut offset = 0u64;
+    for (index, part) in parts.iter().enumerate() {
+        let part_path = std::env::temp_dir().join(format!(
+            "tmstore-{}-{}.part{}",
+            mode.id,
+            std::process::id(),
+            index + 1
+        ));
+        let url = raw_url(
+            &settings.github_repo,
+            branch,
+            &["modes", &mode.id, &part.path],
+        )?;
+        let mut last_emit = 0u64;
+        let download = download_file(
+            &url,
+            &part_path,
+            Some(&settings.github_token),
+            cancel,
+            |done, _| {
+                if done == part.size || done.saturating_sub(last_emit) >= 256 * 1024 {
+                    last_emit = done;
+                    on_event(GameEvent::Progress {
+                        task: offset.saturating_add(done),
+                        total: total_bytes,
+                    });
+                }
+            },
+        );
+        if let Err(err) = download {
+            let _ = fs::remove_file(&part_path);
+            let _ = fs::remove_file(&temp);
+            return Err(err);
+        }
+        let mut downloaded = fs::File::open(&part_path)
+            .map_err(|e| format!("Не удалось открыть часть архива: {e}"))?;
+        std::io::copy(&mut downloaded, &mut combined)
+            .map_err(|e| format!("Не удалось собрать архив: {e}"))?;
+        offset = offset.saturating_add(
+            fs::metadata(&part_path)
+                .map(|meta| meta.len())
+                .unwrap_or(part.size),
+        );
+        let _ = fs::remove_file(&part_path);
+        on_event(GameEvent::Progress {
+            task: offset,
+            total: total_bytes,
+        });
     }
+    drop(combined);
 
     if let Some(expected) = archive.sha256.as_deref().filter(|hash| !hash.is_empty()) {
         let actual = sha256_file(&temp)?;
