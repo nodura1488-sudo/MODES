@@ -230,11 +230,17 @@ pub fn game_open_mode_folder(state: State<'_, AppState>, mode_id: String) -> Res
     }
     let settings = state.store.lock().unwrap().settings.clone();
     let base = std::path::Path::new(&settings.dir);
-    let dir = base.join("games").join(&mode_id);
-    let dir = if dir.exists() { dir } else { base.join(&mode_id) };
-    if !dir.exists() {
-        return Err("Папка режима не найдена".to_string());
-    }
+    let new_dir = base.join("games").join(&mode_id);
+    let old_dir = base.join(&mode_id);
+    let dir = if new_dir.exists() {
+        new_dir
+    } else if old_dir.exists() {
+        old_dir
+    } else {
+        std::fs::create_dir_all(&new_dir)
+            .map_err(|e| format!("Не удалось создать папку режима: {e}"))?;
+        new_dir
+    };
     open_path(&dir)
 }
 

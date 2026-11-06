@@ -764,7 +764,12 @@ function wireImage(img, mode) {
 
 function bindDetail() {
   els.detailBack.onclick = () => showStore();
-  els.sideFolder.onclick = () => api.openGameFolder().catch(() => {});
+  els.sideFolder.onclick = () => {
+    if (!S.selectedId) return;
+    api.openModeFolder(S.selectedId).catch((err) => {
+      toast('Не удалось открыть папку: ' + err, 'error');
+    });
+  };
   els.spotlightLink.onclick = () => {
     const section = els.detailChangelogSection;
     if (!section) return;
@@ -1020,7 +1025,7 @@ function renderDetail() {
   els.detailMeta.innerHTML = [
     ['Версия', 'v' + (mode.version || '-')],
     ['Minecraft', mode.mcVersion || '-'],
-    ['Загрузчик', loaderLabel(mode)],
+    ['Ядро', loaderLabel(mode)],
     ['Размер', mode.size || '-'],
     ['Вышла', released ? formatUpdateDate(released) : '-'],
     ['Обновлено', updated]
