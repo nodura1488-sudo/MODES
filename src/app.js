@@ -116,6 +116,12 @@ const els = {
   updateNotes: $('update-notes'),
   btnUpdateDownload: $('btn-update-download'),
   toast: $('toast'),
+  confirmModal: $('modal-confirm'),
+  confirmTitle: $('confirm-title'),
+  confirmText: $('confirm-text'),
+  btnConfirmOk: $('btn-confirm-ok'),
+  btnConfirmCancel: $('btn-confirm-cancel'),
+  btnConfirmX: $('btn-confirm-x'),
   detailBack: $('detail-back'),
   detailImg: $('detail-img'),
   detailTitle: $('detail-title'),
@@ -682,7 +688,11 @@ async function handleCardAction(modeId, action) {
   }
 
   if (action === 'uninstall') {
-    if (!confirm(`Удалить режим «${mode.title}» с устройства? Файлы сборки будут удалены.`)) return;
+    if (!(await askConfirm(
+      'Удалить режим?',
+      `Удалить режим «${mode.title}» с устройства? Файлы сборки будут удалены.`,
+      'Удалить с устройства'
+    ))) return;
     try {
       const res = await api.uninstall(modeId);
       if (!res || !res.ok) throw new Error((res && res.error) || 'Ошибка');
@@ -1192,7 +1202,7 @@ function onGameEvent(ev) {
         ? ev.payload.task / ev.payload.total
         : 0;
       S.progress = Math.max(0, Math.min(1, p));
-      S.status = `Загрузка… ${Math.round(S.progress * 100)}%`;
+      S.status = `Загрузка: ${Math.round(S.progress * 100)}%`;
       if (isCurrent) updateDetailAction();
       break;
     }
@@ -1819,12 +1829,36 @@ function closeModals() {
   closeElyLogin();
 }
 
+let confirmResolve = null;
+
+function askConfirm(title, text, okLabel = 'Удалить') {
+  return new Promise((resolve) => {
+    confirmResolve = resolve;
+    els.confirmTitle.textContent = title;
+    els.confirmText.textContent = text;
+    els.btnConfirmOk.textContent = okLabel;
+    els.confirmModal.hidden = false;
+    els.btnConfirmOk.focus();
+  });
+}
+
+function closeConfirm(value) {
+  els.confirmModal.hidden = true;
+  if (confirmResolve) {
+    const resolve = confirmResolve;
+    confirmResolve = null;
+    resolve(value);
+  }
+}
+
 function closeTopModal() {
   const openModals = [...document.querySelectorAll('.modal-overlay:not([hidden])')];
   if (!openModals.length) return false;
   const top = openModals[openModals.length - 1];
   if (top.id === 'modal-ely-login') {
     closeElyLogin();
+  } else if (top.id === 'modal-confirm') {
+    closeConfirm(false);
   } else {
     top.hidden = true;
   }
@@ -1832,10 +1866,15 @@ function closeTopModal() {
 }
 
 function bindModals() {
+  els.btnConfirmOk.onclick = () => closeConfirm(true);
+  els.btnConfirmCancel.onclick = () => closeConfirm(false);
+  els.btnConfirmX.onclick = () => closeConfirm(false);
   document.querySelectorAll('[data-close]').forEach((btn) => {
     btn.onclick = () => {
       if (btn.dataset.close === 'modal-ely-login') {
         closeElyLogin();
+      } else if (btn.dataset.close === 'modal-confirm') {
+        closeConfirm(false);
       } else {
         const target = $(btn.dataset.close);
         if (target) target.hidden = true;
@@ -1846,6 +1885,7 @@ function bindModals() {
     ov.addEventListener('mousedown', (e) => {
       if (e.target !== ov) return;
       if (ov.id === 'modal-ely-login') closeElyLogin();
+      else if (ov.id === 'modal-confirm') closeConfirm(false);
       else ov.hidden = true;
     });
   });

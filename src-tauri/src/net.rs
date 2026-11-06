@@ -391,11 +391,11 @@ pub fn sync_build(
         .sum();
     let mut done_bytes = 0u64;
 
+    on_event(GameEvent::Status("Скачивание сборки…".into()));
     for rel in &to_download {
         if cancel.load(Ordering::Relaxed) {
             return Err("Операция отменена".to_string());
         }
-        on_event(GameEvent::Status(format!("Скачивание: {rel}")));
         let Some(dest) = safe_join(game_dir, rel) else {
             return Err(format!("Опасный путь в манифесте: {rel}"));
         };

@@ -786,6 +786,14 @@ body::after {
 }
 .modal-close { border-radius: 5px; color: #8f857e; }
 .modal-close:hover { background: rgba(229, 50, 43, 0.16); color: #ff8a7a; }
+.confirm-modal { width: min(440px, calc(100vw - 48px)); }
+.confirm-modal .modal-actions { margin-top: 20px; }
+.confirm-modal .btn-danger {
+  background: linear-gradient(180deg, #ff5c55, #d92b25);
+  border-color: #ff6a5c;
+  box-shadow: 0 6px 18px rgba(229, 50, 43, 0.2);
+}
+.confirm-modal .btn-danger:hover { background: linear-gradient(180deg, #ff756c, #e5322b); }
 
 .field > label { color: #9a9088; letter-spacing: 1.4px; }
 .field output { color: #ff8a5c; }

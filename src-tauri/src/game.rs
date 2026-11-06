@@ -6,7 +6,7 @@ use mc_launcher_core::prelude::{
     Account as McAccount, CompatibilityPolicy, InstallRequest, JavaInstallPolicy, LaunchOptions,
     Launcher, LoaderSpec, LoaderVersion,
 };
-use mc_launcher_core::progress::ProgressEvent;
+use mc_launcher_core::progress::{InstallStage, ProgressEvent};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -595,27 +595,45 @@ fn progress_reporter<'a>(
     on_event: &'a mut dyn FnMut(GameEvent),
     cancel: &'a AtomicBool,
 ) -> impl FnMut(ProgressEvent) + 'a {
+    let mut percent = 0u32;
+    let mut base = 0u32;
+    let mut span = 5u32;
+    let mut done = 0u32;
     move |event: ProgressEvent| {
         if cancelled(cancel) {
             return;
         }
         match event {
-            ProgressEvent::StageStarted { .. } => {
-                on_event(GameEvent::Status("Подготовка файлов…".to_string()));
-            }
-            ProgressEvent::TaskStarted { label, .. } => {
-                on_event(GameEvent::Status(label));
-            }
-            ProgressEvent::TaskSkipped { .. } | ProgressEvent::TaskFinished { .. } => {}
-            ProgressEvent::BytesReceived {
-                received, total, ..
-            } => {
-                let total = total.unwrap_or(received).max(received);
+            ProgressEvent::StageStarted { stage } => {
+                let (next_base, next_span) = match stage {
+                    InstallStage::ResolveVersion => (2, 6),
+                    InstallStage::DownloadLibraries => (8, 32),
+                    InstallStage::DownloadAssets => (40, 35),
+                    InstallStage::InstallRuntime => (75, 4),
+                    InstallStage::LoaderInstall => (79, 12),
+                    InstallStage::ExtractNatives => (91, 4),
+                    InstallStage::Verify => (95, 4),
+                };
+                base = next_base;
+                span = next_span;
+                done = 0;
+                percent = percent.max(base);
                 on_event(GameEvent::Progress {
-                    task: received,
-                    total,
+                    task: percent as u64,
+                    total: 100,
                 });
             }
+            ProgressEvent::TaskStarted { .. } => {}
+            ProgressEvent::TaskSkipped { .. } | ProgressEvent::TaskFinished { .. } => {
+                done += 1;
+                let target = base as f64 + span as f64 * (done as f64 / (done as f64 + 4.0));
+                percent = percent.max(target as u32).min(base + span);
+                on_event(GameEvent::Progress {
+                    task: percent as u64,
+                    total: 100,
+                });
+            }
+            ProgressEvent::BytesReceived { .. } => {}
         }
     }
 }
