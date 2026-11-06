@@ -1293,7 +1293,7 @@ function openDetail(id) {
   els.libraryView.hidden = true;
   els.detailView.hidden = false;
   S.view = 'detail';
-  els.detailBackLabel.textContent = S.detailFrom === 'library' ? 'Назад в библиотеку' : 'Назад в магазин';
+  els.detailBackLabel.textContent = S.detailFrom === 'library' ? 'Назад в библиотеку' : 'Назад в каталог';
   renderDetail();
   $('app').scrollTop = 0;
 }
@@ -1469,14 +1469,14 @@ function renderDetail() {
   }
 
   const latest = latestUpdateEntry(mode);
-  const updated = latest && latest.date ? formatUpdateDate(latest.date) : '-';
+  const updated = latest && latest.date ? formatUpdateDate(latest.date) : '—';
   const released = modeReleaseDate(mode);
   els.detailMeta.innerHTML = [
-    ['Версия', 'v' + (mode.version || '-')],
-    ['Minecraft', mode.mcVersion || '-'],
+    ['Версия', 'v' + (mode.version || '—')],
+    ['Minecraft', mode.mcVersion || '—'],
     ['Ядро', loaderLabel(mode)],
-    ['Размер', mode.size || '-'],
-    ['Вышла', released ? formatUpdateDate(released) : '-'],
+    ['Размер', mode.size || '—'],
+    ['Вышла', released ? formatUpdateDate(released) : '—'],
     ['Обновлено', updated],
     ['Наиграно', formatPlaytime(S.state[mode.id] && S.state[mode.id].playtimeSecs)]
   ].map(([label, value]) => `
