@@ -97,21 +97,20 @@ pub fn win_splash(window: Window) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn win_ready(window: Window, state: State<'_, AppState>) -> Result<(), String> {
-    let (width, height) = {
-        let store = state.store.lock().unwrap();
-        (
-            store.settings.launcher_width.max(980.0) as f64,
-            store.settings.launcher_height.max(640.0) as f64,
-        )
-    };
+pub fn win_ready(window: Window) -> Result<(), String> {
+    const WIDTH: f64 = 1280.0;
+    const HEIGHT: f64 = 800.0;
     window
-        .set_min_size(Some(tauri::LogicalSize::new(980.0, 640.0)))
+        .set_size(tauri::LogicalSize::new(WIDTH, HEIGHT))
         .map_err(|e| e.to_string())?;
     window
-        .set_size(tauri::LogicalSize::new(width, height))
+        .set_min_size(Some(tauri::LogicalSize::new(WIDTH, HEIGHT)))
         .map_err(|e| e.to_string())?;
-    window.set_resizable(true).map_err(|e| e.to_string())?;
+    window
+        .set_max_size(Some(tauri::LogicalSize::new(WIDTH, HEIGHT)))
+        .map_err(|e| e.to_string())?;
+    window.set_resizable(false).map_err(|e| e.to_string())?;
+    window.set_maximizable(false).map_err(|e| e.to_string())?;
     window.center().map_err(|e| e.to_string())?;
     let _ = window.set_focus();
     Ok(())
