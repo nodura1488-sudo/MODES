@@ -267,13 +267,13 @@ body::after {
   background: #0b0b0b;
 }
 .featured img {
-  opacity: 0.78;
-  filter: grayscale(1) contrast(1.1) brightness(0.62);
+  opacity: 1;
+  filter: none;
   transition: transform 0.65s ease, filter 0.4s ease;
 }
 .featured:hover img {
   transform: scale(1.025);
-  filter: grayscale(0.72) contrast(1.08) brightness(0.7);
+  filter: brightness(1.03);
 }
 .featured-shade {
   z-index: 1;
@@ -387,11 +387,11 @@ body::after {
 
 .card-media { background: #0a0a0a; }
 .card-media img {
-  filter: grayscale(1) contrast(1.08) brightness(0.68);
+  filter: none;
   transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1), filter 0.3s ease;
 }
 .mode-card:hover .card-media img {
-  filter: grayscale(0.55) contrast(1.08) brightness(0.8);
+  filter: brightness(1.03);
 }
 .card-media::before {
   content: '';
@@ -399,13 +399,11 @@ body::after {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(229, 50, 43, 0.1), transparent 46%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 3px);
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 3px);
 }
 .card-media::after {
   z-index: 1;
-  background: linear-gradient(0deg, rgba(8, 8, 8, 0.92), rgba(8, 8, 8, 0.15) 52%, transparent);
+  background: linear-gradient(0deg, rgba(8, 8, 8, 0.28), transparent 38%);
 }
 
 .card-badge {
@@ -579,7 +577,7 @@ body::after {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.62), 0 0 42px rgba(229, 50, 43, 0.08);
 }
 .detail-hero img {
-  filter: grayscale(1) contrast(1.08) brightness(0.62);
+  filter: none;
 }
 .detail-hero-shade {
   background:

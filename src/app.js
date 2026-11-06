@@ -1570,7 +1570,7 @@ function onGameEvent(ev) {
       S.running = ev.modeId;
       S.progress = 1;
       S.status = 'Игра запущена';
-      toast('Игра запущена. Удачной катки!', 'ok');
+      toast('Игра запущена!', 'ok');
       renderStore();
       renderLibrary();
       if (S.view === 'detail' && isCurrent) renderDetail();
