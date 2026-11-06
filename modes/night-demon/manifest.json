@@ -1,7 +1,14 @@
 {
   "mode": "night-demon",
   "version": "1.0.0",
-  "generatedAt": "2026-11-06T00:36:16.965Z",
+  "generatedAt": "2026-11-06T13:08:58.630Z",
+  "archive": {
+    "path": "build.zip",
+    "size": 23024495,
+    "sha256": "eb31cb8a3cae3d791ff06448733c1f0c4b20cda96f7f08f100ee8d9e4f6434c1",
+    "files": 53,
+    "bytes": 60602920
+  },
   "files": {
     "mods/CTM-MC1.12.2-1.0.2.31.jar": {
       "sha256": "433f441dc9c0aa75a4168df832900720ddadac1f22cc3bba4e4f25ca789b268b",
