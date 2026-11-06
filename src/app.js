@@ -761,7 +761,22 @@ function renderModeGrid(container, list, withMenu = false, playMode = false) {
 function updateCardProgress() {
   document.querySelectorAll('[data-card-progress]').forEach((bar) => {
     const card = bar.closest('.mode-card');
-    const active = !!(S.busy && card && S.busy.modeId === card.dataset.id);
+    if (!card) return;
+    const mode = modeById(card.dataset.id);
+    if (mode) {
+      const meta = libraryStateMeta(mode);
+      const state = card.querySelector('[data-card-state]');
+      if (state) {
+        state.className = `card-state state-${meta.cls}`;
+        state.textContent = meta.label;
+      }
+      const play = card.querySelector('.card-play');
+      if (play) {
+        play.disabled = !!meta.busy;
+        play.dataset.cardAction = meta.action;
+      }
+    }
+    const active = !!(S.busy && S.busy.modeId === card.dataset.id);
     bar.hidden = !active;
     if (!active) return;
     const percent = Math.max(0, Math.min(100, Math.round((Number(S.progress) || 0) * 100)));
@@ -866,6 +881,18 @@ async function handleCardAction(modeId, action, autoPlay = false) {
 }
 
 function libraryStateMeta(mode) {
+  if (S.busy && S.busy.modeId === mode.id) {
+    const percent = Math.max(0, Math.min(100, Math.round((Number(S.progress) || 0) * 100)));
+    const kind = S.busy.action === 'update' ? 'update' : S.busy.action === 'play' ? 'ready' : 'install';
+    const prefix = kind === 'update' ? 'Обновление' : kind === 'ready' ? 'Запуск' : 'Установка';
+    return {
+      cls: kind,
+      label: `${prefix} ${percent}%`,
+      icon: kind === 'update' ? 'update' : kind === 'ready' ? 'play' : 'install',
+      action: 'play',
+      busy: true
+    };
+  }
   const action = computeAction(mode);
   if (action === 'running') return { cls: 'running', label: 'Запущено', icon: 'stop', action: 'stop' };
   if (action === 'update') return { cls: 'update', label: 'Обновить', icon: 'update', action: 'play' };
@@ -899,7 +926,7 @@ function modeCardHtml(mode, withMenu = false, playMode = false) {
     <article class="mode-card ${installed ? 'installed' : ''}" data-id="${escapeHtml(mode.id)}">
       <div class="card-media">
         <img src="${escapeHtml(imageSrc(mode))}" alt="" loading="lazy" data-fallback>
-        ${playMode ? `<button class="card-play state-${stateMeta.cls}" data-card-action="${stateMeta.action}" type="button" aria-label="${escapeHtml(stateMeta.action === 'stop' ? 'Закрыть игру' : stateMeta.label)}: ${escapeHtml(mode.title || 'режим')}">${cardPlayIcon(stateMeta.icon)}</button>` : ''}
+        ${playMode ? `<button class="card-play state-${stateMeta.cls}" data-card-action="${stateMeta.action}" type="button" aria-label="${escapeHtml(stateMeta.action === 'stop' ? 'Закрыть игру' : stateMeta.label)}: ${escapeHtml(mode.title || 'режим')}" ${stateMeta.busy ? 'disabled' : ''}>${cardPlayIcon(stateMeta.icon)}</button>` : ''}
         <div class="card-badge ${st.cls}">${st.text}</div>
         ${playMode ? `<div class="card-progress" data-card-progress role="progressbar" aria-label="Прогресс" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><span></span></div>` : ''}
         ${withMenu ? `<button class="card-menu-btn" type="button" title="Действия" aria-label="Действия">⋯</button>` : ''}
@@ -914,7 +941,7 @@ function modeCardHtml(mode, withMenu = false, playMode = false) {
         <div class="card-foot">
           <span class="card-size">${escapeHtml(mode.size || '—')}</span>
           ${playMode
-            ? `<span class="card-state state-${stateMeta.cls}">${escapeHtml(stateMeta.label)}</span>`
+            ? `<span class="card-state state-${stateMeta.cls}" data-card-state>${escapeHtml(stateMeta.label)}</span>`
             : `<button class="btn btn-small btn-ghost" type="button" aria-label="Подробнее: ${escapeHtml(mode.title || 'режим')}">Подробнее</button>`}
         </div>
       </div>
