@@ -21,6 +21,7 @@
     getCachedModes: () => invoke("modes_cached"),
     refreshModes: () => invoke("modes_refresh"),
     getState: () => invoke("state_get"),
+    getSystemRam: () => invoke("system_ram_gb"),
     getSettings: () => invoke("settings_get"),
     saveSettings: (patch) => invoke("settings_save", { patch }),
     chooseDir: () => invoke("settings_choose_dir"),

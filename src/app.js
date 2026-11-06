@@ -48,6 +48,7 @@ const S = {
   modes: [],
   state: {},
   settings: null,
+  systemRamGb: 0,
   accounts: [],
   current: null,
   selectedId: null,
@@ -190,6 +191,12 @@ async function init() {
   if (api && api.getAppDataPath) {
     api.getAppDataPath().then((dir) => {
       S.dataDir = dir || '';
+    }).catch(() => {});
+  }
+  if (api && api.getSystemRam) {
+    api.getSystemRam().then((gb) => {
+      S.systemRamGb = Number(gb) || 0;
+      applyRamLimit();
     }).catch(() => {});
   }
 
@@ -2111,6 +2118,16 @@ function renderAccountList() {
 
 // ---------------------------------------------------------------- настройки
 
+function applyRamLimit() {
+  if (!els.ram) return;
+  const total = Math.floor(Number(S.systemRamGb) || 0);
+  if (total < 2) return;
+  els.ram.max = String(total);
+  const current = Math.min(Math.max(2, Number(els.ram.value) || 4), total);
+  els.ram.value = String(current);
+  els.ramOut.textContent = `${current} ГБ`;
+}
+
 function bindSettings() {
   els.ram.addEventListener('input', () => {
     els.ramOut.textContent = `${els.ram.value} ГБ`;
@@ -2159,8 +2176,11 @@ function setSettingsTab(name) {
 
 function fillSettingsForm() {
   const s = S.settings || {};
-  els.ram.value = s.ramGb || 4;
-  els.ramOut.textContent = `${s.ramGb || 4} ГБ`;
+  const total = Math.floor(Number(S.systemRamGb) || 0);
+  if (total >= 2) els.ram.max = String(total);
+  const ram = Math.min(Number(s.ramGb) || 4, Number(els.ram.max) || 32);
+  els.ram.value = String(ram);
+  els.ramOut.textContent = `${ram} ГБ`;
   els.setDir.value = s.dir || '';
   els.setJava.value = s.javaPath || '';
   els.setWidth.value = s.width || 925;

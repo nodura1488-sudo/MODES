@@ -135,6 +135,14 @@ pub async fn modes_refresh(state: State<'_, AppState>) -> Result<Vec<Mode>, Stri
 }
 
 #[tauri::command]
+pub fn system_ram_gb() -> u32 {
+    let mut system = sysinfo::System::new();
+    system.refresh_memory();
+    let gb = system.total_memory() as f64 / (1024.0 * 1024.0 * 1024.0);
+    gb.round().max(2.0) as u32
+}
+
+#[tauri::command]
 pub fn state_get(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
     let store = state.store.lock().unwrap();
     serde_json::to_value(&store.state).map_err(|e| e.to_string())

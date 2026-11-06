@@ -26,6 +26,7 @@ fn main() {
             commands::modes_cached,
             commands::modes_refresh,
             commands::state_get,
+            commands::system_ram_gb,
             commands::settings_get,
             commands::settings_save,
             commands::settings_choose_dir,

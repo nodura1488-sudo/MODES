@@ -1,6 +1,6 @@
 [package]
 name = "tmstore"
-version = "0.4.39"
+version = "0.4.40"
 description = "TMStore - Minecraft mode store with Ely.by accounts"
 authors = ["TM"]
 license = "MIT"
@@ -20,6 +20,7 @@ uuid = { version = "1", features = ["v4"] }
 rfd = "0.17"
 open = "5"
 dirs = "6"
+sysinfo = "0.39"
 url = "2"
 mc-launcher-core = "0.1.2"
 
