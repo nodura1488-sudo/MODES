@@ -881,20 +881,41 @@ async function handleCardAction(modeId, action, autoPlay = false) {
   }
 }
 
+function libraryStateMeta(mode) {
+  const action = computeAction(mode);
+  if (action === 'running') return { cls: 'running', label: 'Запущено', icon: 'running' };
+  if (action === 'update') return { cls: 'update', label: 'Обновить', icon: 'update' };
+  if (action === 'play') return { cls: 'ready', label: 'Готово к игре', icon: 'play' };
+  return { cls: 'install', label: 'Установить', icon: 'install' };
+}
+
+function cardPlayIcon(kind) {
+  if (kind === 'install') {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v10"/><path d="m7.5 10 4.5 4.5L16.5 10"/><path d="M5 19h14"/></svg>';
+  }
+  if (kind === 'update') {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v6h-6"/></svg>';
+  }
+  if (kind === 'running') {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="8" opacity=".45"/></svg>';
+  }
+  return '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.5v13a1 1 0 0 0 1.53.85l10-6.5a1 1 0 0 0 0-1.7l-10-6.5a1 1 0 0 0-1.53.85Z"/></svg>';
+}
+
 function modeCardHtml(mode, withMenu = false, playMode = false) {
   const st = cardStatus(mode);
   const installed = isInstalled(mode);
   const released = modeReleaseDate(mode);
   const status = modeStatusMeta(mode);
+  const stateMeta = playMode ? libraryStateMeta(mode) : null;
   const tags = modeTags(mode, 3)
     .map((t) => `<span>${escapeHtml(t)}</span>`)
     .join('');
-  const footerLabel = playMode ? (installed ? 'Играть' : 'Установить') : 'Подробнее';
   return `
     <article class="mode-card ${installed ? 'installed' : ''}" data-id="${escapeHtml(mode.id)}">
       <div class="card-media">
         <img src="${escapeHtml(imageSrc(mode))}" alt="" loading="lazy" data-fallback>
-        ${playMode && installed ? `<button class="card-play" data-card-action="play" type="button" aria-label="Играть">▶</button>` : ''}
+        ${playMode ? `<button class="card-play state-${stateMeta.cls}" data-card-action="play" type="button" aria-label="${escapeHtml(stateMeta.label)}: ${escapeHtml(mode.title || 'режим')}" ${stateMeta.cls === 'running' ? 'disabled' : ''}>${cardPlayIcon(stateMeta.icon)}</button>` : ''}
         <div class="card-badge ${st.cls}">${st.text}</div>
         ${withMenu ? `
           <button class="card-menu-btn" type="button" title="Действия" aria-label="Действия">⋯</button>
@@ -912,8 +933,10 @@ function modeCardHtml(mode, withMenu = false, playMode = false) {
         <div class="card-desc">${escapeHtml(modeShortDescription(mode))}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ''}
         <div class="card-foot">
-          <span class="card-size">${escapeHtml(mode.size || '-')}</span>
-          <button class="btn btn-small ${playMode ? 'btn-primary' : 'btn-ghost'}" type="button" ${playMode ? 'data-card-action="play"' : ''} aria-label="${footerLabel}: ${escapeHtml(mode.title || 'режим')}">${footerLabel}</button>
+          <span class="card-size">${escapeHtml(mode.size || '—')}</span>
+          ${playMode
+            ? `<span class="card-state state-${stateMeta.cls}">${escapeHtml(stateMeta.label)}</span>`
+            : `<button class="btn btn-small btn-ghost" type="button" aria-label="Подробнее: ${escapeHtml(mode.title || 'режим')}">Подробнее</button>`}
         </div>
       </div>
     </article>`;
