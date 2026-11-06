@@ -112,7 +112,7 @@ impl Default for Settings {
             fullscreen: false,
             launcher_width: 1200.0,
             launcher_height: 740.0,
-            github_repo: "tommy-whinston/TMLauncher".to_string(),
+            github_repo: "tommy-whinston/TMStore".to_string(),
             github_token: String::new(),
             jvm_flags: true,
             ely_client_id: "tm-launcher".to_string(),
@@ -178,6 +178,7 @@ pub struct ModeState {
     pub installed_at: u64,
     pub hidden: bool,
     pub library: Option<bool>,
+    pub playtime_secs: u64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]

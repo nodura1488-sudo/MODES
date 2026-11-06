@@ -51,6 +51,7 @@
     cancel: () => invoke("game_cancel"),
     uninstall: (modeId) => invoke("game_uninstall", { modeId }),
     setLibrary: (modeId, library) => invoke("game_set_library", { modeId, library }),
+    addPlaytime: (modeId, seconds) => invoke("game_add_playtime", { modeId, seconds }),
     openModeFolder: (modeId) => invoke("game_open_mode_folder", { modeId }),
     onGameEvent: (cb) => listen("game:event", (e) => cb(e.payload))
   };

@@ -1,6 +1,6 @@
 [package]
-name = "tm-launcher"
-version = "0.4.30"
+name = "tmstore"
+version = "0.4.31"
 description = "TMStore - Minecraft mode store with Ely.by accounts"
 authors = ["TM"]
 license = "MIT"

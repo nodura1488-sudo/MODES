@@ -785,8 +785,8 @@ async function handleCardAction(modeId, action, autoPlay = false) {
     return;
   }
 
-  if (action === 'store') {
-    openModeInStore(modeId);
+  if (action === 'page') {
+    openDetail(modeId);
     return;
   }
 
@@ -930,6 +930,12 @@ function formatBytes(bytes) {
 function tagPill(tag) {
   const meta = UPDATE_TAGS[tag] || { label: tag, cls: 'tech' };
   return `<span class="tag-pill ${escapeHtml(meta.cls)}">${escapeHtml(meta.label)}</span>`;
+}
+
+function formatPlaytime(seconds) {
+  const total = Math.max(0, Math.floor(Number(seconds) || 0));
+  if (total <= 0) return '—';
+  return `${(total / 3600).toFixed(1)} ч`;
 }
 
 function formatUpdateDate(value) {
@@ -1119,13 +1125,6 @@ function bindDetail() {
   };
 }
 
-function openModeInStore(id) {
-  if (!modeById(id)) return;
-  S.section = 'store';
-  updateSidebar();
-  openDetail(id);
-}
-
 async function startMode(mode, autoPlay = false) {
   if (!mode) return;
   if (S.busy) {
@@ -1209,7 +1208,7 @@ function openCardContext(card, x, y, playMode) {
     actions.push({ action: 'play', label, primary: true });
   }
 
-  if (playMode) actions.push({ action: 'store', label: 'Найти в магазине' });
+  if (playMode) actions.push({ action: 'page', label: 'Страница режима' });
   if (installed) actions.push({ action: 'folder', label: 'Открыть папку' });
   actions.push({
     action: inLib ? 'hide' : 'addlib',
@@ -1429,7 +1428,8 @@ function renderDetail() {
     ['Ядро', loaderLabel(mode)],
     ['Размер', mode.size || '-'],
     ['Вышла', released ? formatUpdateDate(released) : '-'],
-    ['Обновлено', updated]
+    ['Обновлено', updated],
+    ['Наиграно', formatPlaytime(S.state[mode.id] && S.state[mode.id].playtimeSecs)]
   ].map(([label, value]) => `
     <div class="meta-item">
       <span class="meta-label">${label}</span>
@@ -1528,6 +1528,19 @@ function onGameEvent(ev) {
       renderStore();
       renderLibrary();
       if (S.view === 'detail' && isCurrent) renderDetail();
+      break;
+    }
+    case 'played': {
+      const seconds = Math.max(0, Math.floor(Number(ev.payload) || 0));
+      if (seconds > 0) {
+        const st = S.state[ev.modeId] || { installed: false, version: null, installedAt: 0 };
+        S.state[ev.modeId] = {
+          ...st,
+          playtimeSecs: (Number(st.playtimeSecs) || 0) + seconds
+        };
+        if (api.addPlaytime) api.addPlaytime(ev.modeId, seconds).catch(() => {});
+        if (S.view === 'detail' && isCurrent) renderDetail();
+      }
       break;
     }
     case 'exit': {

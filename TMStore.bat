@@ -9,13 +9,13 @@ if exist "TMStore.exe" (
   exit /b 0
 )
 
-if exist "src-tauri\target-msvc\release\tm-launcher.exe" (
-  start "" "src-tauri\target-msvc\release\tm-launcher.exe"
+if exist "src-tauri\target-msvc\release\tmstore.exe" (
+  start "" "src-tauri\target-msvc\release\tmstore.exe"
   exit /b 0
 )
 
-if exist "src-tauri\target\release\tm-launcher.exe" (
-  start "" "src-tauri\target\release\tm-launcher.exe"
+if exist "src-tauri\target\release\tmstore.exe" (
+  start "" "src-tauri\target\release\tmstore.exe"
   exit /b 0
 )
 

@@ -8,7 +8,7 @@ use std::process::Command;
 use std::time::Duration;
 use tauri::{AppHandle, Emitter};
 
-const REPO: &str = "tommy-whinston/TMLauncher";
+const REPO: &str = "tommy-whinston/TMStore";
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]

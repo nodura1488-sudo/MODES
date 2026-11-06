@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "TMStore",
-  "version": "0.4.30",
-  "identifier": "gg.tm.launcher",
+  "version": "0.4.31",
+  "identifier": "gg.tm.store",
   "build": {
     "frontendDist": "../src"
   },

@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 pub fn app_data_dir() -> PathBuf {
     dirs::data_dir()
         .unwrap_or_else(|| PathBuf::from("."))
-        .join("TMLauncher")
+        .join("TMStore")
 }
 
 /// Переносит настройки и аккаунты из папки старого имени при первом запуске.
@@ -18,7 +18,7 @@ fn migrate_legacy_data(new_dir: &Path) {
     let Some(base) = dirs::data_dir() else {
         return;
     };
-    for old_name in ["TM Launcher", "TDEV Launcher"] {
+    for old_name in ["TMLauncher", "TM Launcher", "TDEV Launcher"] {
         let old_dir = base.join(old_name);
         if !old_dir.is_dir() {
             continue;
@@ -75,8 +75,10 @@ impl Store {
         if settings.dir.trim().is_empty() {
             settings.dir = default_dir.clone();
         }
-        if settings.github_repo.trim().is_empty() {
-            settings.github_repo = "tommy-whinston/TMLauncher".to_string();
+        if settings.github_repo.trim().is_empty()
+            || settings.github_repo == "tommy-whinston/TMLauncher"
+        {
+            settings.github_repo = "tommy-whinston/TMStore".to_string();
         }
         if settings.ely_client_id.trim().is_empty() {
             settings.ely_client_id = "tm-launcher".to_string();
@@ -198,6 +200,11 @@ impl Store {
     }
 
     pub fn set_mode_installed(&mut self, mode_id: &str, version: &str) -> Result<(), String> {
+        let playtime_secs = self
+            .state
+            .get(mode_id)
+            .map(|state| state.playtime_secs)
+            .unwrap_or(0);
         self.state.insert(
             mode_id.to_string(),
             ModeState {
@@ -206,6 +213,7 @@ impl Store {
                 installed_at: now_ms(),
                 hidden: false,
                 library: Some(true),
+                playtime_secs,
             },
         );
         self.save_state()

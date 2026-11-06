@@ -220,6 +220,18 @@ pub fn game_set_library(
 }
 
 #[tauri::command]
+pub fn game_add_playtime(state: State<'_, AppState>, mode_id: String, seconds: u64) -> Value {
+    let mut store = state.store.lock().unwrap();
+    let mode_state = store.state.entry(mode_id).or_insert_with(Default::default);
+    mode_state.playtime_secs = mode_state.playtime_secs.saturating_add(seconds);
+    let playtime = mode_state.playtime_secs;
+    match store.save_state() {
+        Ok(()) => json!({ "ok": true, "playtimeSecs": playtime }),
+        Err(err) => json!({ "ok": false, "error": err }),
+    }
+}
+
+#[tauri::command]
 pub fn game_open_mode_folder(state: State<'_, AppState>, mode_id: String) -> Result<(), String> {
     if mode_id.is_empty()
         || mode_id == ".."

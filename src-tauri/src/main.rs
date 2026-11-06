@@ -47,6 +47,7 @@ fn main() {
             commands::game_cancel,
             commands::game_uninstall,
             commands::game_set_library,
+            commands::game_add_playtime,
             commands::game_open_mode_folder,
             update::check_update,
             update::download_update,

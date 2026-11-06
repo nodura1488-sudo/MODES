@@ -773,6 +773,7 @@ fn launch(
         .spawn()
         .map_err(|e| format!("Не удалось запустить Java: {}", format_error(e)))?;
     on_event(GameEvent::Launched);
+    let play_started = Instant::now();
     let mut code = -1;
     loop {
         if cancelled(cancel) {
@@ -791,6 +792,7 @@ fn launch(
             Err(e) => return Err(format!("Ошибка ожидания процесса игры: {e}")),
         }
     }
+    on_event(GameEvent::Played(play_started.elapsed().as_secs()));
     on_event(GameEvent::Exit(code));
     Ok(())
 }

@@ -23,4 +23,12 @@
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TMLauncher"
   DeleteRegKey HKCU "Software\TM\TMLauncher"
   TMStoreNoLegacyKeys:
+  ; 0.4.30 and older updater restarts the process by its old file name.
+  IfFileExists "$INSTDIR\tmstore.exe" 0 TMStoreCompatDone
+    CopyFiles /SILENT "$INSTDIR\tmstore.exe" "$INSTDIR\tm-launcher.exe"
+  TMStoreCompatDone:
+!macroend
+
+!macro NSIS_HOOK_PREUNINSTALL
+  Delete "$INSTDIR\tm-launcher.exe"
 !macroend

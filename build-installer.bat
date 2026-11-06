@@ -16,7 +16,7 @@ if exist "src-tauri\target-msvc\release\bundle\nsis\*.exe" del /Q "src-tauri\tar
 call "node_modules\.bin\tauri.cmd" build
 if errorlevel 1 goto :fail
 
-copy /Y "src-tauri\target-msvc\release\tm-launcher.exe" "TMStore.exe" >nul
+copy /Y "src-tauri\target-msvc\release\tmstore.exe" "TMStore.exe" >nul
 if errorlevel 1 goto :fail
 
 set "SETUP="

@@ -7,6 +7,7 @@ pub enum GameEvent {
     Progress { task: u64, total: u64 },
     Installed,
     Launched,
+    Played(u64),
     Exit(i32),
     Error(String),
     Cancelled,

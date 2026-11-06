@@ -4297,8 +4297,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fd3ca314f692efd6c868f8408f53fe444634a845f96c028b97d35f6a1f79f0ee"
 
 [[package]]
-name = "tm-launcher"
-version = "0.4.30"
+name = "tmstore"
+version = "0.4.31"
 dependencies = [
  "dirs 6.0.0",
  "mc-launcher-core",

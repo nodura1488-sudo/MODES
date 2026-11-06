@@ -10,7 +10,7 @@ cd /d "%~dp0src-tauri"
 "%CARGO%" build --release
 if errorlevel 1 goto :fail
 
-copy /Y "target-msvc\release\tm-launcher.exe" "..\TMStore.exe" >nul
+copy /Y "target-msvc\release\tmstore.exe" "..\TMStore.exe" >nul
 if errorlevel 1 goto :fail
 
 echo.
