@@ -12,6 +12,7 @@ pub struct HistoryEntry {
     pub title: Option<String>,
     pub tags: Vec<String>,
     pub date: String,
+    pub time: Option<String>,
     pub changes: Vec<String>,
 }
 

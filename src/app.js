@@ -680,6 +680,12 @@ function modeReleaseDate(mode) {
   return '';
 }
 
+function formatHistoryStamp(entry) {
+  const date = entry && entry.date ? formatUpdateDate(entry.date) : '';
+  const time = String((entry && entry.time) || '').slice(0, 5);
+  return [date, time].filter(Boolean).join(' ');
+}
+
 function latestUpdateEntry(mode) {
   if (Array.isArray(mode.history) && mode.history.length) {
     return mode.history[0];
@@ -708,7 +714,7 @@ function renderSpotlight(mode) {
   const title = latest.title || '';
   els.spotlightTitle.textContent = [version, title].filter(Boolean).join(' — ') || 'Обновление режима';
   els.spotlightTag.innerHTML = latest.tags && latest.tags.length ? tagPill(latest.tags[0]) : '';
-  els.spotlightDate.textContent = latest.date ? formatUpdateDate(latest.date) : '';
+  els.spotlightDate.textContent = formatHistoryStamp(latest);
 }
 
 function fallbackArt(mode) {
@@ -945,6 +951,7 @@ function changelogModel(mode) {
       title: entry.title || '',
       tags: Array.isArray(entry.tags) ? entry.tags : [],
       date: entry.date || '',
+      time: entry.time || '',
       lines: Array.isArray(entry.changes) ? entry.changes : []
     }));
   }
@@ -953,6 +960,7 @@ function changelogModel(mode) {
     title: entry.title,
     tags: [],
     date: '',
+    time: '',
     lines: entry.lines
   }));
 }
@@ -975,7 +983,7 @@ function renderChangelog(mode) {
           <span class="changelog-version">${escapeHtml(version)}</span>
           ${name ? `<span class="changelog-title">${escapeHtml(name)}</span>` : ''}
           ${entry.tags.length ? tagPill(entry.tags[0]) : ''}
-          ${entry.date ? `<span class="changelog-date">${escapeHtml(formatUpdateDate(entry.date))}</span>` : ''}
+          ${formatHistoryStamp(entry) ? `<span class="changelog-date">${escapeHtml(formatHistoryStamp(entry))}</span>` : ''}
           <svg class="changelog-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9 L12 15 L18 9"/></svg>
         </summary>
         <div class="changelog-body">
