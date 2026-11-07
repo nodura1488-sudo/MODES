@@ -3,7 +3,7 @@
 async function connect(port = 9222) {
   const response = await fetch(`http://127.0.0.1:${port}/json`);
   const targets = await response.json();
-  const target = targets.find((item) => item.type === 'page' && /TMStore/i.test(item.title)) || targets[0];
+  const target = targets.find((item) => item.type === 'page' && /Lavunio/i.test(item.title)) || targets[0];
   if (!target) throw new Error('CDP target not found');
 
   const ws = new WebSocket(target.webSocketDebuggerUrl);

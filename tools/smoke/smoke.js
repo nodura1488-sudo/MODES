@@ -14,7 +14,7 @@ function argValue(name, fallback) {
   return args[index + 1] || fallback;
 }
 
-const exe = path.resolve(ROOT, argValue('--exe', 'TMStore.exe'));
+const exe = path.resolve(ROOT, argValue('--exe', 'Lavunio.exe'));
 const port = Number(argValue('--port', '9262')) || 9262;
 const allowRunning = args.includes('--allow-running');
 const artifacts = path.join(__dirname, 'artifacts');
@@ -31,8 +31,8 @@ function assert(condition, message) {
 
 function launcherIsRunning() {
   try {
-    const output = execFileSync('tasklist', ['/FI', 'IMAGENAME eq tmstore.exe'], { encoding: 'utf8' });
-    return /tmstore\.exe/i.test(output);
+    const output = execFileSync('tasklist', ['/FI', 'IMAGENAME eq lavunio.exe'], { encoding: 'utf8' });
+    return /lavunio\.exe/i.test(output);
   } catch {
     return false;
   }
@@ -67,7 +67,7 @@ async function waitFor(check, timeoutMs, intervalMs = 150) {
 
   try {
     assert(fs.existsSync(exe), `Launcher not found: ${exe}`);
-    assert(!launcherIsRunning() || allowRunning, 'TMStore is already running. Close it before the smoke test.');
+    assert(!launcherIsRunning() || allowRunning, 'Lavunio is already running. Close it before the smoke test.');
 
     child = spawn(exe, [], {
       cwd: path.dirname(exe),

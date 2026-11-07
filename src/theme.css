@@ -1,5 +1,5 @@
 /* ============================================================
-   TMSTORE — RED GRUNGE THEME
+   LAVUNIO — RED GRUNGE THEME
    ============================================================ */
 
 @font-face {
@@ -1366,7 +1366,7 @@ body::before {
 }
 
 
-/* Brand keeps mixed case (TMStore) */
+/* Brand keeps mixed case (Lavunio) */
 .brand-name,
 .splash-brand {
   text-transform: none;

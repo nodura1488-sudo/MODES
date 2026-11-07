@@ -44,7 +44,7 @@ fn client() -> &'static Client {
     CLIENT.get_or_init(|| {
         Client::builder()
             .timeout(Duration::from_secs(25))
-            .user_agent("TM-Launcher/0.3 (Rust)")
+            .user_agent("Lavunio/1.0 (Rust)")
             .build()
             .unwrap_or_else(|_| Client::new())
     })

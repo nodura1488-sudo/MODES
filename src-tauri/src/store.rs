@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 pub fn app_data_dir() -> PathBuf {
     dirs::data_dir()
         .unwrap_or_else(|| PathBuf::from("."))
-        .join("TMStore")
+        .join("Lavunio")
 }
 
 /// Переносит настройки и аккаунты из папки старого имени при первом запуске.
@@ -18,7 +18,7 @@ fn migrate_legacy_data(new_dir: &Path) {
     let Some(base) = dirs::data_dir() else {
         return;
     };
-    for old_name in ["TMLauncher", "TM Launcher", "TDEV Launcher"] {
+    for old_name in ["TMStore", "TMLauncher", "TM Launcher", "TDEV Launcher"] {
         let old_dir = base.join(old_name);
         if !old_dir.is_dir() {
             continue;
@@ -29,18 +29,22 @@ fn migrate_legacy_data(new_dir: &Path) {
         if !has_data {
             continue;
         }
-        let Ok(entries) = fs::read_dir(&old_dir) else {
-            continue;
-        };
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_file() {
-                if let Some(name) = path.file_name() {
-                    let dest = new_dir.join(name);
-                    if !dest.exists() {
-                        let _ = fs::copy(&path, dest);
-                    }
-                }
+        for name in [
+            "settings.json",
+            "accounts.json",
+            "mode-state.json",
+            "client-token.json",
+            "current-account.json",
+            "refresh-tokens.json",
+            "remote-modes.json",
+        ] {
+            let source = old_dir.join(name);
+            if !source.is_file() {
+                continue;
+            }
+            let dest = new_dir.join(name);
+            if !dest.exists() {
+                let _ = fs::copy(&source, &dest);
             }
         }
         break;
@@ -48,9 +52,7 @@ fn migrate_legacy_data(new_dir: &Path) {
 }
 
 pub fn default_game_dir() -> PathBuf {
-    dirs::data_dir()
-        .unwrap_or_else(|| PathBuf::from("."))
-        .join(".tdevlauncher")
+    app_data_dir().join("games")
 }
 
 pub struct Store {
@@ -83,10 +85,13 @@ impl Store {
         if settings.github_repo.trim().is_empty()
             || settings.github_repo == "tommy-whinston/TMLauncher"
             || settings.github_repo == "tommy-whinston/TMStore"
+            || settings.github_repo == "tommy-whinston/TMStore-Catalog"
         {
-            settings.github_repo = "tommy-whinston/TMStore-Catalog".to_string();
+            settings.github_repo = "tommy-whinston/Lavunio-Catalog".to_string();
         }
         if settings.ely_client_id.trim().is_empty() {
+            // The Ely.by OAuth client is registered outside the app. Keep the
+            // existing client id until a Lavunio client is issued by Ely.by.
             settings.ely_client_id = "tm-launcher".to_string();
         }
         if settings.launcher_width < 980.0 {
@@ -104,6 +109,7 @@ impl Store {
         if settings.height == 0 {
             settings.height = 530;
         }
+        let _ = write_json(&dir.join("settings.json"), &settings);
 
         let accounts: Vec<Account> = read_json(&dir.join("accounts.json")).unwrap_or_default();
         let mut state: ModeStates = read_json(&dir.join("mode-state.json")).unwrap_or_default();

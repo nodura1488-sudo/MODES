@@ -1,4 +1,4 @@
-# TMStore smoke test
+# Lavunio smoke test
 
 Проверяет собранный лаунчер через WebView2 DevTools Protocol:
 
@@ -11,7 +11,7 @@
 
 ## Запуск
 
-Сначала закрой запущенный TMStore, затем:
+Сначала закрой запущенный Lavunio, затем:
 
 ```powershell
 npm run smoke
@@ -20,14 +20,14 @@ npm run smoke
 Или явно:
 
 ```powershell
-node tools/smoke/smoke.js --exe "TMStore.exe" --port 9262
+node tools/smoke/smoke.js --exe "Lavunio.exe" --port 9262
 ```
 
 Скриншоты складываются в `tools/smoke/artifacts/` и не коммитятся.
 
 ## Важно
 
-- Тест запускает отдельный экземпляр `TMStore.exe`.
+- Тест запускает отдельный экземпляр `Lavunio.exe`.
 - Если лаунчер уже запущен, тест остановится, чтобы не мешать пользователю.
 - `--allow-running` можно использовать только для отладки: несколько экземпляров используют один профиль WebView2 и могут конфликтовать.
 - Тест ничего не устанавливает, не удаляет и не сохраняет настройки.

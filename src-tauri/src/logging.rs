@@ -20,7 +20,7 @@ pub fn init() {
         let _ = LOG_FILE.set(Mutex::new(file));
     }
 
-    log(format!("TMStore {} started", env!("CARGO_PKG_VERSION")));
+    log(format!("Lavunio {} started", env!("CARGO_PKG_VERSION")));
 
     let default_hook = std::panic::take_hook();
     std::panic::set_hook(Box::new(move |info| {

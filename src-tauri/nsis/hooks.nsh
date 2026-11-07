@@ -1,34 +1,38 @@
-; Migrate a previous TMLauncher installation into TMStore in place.
-; This keeps the auto-update restart path valid and avoids a duplicate install.
+; Lavunio installer hooks.
+; Migrate an existing TMStore installation in place when the user did not pick
+; a custom directory, so the old auto-update restart path keeps working.
 
 !macro NSIS_HOOK_PREINSTALL
   ; Only migrate when the installer is using the new default location.
   ; A custom directory picked by the user must be respected.
-  StrCmp $INSTDIR "$LOCALAPPDATA\TMStore" 0 TMStoreInstallDirReady
+  StrCmp $INSTDIR "$LOCALAPPDATA\Lavunio" 0 LavunioInstallDirReady
   ReadRegStr $0 HKCU "Software\TM\TMStore" ""
-  StrCmp $0 "" 0 TMStoreInstallDirReady
-  ReadRegStr $0 HKCU "Software\TM\TMLauncher" ""
-  StrCmp $0 "" TMStoreInstallDirReady
+  StrCmp $0 "$LOCALAPPDATA\TMStore" 0 LavunioInstallDirReady
   StrCpy $INSTDIR $0
   SetOutPath $INSTDIR
-  TMStoreInstallDirReady:
+  LavunioInstallDirReady:
 !macroend
 
 !macro NSIS_HOOK_POSTINSTALL
-  ReadRegStr $0 HKCU "Software\TM\TMStore" ""
-  StrCmp $0 "" TMStoreNoLegacyKeys
-  ReadRegStr $1 HKCU "Software\TM\TMLauncher" ""
-  StrCmp $1 "" TMStoreNoLegacyKeys
-  StrCmp $0 $1 0 TMStoreNoLegacyKeys
-  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TMLauncher"
-  DeleteRegKey HKCU "Software\TM\TMLauncher"
-  TMStoreNoLegacyKeys:
-  ; 0.4.30 and older updater restarts the process by its old file name.
-  IfFileExists "$INSTDIR\tmstore.exe" 0 TMStoreCompatDone
-    CopyFiles /SILENT "$INSTDIR\tmstore.exe" "$INSTDIR\tm-launcher.exe"
-  TMStoreCompatDone:
+  ; Older updaters restart tmstore.exe or tm-launcher.exe. Keep compatibility
+  ; copies so the first update after the rename does not leave the app closed.
+  IfFileExists "$INSTDIR\lavunio.exe" 0 LavunioCompatDone
+    CopyFiles /SILENT "$INSTDIR\lavunio.exe" "$INSTDIR\tmstore.exe"
+    CopyFiles /SILENT "$INSTDIR\lavunio.exe" "$INSTDIR\tm-launcher.exe"
+  LavunioCompatDone:
+
+  ; Drop the old TMStore uninstall entry if it points to this directory.
+  ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TMStore" "InstallLocation"
+  StrCmp $0 $INSTDIR 0 LavunioUninstallKeyReady
+    DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TMStore"
+  LavunioUninstallKeyReady:
+
+  ; Remove old shortcuts left by TMStore.
+  Delete "$SMPROGRAMS\TMStore.lnk"
+  Delete "$DESKTOP\TMStore.lnk"
 !macroend
 
 !macro NSIS_HOOK_PREUNINSTALL
+  Delete "$INSTDIR\tmstore.exe"
   Delete "$INSTDIR\tm-launcher.exe"
 !macroend

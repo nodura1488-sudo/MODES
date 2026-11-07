@@ -15,7 +15,7 @@ use std::time::Duration;
 use url::Url;
 
 pub const API: &str = "https://api.github.com";
-pub const CATALOG_URL: &str = "https://raw.githubusercontent.com/tommy-whinston/TMStore-Catalog/main/modes/modes.json";
+pub const CATALOG_URL: &str = "https://raw.githubusercontent.com/tommy-whinston/Lavunio-Catalog/main/modes/modes.json";
 pub const RAW: &str = "https://raw.githubusercontent.com";
 
 fn client() -> &'static Client {
@@ -23,7 +23,7 @@ fn client() -> &'static Client {
     CLIENT.get_or_init(|| {
         Client::builder()
             .timeout(Duration::from_secs(30))
-            .user_agent("TM-Launcher/0.3 (Rust)")
+            .user_agent("Lavunio/1.0 (Rust)")
             .build()
             .unwrap_or_else(|_| Client::new())
     })
@@ -34,7 +34,7 @@ fn download_client() -> &'static Client {
     CLIENT.get_or_init(|| {
         Client::builder()
             .timeout(Duration::from_secs(600))
-            .user_agent("TM-Launcher/0.3 (Rust)")
+            .user_agent("Lavunio/1.0 (Rust)")
             .build()
             .unwrap_or_else(|_| Client::new())
     })
@@ -69,7 +69,7 @@ pub fn api_url(repo: &str, tail: &[&str]) -> Result<Url, String> {
 }
 
 fn auth_headers(token: Option<&str>) -> Vec<(&'static str, String)> {
-    let mut headers = vec![(USER_AGENT.as_str(), "TM-Launcher".to_string())];
+    let mut headers = vec![(USER_AGENT.as_str(), "Lavunio".to_string())];
     if let Some(token) = token.filter(|t| !t.trim().is_empty()) {
         headers.push((AUTHORIZATION.as_str(), format!("Bearer {}", token.trim())));
     }
@@ -468,7 +468,7 @@ fn sync_build_archive(
         .max(archive.size)
         .max(1);
     let temp = std::env::temp_dir().join(format!(
-        "tmstore-{}-{}.zip",
+        "lavunio-{}-{}.zip",
         mode.id,
         std::process::id()
     ));
@@ -477,7 +477,7 @@ fn sync_build_archive(
     let mut offset = 0u64;
     for (index, part) in parts.iter().enumerate() {
         let part_path = std::env::temp_dir().join(format!(
-            "tmstore-{}-{}.part{}",
+            "lavunio-{}-{}.part{}",
             mode.id,
             std::process::id(),
             index + 1
@@ -568,7 +568,7 @@ pub fn sync_build(
     let local: Manifest = crate::util::read_json(&local_path).unwrap_or_default();
 
     let Some(archive) = manifest.archive.clone() else {
-        return Err("Этот режим использует старый формат. Перепубликуйте его в TMPublisher.".to_string());
+        return Err("Этот режим использует старый формат. Перепубликуйте его в Lavunio Publisher.".to_string());
     };
     sync_build_archive(
         mode,

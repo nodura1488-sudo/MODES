@@ -722,7 +722,7 @@ fn launch(
         },
         java_executable: Some(java),
         game_directory: Some(game_dir.to_path_buf()),
-        launcher_name: "TM Launcher".to_string(),
+        launcher_name: "Lavunio".to_string(),
         launcher_version: env!("CARGO_PKG_VERSION").to_string(),
         custom_resolution: if settings.width > 0 && settings.height > 0 {
             Some((settings.width, settings.height))

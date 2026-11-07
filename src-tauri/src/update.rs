@@ -8,7 +8,7 @@ use std::process::Command;
 use std::time::Duration;
 use tauri::{AppHandle, Emitter};
 
-const REPO: &str = "tommy-whinston/TMStore";
+const REPO: &str = "tommy-whinston/Lavunio";
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -24,7 +24,7 @@ pub struct UpdateInfo {
 fn client() -> Client {
     Client::builder()
         .timeout(Duration::from_secs(120))
-        .user_agent("TMStore/1.0 (Rust)")
+        .user_agent("Lavunio/1.0 (Rust)")
         .build()
         .unwrap_or_else(|_| Client::new())
 }
@@ -120,7 +120,7 @@ fn download_installer(
     if !url.starts_with("https://github.com/") {
         return Err("Некорректная ссылка на обновление".to_string());
     }
-    let path: PathBuf = std::env::temp_dir().join("TMStore-Setup-latest.exe");
+    let path: PathBuf = std::env::temp_dir().join("Lavunio-Setup-latest.exe");
     let mut response = client()
         .get(url)
         .send()
@@ -180,8 +180,9 @@ pub async fn install_update(app: AppHandle, url: String) -> Result<(), String> {
                 path.file_name()
                     .and_then(|name| name.to_str())
                     .map(|name| {
-                        name.eq_ignore_ascii_case("tm-launcher.exe")
+                        name.eq_ignore_ascii_case("lavunio.exe")
                             || name.eq_ignore_ascii_case("tmstore.exe")
+                            || name.eq_ignore_ascii_case("tm-launcher.exe")
                     })
                     .unwrap_or(false)
             })

@@ -2045,6 +2045,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "lavunio"
+version = "0.5.0"
+dependencies = [
+ "chrono",
+ "dirs 6.0.0",
+ "mc-launcher-core",
+ "open",
+ "reqwest",
+ "rfd",
+ "serde",
+ "serde_json",
+ "sha2 0.11.1",
+ "sysinfo",
+ "tauri",
+ "tauri-build",
+ "url",
+ "uuid",
+ "zip",
+]
+
+[[package]]
 name = "libappindicator"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4295,27 +4316,6 @@ name = "tinyvec"
 version = "1.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fd3ca314f692efd6c868f8408f53fe444634a845f96c028b97d35f6a1f79f0ee"
-
-[[package]]
-name = "tmstore"
-version = "0.4.45"
-dependencies = [
- "chrono",
- "dirs 6.0.0",
- "mc-launcher-core",
- "open",
- "reqwest",
- "rfd",
- "serde",
- "serde_json",
- "sha2 0.11.1",
- "sysinfo",
- "tauri",
- "tauri-build",
- "url",
- "uuid",
- "zip",
-]
 
 [[package]]
 name = "tokio"

@@ -1,4 +1,4 @@
-# TMStore Roadmap — путь к Steam для Minecraft-режимов
+# Lavunio Roadmap — путь к Steam для Minecraft-режимов
 
 > Актуально на версии **0.4.45** (7 ноября 2026).
 > Это живой документ: человек смотрит сюда, чтобы понять, что делать дальше, а AI-агент берёт отсюда задачи и отмечает выполненное.
@@ -73,7 +73,7 @@
 ### Что уже работает
 
 - Лаунчер на Tauri 2 + Rust.
-- Каталог режимов в отдельном репозитории `tommy-whinston/TMStore-Catalog`.
+- Каталог режимов в отдельном репозитории `tommy-whinston/Lavunio-Catalog`.
 - Автор и соавторы у режима, отображение на карточке и в деталях.
 - Магазин, библиотека, поиск, фильтры, сортировка.
 - Установка, обновление, удаление и запуск сборок.
@@ -84,7 +84,7 @@
 - Автообновление лаунчера через GitHub Releases.
 - Локальные логи и кнопка открытия папки логов в «Дополнительно».
 - Smoke-тест лаунчера: `npm run smoke`.
-- Публикатор `TMPublisher` на Tauri, публикация через GitHub API.
+- Публикатор `Lavunio Publisher` на Tauri, публикация через GitHub API.
 - Тёмная тема, релизные заметки, установщик NSIS.
 
 ### Что мешает назвать это Steam
@@ -107,14 +107,14 @@
 ### Текущая архитектура
 
 ```text
-TMStore (Tauri + Rust)
+Lavunio (Tauri + Rust)
   ├─ src/                 UI: HTML, CSS, JS
   ├─ src-tauri/src/       Rust: команды, сеть, игра, настройки
-  ├─ TMStore-Catalog       публичный GitHub-репозиторий с modes.json и сборками
+  ├─ Lavunio-Catalog       публичный GitHub-репозиторий с modes.json и сборками
   └─ Releases              установщики лаунчера
 
-TMPublisher (Tauri + Rust)
-  └─ GitHub API            запись modes.json и файлов в TMStore-Catalog
+Lavunio Publisher (Tauri + Rust)
+  └─ GitHub API            запись modes.json и файлов в Lavunio-Catalog
 ```
 
 ### Карта файлов лаунчера
@@ -137,13 +137,13 @@ TMPublisher (Tauri + Rust)
 
 ```text
 ┌────────────────────┐        ┌────────────────────┐
-│  TMStore Launcher  │        │  TMPublisher / Web │
+│  Lavunio Launcher  │        │  Lavunio Publisher / Web │
 │  Tauri + Rust      │        │  кабинет автора    │
 └─────────┬──────────┘        └─────────┬──────────┘
           │ HTTPS / JSON                 │ HTTPS
           ▼                              ▼
 ┌──────────────────────────────────────────────────┐
-│                 TMStore API                      │
+│                 Lavunio API                      │
 │  Rust + Axum + PostgreSQL + background workers   │
 │  каталог, авторы, релизы, отзывы, модерация      │
 └─────────┬──────────────────────────┬─────────────┘
@@ -277,16 +277,16 @@ GET  /v1/admin/reports
   - Хранить скрипт в `tools/smoke/`.
   - Готово, когда тест запускается одной командой и падает при ошибке загрузки каталога.
 - [x] **P0-07. Добавить логи и crash-reporting.**
-  - Локальный лог в `%APPDATA%\TMStore\logs\launcher.log`.
+  - Локальный лог в `%APPDATA%\Lavunio\logs\launcher.log`.
   - Кнопка «Открыть папку» в разделе «Дополнительно».
   - Паники и ключевые ошибки пишутся в лог.
 
 ### Этап 1 — Backend MVP
 
-> Локальный каркас API уже создан: `E:\Desktop\TMStore-API` (отдельный git-репозиторий, пока не запушен).
+> Локальный каркас API уже создан: `E:\Desktop\Lavunio-API` (отдельный git-репозиторий, пока не запушен).
 > Он собирается, запускается и отдаёт `/v1/health`. Полный прогон с БД требует PostgreSQL/Docker, которых на текущей машине нет.
 
-- [x] **P1-01. Создать `TMStore-API`.**
+- [x] **P1-01. Создать `Lavunio-API`.**
   - Rust + Axum + PostgreSQL + migrations.
   - Конфиг через env, `/v1/health`, Docker Compose для локального запуска.
   - Готово, когда API поднимается локально и отдаёт health.
@@ -309,8 +309,8 @@ GET  /v1/admin/reports
   - Проверено: bootstrap-токен и API-токены работают; Ely.by можно добавить позже.
 - [~] **P1-06. Publisher API.**
   - Черновик, релиз, загрузка файлов, submit.
-  - Готово, когда TMPublisher публикует режим без GitHub.
-  - Статус: полный flow проверен через API (создание, релиз, загрузка, submit, approve); осталось подключить TMPublisher.
+  - Готово, когда Lavunio Publisher публикует режим без GitHub.
+  - Статус: полный flow проверен через API (создание, релиз, загрузка, submit, approve); осталось подключить Lavunio Publisher.
 - [~] **P1-07. Минимальная модерация.**
   - Очередь, approve/reject/hide, журнал действий.
   - Готово, когда новый режим не попадает в каталог без approve.
@@ -320,7 +320,7 @@ GET  /v1/admin/reports
   - Готово, когда лаунчер ставит их из нового API.
   - Статус: seed импортировал оба режима и релизы; файлы пока ссылаются на GitHub, перенос в R2 — после P1-03.
 - [ ] **P1-09. Лаунчер читает API.**
-  - Новый источник каталога, кэш, fallback на текущий GitHub-каталог `TMStore-Catalog` на один релиз.
+  - Новый источник каталога, кэш, fallback на текущий GitHub-каталог `Lavunio-Catalog` на один релиз.
   - Готово, когда каталог и установка работают при выключенном GitHub-каталоге.
 - [ ] **P1-10. Публикатор переключён на API.**
   - Убрать `githubRepo` и `githubToken` из пользовательского сценария.
@@ -391,13 +391,13 @@ GET  /v1/admin/reports
 - [ ] **P4-07. Статистика автора.**
   - Скачивания, установки, удержание, обновления.
 - [ ] **P4-08. Веб-кабинет автора.**
-  - Публикация без установки TMPublisher.
+  - Публикация без установки Lavunio Publisher.
 - [ ] **P4-09. Токены и права.**
   - Отдельные токены на публикацию, отзыв токена, scopes.
 
 ### Этап 5 — Социальные функции
 
-- [ ] **P5-01. Профиль игрока TMStore.**
+- [ ] **P5-01. Профиль игрока Lavunio.**
   - Привязка Ely.by, аватар, статус, библиотека.
 - [ ] **P5-02. Друзья и присутствие.**
   - Заявки, список друзей, «играет в …».
@@ -446,11 +446,11 @@ GET  /v1/admin/reports
 Если не знаешь, с чего начать — делай сверху вниз.
 
 1. **P1-03.** Добавить R2/S3-адаптер и pre-signed URL.
-2. **P1-06.** Подключить TMPublisher к API вместо GitHub.
+2. **P1-06.** Подключить Lavunio Publisher к API вместо GitHub.
 3. **P1-07.** Доделать reject/hide и минимальный админ-UI.
 4. **P1-08.** Перенести файлы `night-demon` и `eclipse` в R2.
 5. **P1-09.** Переключить лаунчер на API.
-6. **P1-10.** Полностью убрать GitHub-публикацию из TMPublisher.
+6. **P1-10.** Полностью убрать GitHub-публикацию из Lavunio Publisher.
 7. **P1-11.** Мониторинг, бэкапы, rate limit.
 
 ---
@@ -483,7 +483,7 @@ node --check src/app.js
 .\build-installer.bat --no-pause
 
 # Публикатор: только MSVC-тулчейн
-cmd /c "call E:\Desktop\TMLauncher\build-env.bat && cd /d E:\Desktop\TMPublisher\src-tauri && cargo build --release --target-dir target-msvc"
+cmd /c "call E:\Desktop\Lavunio\build-env.bat && cd /d E:\Desktop\LavunioPublisher\src-tauri && cargo build --release --target-dir target-msvc"
 ```
 
 ### Релиз лаунчера
@@ -495,13 +495,13 @@ cmd /c "call E:\Desktop\TMLauncher\build-env.bat && cd /d E:\Desktop\TMPublisher
    - `src-tauri/Cargo.lock`
    - `src-tauri/tauri.conf.json`
 2. Собрать `build-installer.bat`.
-3. Проверить `TMStore.exe` и установщик.
-4. Скопировать установщик в `TMStore Setup <версия>.exe`.
+3. Проверить `Lavunio.exe` и установщик.
+4. Скопировать установщик в `Lavunio Setup <версия>.exe`.
 5. Закоммитить и запушить.
 6. Создать GitHub Release с тремя ассетами:
-   - `TMStore Setup.exe`
-   - `TMStore Setup <версия>.exe`
-   - `TMStore.exe`
+   - `Lavunio Setup.exe`
+   - `Lavunio Setup <версия>.exe`
+   - `Lavunio.exe`
 
 ---
 
@@ -517,8 +517,8 @@ cmd /c "call E:\Desktop\TMLauncher\build-env.bat && cd /d E:\Desktop\TMPublisher
 8. **Не ломай совместимость без плана.** Для перехода на API сохраняй fallback на GitHub-каталог хотя бы на один релиз.
 9. **Проверяй сборку.** Не сообщай «готово», если `cargo check` или `node --check` падают.
 10. **Обновляй roadmap.** После задачи — чекбокс и запись в журнале.
-11. **Не используй GNU-тулчейн для TMPublisher.** Иначе exe падает с ошибкой DLL. Только MSVC через `build-env.bat`.
-12. **Не публикуй релиз без установщика.** Проверь, что `TMStore Setup <версия>.exe` существует и запускается.
+11. **Не используй GNU-тулчейн для Lavunio Publisher.** Иначе exe падает с ошибкой DLL. Только MSVC через `build-env.bat`.
+12. **Не публикуй релиз без установщика.** Проверь, что `Lavunio Setup <версия>.exe` существует и запускается.
 
 ---
 
@@ -529,7 +529,7 @@ cmd /c "call E:\Desktop\TMLauncher\build-env.bat && cd /d E:\Desktop\TMPublisher
 - [ ] Где хостить API: VPS, Railway, Fly.io, собственный сервер?
 - [ ] Где хранить файлы: Cloudflare R2, S3, Backblaze B2?
 - [ ] Домен магазина и API.
-- [ ] Авторизация авторов: только Ely.by или отдельные TMStore-аккаунты?
+- [ ] Авторизация авторов: только Ely.by или отдельные Lavunio-аккаунты?
 - [ ] Политика модерации: что запрещено, кто проверяет, сроки.
 - [ ] Нужны ли платные режимы и когда.
 - [ ] Нужны ли облачные сохранения в первом MVP.
@@ -541,7 +541,7 @@ cmd /c "call E:\Desktop\TMLauncher\build-env.bat && cd /d E:\Desktop\TMPublisher
 
 ## 11. Журнал
 
-- **2026-11-07** — создан roadmap. Актуальная версия лаунчера: 0.4.45. Каталог вынесен в `TMStore-Catalog`, добавлены авторы, технические настройки убраны из UI, исправлен блок информации о режиме, кнопка папки показывается только для установленных режимов.
-- **2026-11-07** — добавлены smoke-тест `npm run smoke` и локальные логи `%APPDATA%\TMStore\logs\launcher.log` с кнопкой открытия папки в «Дополнительно». Следующий этап — backend MVP.
-- **2026-11-07** — создан локальный каркас `E:\Desktop\TMStore-API`: Axum, PostgreSQL-миграции, health, каталог, релизы, авторы, API-токены, черновики, загрузка файлов, модерация, seed и Docker Compose. Сборка и health проверены; полный прогон с БД ждёт PostgreSQL/Docker.
-- **2026-11-07** — API проверен на PostgreSQL 18.6.1: миграции, seed `night-demon` и `eclipse`, каталог, карточка режима, релизы, автор, полный publisher-flow (черновик → релиз → загрузка файла → submit → approve). Следующий шаг — R2/S3 и подключение TMPublisher.
+- **2026-11-07** — создан roadmap. Актуальная версия лаунчера: 0.4.45. Каталог вынесен в `Lavunio-Catalog`, добавлены авторы, технические настройки убраны из UI, исправлен блок информации о режиме, кнопка папки показывается только для установленных режимов.
+- **2026-11-07** — добавлены smoke-тест `npm run smoke` и локальные логи `%APPDATA%\Lavunio\logs\launcher.log` с кнопкой открытия папки в «Дополнительно». Следующий этап — backend MVP.
+- **2026-11-07** — создан локальный каркас `E:\Desktop\Lavunio-API`: Axum, PostgreSQL-миграции, health, каталог, релизы, авторы, API-токены, черновики, загрузка файлов, модерация, seed и Docker Compose. Сборка и health проверены; полный прогон с БД ждёт PostgreSQL/Docker.
+- **2026-11-07** — API проверен на PostgreSQL 18.6.1: миграции, seed `night-demon` и `eclipse`, каталог, карточка режима, релизы, автор, полный publisher-flow (черновик → релиз → загрузка файла → submit → approve). Следующий шаг — R2/S3 и подключение Lavunio Publisher.
