@@ -4,6 +4,7 @@ mod auth;
 mod commands;
 mod events;
 mod game;
+mod logging;
 mod models;
 mod net;
 mod state;
@@ -15,6 +16,7 @@ use state::AppState;
 use tauri::Manager;
 
 fn main() {
+    logging::init();
     tauri::Builder::default()
         .manage(AppState::new())
         .invoke_handler(tauri::generate_handler![
@@ -34,6 +36,8 @@ fn main() {
             commands::game_open_folder,
             commands::app_data_path,
             commands::app_open_folder,
+            commands::app_logs_path,
+            commands::app_open_logs,
             commands::accounts_get,
             commands::accounts_current,
             commands::accounts_device_start,

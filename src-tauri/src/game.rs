@@ -233,6 +233,11 @@ fn run(
     status(on_event, "Подготовка");
     status(on_event, "Подготовка");
     let java_choice = select_java(settings, &mode.mc_version)?;
+    crate::logging::log(format!(
+        "game: java={} mc={}",
+        java_choice.javaw.display(),
+        mode.mc_version
+    ));
     let mut effective_settings = settings.clone();
     effective_settings.java_path = java_choice.javaw.to_string_lossy().to_string();
     let settings = &effective_settings;

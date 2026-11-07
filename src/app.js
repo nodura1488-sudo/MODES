@@ -167,6 +167,7 @@ const els = {
   setHeight: $('set-height'),
   setFullscreen: $('set-fullscreen'),
   setJvmFlags: $('set-jvm-flags'),
+  setLogsPath: $('set-logs-path'),
 };
 
 // ---------------------------------------------------------------- init
@@ -2145,6 +2146,9 @@ function bindSettings() {
     }
   };
   $('btn-open-dir').onclick = () => api.openGameFolder().catch(() => {});
+  $('btn-open-logs').onclick = () => api.openLogs().catch((err) => {
+    toast('Не удалось открыть папку логов: ' + err, 'error');
+  });
   $('btn-save-settings').onclick = async () => {
     try {
       const s = await api.saveSettings({
@@ -2178,6 +2182,11 @@ function fillSettingsForm() {
   els.setHeight.value = s.height || 530;
   els.setFullscreen.checked = !!s.fullscreen;
   els.setJvmFlags.checked = s.jvmFlags !== false;
+  if (api.getLogsPath) {
+    api.getLogsPath().then((logsPath) => {
+      els.setLogsPath.value = logsPath || '';
+    }).catch(() => {});
+  }
 }
 
 // ---------------------------------------------------------------- модалки

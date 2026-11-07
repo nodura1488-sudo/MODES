@@ -72,6 +72,11 @@ impl Store {
 
         let mut settings: Settings = read_json(&dir.join("settings.json"))
             .unwrap_or_else(|| Settings::with_default_dir(&default_dir));
+        crate::logging::log(format!(
+            "store: dir={} repo={}",
+            dir.display(),
+            settings.github_repo
+        ));
         if settings.dir.trim().is_empty() {
             settings.dir = default_dir.clone();
         }

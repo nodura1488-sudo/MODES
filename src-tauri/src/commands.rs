@@ -44,11 +44,15 @@ async fn load_modes(state: &AppState) -> Vec<Mode> {
 
     let modes = match remote {
         Ok(modes) => {
+            crate::logging::log(format!("catalog: loaded {} modes", modes.len()));
             let store = state.store.lock().unwrap();
             let _ = store.cache_modes(&modes);
             modes
         }
-        Err(_) => cached,
+        Err(err) => {
+            crate::logging::error("catalog", &err);
+            cached
+        }
     };
 
     *state.modes.lock().unwrap() = modes.clone();
@@ -168,6 +172,7 @@ pub fn settings_save(state: State<'_, AppState>, patch: Value) -> Result<Setting
     }
     store.settings = serde_json::from_value(current).map_err(|e| e.to_string())?;
     store.save_settings()?;
+    crate::logging::log("settings: saved");
     Ok(store.settings.clone())
 }
 
@@ -191,6 +196,22 @@ pub fn game_open_folder(state: State<'_, AppState>) -> Result<(), String> {
 #[tauri::command]
 pub fn app_data_path() -> String {
     path_string(&crate::store::app_data_dir())
+}
+
+#[tauri::command]
+pub fn app_logs_path() -> String {
+    path_string(&crate::logging::log_path())
+}
+
+#[tauri::command]
+pub fn app_open_logs() -> Result<(), String> {
+    let path = crate::logging::log_path();
+    let Some(parent) = path.parent() else {
+        return Err("Не удалось найти папку логов".to_string());
+    };
+    std::fs::create_dir_all(parent)
+        .map_err(|e| format!("Не удалось создать папку логов: {e}"))?;
+    crate::util::open_path(parent)
 }
 
 #[tauri::command]
@@ -502,7 +523,11 @@ pub async fn accounts_refresh(state: State<'_, AppState>) -> Result<Option<Accou
 // ---------------------------------------------------------------- игра
 
 async fn start_game(app: AppHandle, state: &AppState, mode_id: &str, install_only: bool) -> Value {
+    crate::logging::log(format!(
+        "game: requested mode={mode_id} install_only={install_only}"
+    ));
     if state.active_game.lock().unwrap().is_some() {
+        crate::logging::log("game: rejected, another operation is running");
         return json!({ "ok": false, "error": "Дождитесь завершения текущей операции" });
     }
 
@@ -524,6 +549,7 @@ async fn start_game(app: AppHandle, state: &AppState, mode_id: &str, install_onl
             .cloned();
     }
     let Some(mode) = mode else {
+        crate::logging::error("game", format!("mode not found: {mode_id}"));
         return json!({ "ok": false, "error": "Режим не найден" });
     };
 
@@ -532,6 +558,7 @@ async fn start_game(app: AppHandle, state: &AppState, mode_id: &str, install_onl
         (store.current_account(), store.settings.clone())
     };
     let Some(account) = account else {
+        crate::logging::error("game", "no active account");
         return json!({ "ok": false, "error": "Сначала войдите в аккаунт" });
     };
 
@@ -551,6 +578,15 @@ async fn start_game(app: AppHandle, state: &AppState, mode_id: &str, install_onl
             app_for_thread,
             cancel,
         );
+        match &result {
+            Ok(()) => crate::logging::log(format!(
+                "game: finished mode={mode_id_for_store} install_only={install_only}"
+            )),
+            Err(err) => crate::logging::error(
+                "game",
+                format!("mode={mode_id_for_store} install_only={install_only}: {err}"),
+            ),
+        }
         if install_only && result.is_ok() {
             let state = app_for_store.state::<AppState>();
             let mut store = state.store.lock().unwrap();

@@ -390,6 +390,14 @@
             <label class="check standalone"><input type="checkbox" id="set-jvm-flags" checked> Оптимизированные JVM-флаги (G1GC)</label>
             <div class="hint">Меньше лагов и стабильнее запуск. Отключи, если Java не стартует или сборка несовместима.</div>
           </div>
+          <div class="field">
+            <label>Логи</label>
+            <div class="row">
+              <input type="text" id="set-logs-path" readonly>
+              <button class="btn btn-ghost" id="btn-open-logs" type="button">Открыть папку</button>
+            </div>
+            <div class="hint">Логи хранятся локально и помогают найти причину ошибки.</div>
+          </div>
         </details>
       </div>
 

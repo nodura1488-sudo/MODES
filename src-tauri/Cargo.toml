@@ -1,6 +1,6 @@
 [package]
 name = "tmstore"
-version = "0.4.44"
+version = "0.4.45"
 description = "TMStore - Minecraft mode store with Ely.by accounts"
 authors = ["TM"]
 license = "MIT"
@@ -22,6 +22,7 @@ open = "5"
 dirs = "6"
 sysinfo = "0.39"
 url = "2"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
 mc-launcher-core = "0.1.2"
 
 [profile.release]
