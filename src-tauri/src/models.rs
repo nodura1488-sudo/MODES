@@ -16,6 +16,15 @@ pub struct HistoryEntry {
     pub changes: Vec<String>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase", default)]
+pub struct Author {
+    pub id: String,
+    pub name: String,
+    pub avatar: Option<String>,
+    pub verified: bool,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Mode {
@@ -34,6 +43,8 @@ pub struct Mode {
     pub tags: Vec<String>,
     pub image_url: Option<String>,
     pub image: Option<String>,
+    pub author: Option<Author>,
+    pub authors: Vec<Author>,
     pub description: String,
     pub short_description: Option<String>,
     pub status: Option<String>,
@@ -59,6 +70,8 @@ impl Default for Mode {
             tags: Vec::new(),
             image_url: None,
             image: None,
+            author: None,
+            authors: Vec::new(),
             description: String::new(),
             short_description: None,
             status: None,
@@ -96,6 +109,7 @@ pub struct Settings {
     pub launcher_height: f32,
     pub github_repo: String,
     pub github_token: String,
+    pub catalog_url: String,
     pub jvm_flags: bool,
     pub ely_client_id: String,
     pub minimize_on_launch: bool,
@@ -112,8 +126,9 @@ impl Default for Settings {
             fullscreen: false,
             launcher_width: 1200.0,
             launcher_height: 740.0,
-            github_repo: "tommy-whinston/TMStore".to_string(),
+            github_repo: "tommy-whinston/TMStore-Catalog".to_string(),
             github_token: String::new(),
+            catalog_url: "https://raw.githubusercontent.com/tommy-whinston/TMStore-Catalog/main/modes/modes.json".to_string(),
             jvm_flags: true,
             ely_client_id: "tm-launcher".to_string(),
             minimize_on_launch: true,

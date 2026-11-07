@@ -168,7 +168,8 @@ const els = {
   setHeight: $('set-height'),
   setFullscreen: $('set-fullscreen'),
   setJvmFlags: $('set-jvm-flags'),
-  setDataDir: $('set-data-dir')
+  setDataDir: $('set-data-dir'),
+  setCatalogUrl: $('set-catalog-url')
 };
 
 // ---------------------------------------------------------------- init
@@ -495,6 +496,13 @@ function modeSub(mode) {
   return `MC ${mode.mcVersion || '—'} · ${loaderLabel(mode)}`;
 }
 
+function modeAuthors(mode) {
+  const list = Array.isArray(mode.authors) && mode.authors.length
+    ? mode.authors
+    : (mode.author ? [mode.author] : []);
+  return [...new Set(list.filter((author) => author && author.name).map((author) => author.name))];
+}
+
 function cardSub(mode) {
   return `${modeSub(mode)}${mode.version ? ` · v${mode.version}` : ''}`;
 }
@@ -615,6 +623,7 @@ function matchesSearch(mode) {
     mode.shortDescription,
     mode.mcVersion,
     mode.loader,
+    ...modeAuthors(mode),
     ...(Array.isArray(mode.tags) ? mode.tags : [])
   ].join(' ').toLowerCase();
   return haystack.includes(S.search);
@@ -943,6 +952,7 @@ function modeCardHtml(mode, withMenu = false, playMode = false) {
       <div class="card-body">
         <div class="card-title">${escapeHtml(mode.title || 'Без названия')}</div>
         <div class="card-sub">${escapeHtml(cardSub(mode))}</div>
+        ${modeAuthors(mode).length ? `<div class="card-author">${escapeHtml(modeAuthors(mode).join(', '))}</div>` : ''}
         ${status ? `<div class="card-status-row"><span class="mode-status ${status.cls}">${status.label}</span></div>` : ''}
         ${released ? `<div class="card-release">Вышла ${escapeHtml(formatUpdateDate(released))}</div>` : ''}
         <div class="card-desc">${escapeHtml(modeShortDescription(mode))}</div>
@@ -1481,6 +1491,7 @@ function renderDetail() {
   els.detailMeta.innerHTML = [
     ['Версия', 'v' + (mode.version || '—')],
     ['Minecraft', mode.mcVersion || '—'],
+    ['Автор', modeAuthors(mode).join(', ') || '—'],
     ['Ядро', loaderLabel(mode)],
     ['Размер', mode.size || '—'],
     ['Вышла', released ? formatUpdateDate(released) : '—'],
@@ -2154,7 +2165,8 @@ function bindSettings() {
         width: Number(els.setWidth.value) || 925,
         height: Number(els.setHeight.value) || 530,
         fullscreen: els.setFullscreen.checked,
-        jvmFlags: els.setJvmFlags.checked
+        jvmFlags: els.setJvmFlags.checked,
+        catalogUrl: els.setCatalogUrl.value.trim()
       });
       S.settings = s;
       closeModals();
@@ -2188,6 +2200,7 @@ function fillSettingsForm() {
   els.setFullscreen.checked = !!s.fullscreen;
   els.setJvmFlags.checked = s.jvmFlags !== false;
   els.setDataDir.value = S.dataDir || '';
+  els.setCatalogUrl.value = s.catalogUrl || '';
 }
 
 // ---------------------------------------------------------------- модалки

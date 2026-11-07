@@ -97,11 +97,69 @@ fn get_json(url: &str, token: Option<&str>) -> Result<Value, String> {
     Ok(data)
 }
 
-/// Читает modes.json из репозитория. Сеть недоступна -> Err, чтобы приложение взяло кэш.
-pub fn fetch_remote_modes(repo: &str) -> Result<Vec<Mode>, String> {
-    if repo.trim().is_empty() {
-        return Ok(Vec::new());
+/// Читает modes.json из настроенного источника. Сначала catalogUrl, затем GitHub как резерв.
+pub fn fetch_remote_modes(
+    repo: &str,
+    catalog_url: &str,
+    token: Option<&str>,
+) -> Result<Vec<Mode>, String> {
+    let catalog_url = catalog_url.trim();
+    let mut catalog_error: Option<String> = None;
+
+    if !catalog_url.is_empty() {
+        match fetch_catalog(catalog_url, token) {
+            Ok(modes) => return Ok(modes),
+            Err(err) => catalog_error = Some(err),
+        }
     }
+
+    if repo.trim().is_empty() {
+        return match catalog_error {
+            Some(err) => Err(err),
+            None => Ok(Vec::new()),
+        };
+    }
+
+    match fetch_repo_modes(repo) {
+        Ok(modes) if !modes.is_empty() => Ok(modes),
+        Ok(_) => match catalog_error {
+            Some(err) => Err(err),
+            None => Ok(Vec::new()),
+        },
+        Err(err) => match catalog_error {
+            Some(catalog_err) => Err(format!("{catalog_err}; резервный GitHub: {err}")),
+            None => Err(err),
+        },
+    }
+}
+
+fn fetch_catalog(url: &str, token: Option<&str>) -> Result<Vec<Mode>, String> {
+    let mut request = client().get(url);
+    let github = Url::parse(url)
+        .ok()
+        .and_then(|parsed| parsed.host_str().map(str::to_owned))
+        .map(|host| {
+            host.eq_ignore_ascii_case("raw.githubusercontent.com")
+                || host.eq_ignore_ascii_case("api.github.com")
+        })
+        .unwrap_or(false);
+    for (key, value) in auth_headers(token.filter(|_| github)) {
+        request = request.header(key, value);
+    }
+    let res = request
+        .send()
+        .map_err(|err| format!("Не удалось загрузить каталог: {}", format_error(err)))?;
+    let status = res.status();
+    if !status.is_success() {
+        return Err(format!("Каталог: HTTP {status}"));
+    }
+    let data: Value = res
+        .json()
+        .map_err(|e| format!("Не удалось прочитать каталог: {e}"))?;
+    parse_modes(data)
+}
+
+fn fetch_repo_modes(repo: &str) -> Result<Vec<Mode>, String> {
     let mut not_found = false;
     let mut last_error: Option<String> = None;
     for branch in ["main", "master"] {
@@ -120,21 +178,11 @@ pub fn fetch_remote_modes(repo: &str) -> Result<Vec<Mode>, String> {
                     }
                     let data: Value = res
                         .json()
-                        .map_err(|e| format!("Некорректный modes.json: {e}"))?;
-                    let Some(items) = data.get("modes").and_then(Value::as_array) else {
-                        return Err("В modes.json нет массива modes".to_string());
-                    };
-                    let mut modes = Vec::new();
-                    for item in items {
-                        match serde_json::from_value::<Mode>(item.clone()) {
-                            Ok(mode) if !mode.id.trim().is_empty() => modes.push(mode),
-                            _ => {}
-                        }
-                    }
-                    return Ok(modes);
+                        .map_err(|e| format!("Не удалось прочитать modes.json: {e}"))?;
+                    return parse_modes(data);
                 }
                 Err(err) => {
-                    last_error = Some(format!("Нет связи с GitHub: {}", format_error(err)));
+                    last_error = Some(format!("Ошибка запроса к GitHub: {}", format_error(err)));
                 }
             }
         }
@@ -142,7 +190,21 @@ pub fn fetch_remote_modes(repo: &str) -> Result<Vec<Mode>, String> {
     if not_found {
         return Ok(Vec::new());
     }
-    Err(last_error.unwrap_or_else(|| "Не удалось прочитать modes.json".to_string()))
+    Err(last_error.unwrap_or_else(|| "Не удалось загрузить modes.json".to_string()))
+}
+
+fn parse_modes(data: Value) -> Result<Vec<Mode>, String> {
+    let Some(items) = data.get("modes").and_then(Value::as_array) else {
+        return Err("В каталоге нет массива modes".to_string());
+    };
+    let mut modes = Vec::new();
+    for item in items {
+        match serde_json::from_value::<Mode>(item.clone()) {
+            Ok(mode) if !mode.id.trim().is_empty() => modes.push(mode),
+            _ => {}
+        }
+    }
+    Ok(modes)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]

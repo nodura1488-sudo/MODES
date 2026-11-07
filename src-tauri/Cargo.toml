@@ -1,6 +1,6 @@
 [package]
 name = "tmstore"
-version = "0.4.40"
+version = "0.4.41"
 description = "TMStore - Minecraft mode store with Ely.by accounts"
 authors = ["TM"]
 license = "MIT"
