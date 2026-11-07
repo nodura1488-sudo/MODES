@@ -52,9 +52,30 @@ POST /v1/publisher/modes
 POST /v1/publisher/modes/{id}/releases
 POST /v1/publisher/releases/{id}/assets/upload-url
 PUT  /v1/publisher/releases/{release_id}/assets/{asset_id}/upload
+POST /v1/publisher/releases/{release_id}/assets/{asset_id}/complete
 POST /v1/publisher/releases/{id}/submit
 GET  /v1/publisher/modes/{id}/stats
 ```
+
+`upload-url` возвращает:
+
+```json
+{
+  "assetId": "...",
+  "uploadUrl": "...",
+  "method": "PUT",
+  "storage": "s3",
+  "completeUrl": ".../complete"
+}
+```
+
+Для S3/R2 встроенный публикатор должен:
+
+1. загрузить файл по `uploadUrl`;
+2. вызвать `completeUrl`;
+3. только после этого делать `submit`.
+
+Для локального хранилища `completeUrl = null`, файл загружается через API и сразу готов.
 
 Позже:
 
@@ -100,6 +121,7 @@ GET  /v1/publisher/modes/{id}/stats
 - [ ] **PUB-03.** Перенести форму создания режима.
 - [ ] **PUB-04.** Перенести создание релиза и загрузку файлов.
 - [ ] **PUB-05.** Добавить прогресс загрузки и ошибки.
+  - Для S3/R2: после PUT вызывать `completeUrl` и проверять ответ.
 - [ ] **PUB-06.** Добавить статистику автора.
 - [ ] **PUB-07.** Удалить отдельный `LavunioPublisher.exe`.
 
