@@ -65,7 +65,6 @@ const S = {
   elyLogin: null,
   section: 'store',
   detailFrom: null,
-  dataDir: '',
   updateInfo: null,
   autoUpdating: false,
   storeFilter: 'all',
@@ -168,8 +167,6 @@ const els = {
   setHeight: $('set-height'),
   setFullscreen: $('set-fullscreen'),
   setJvmFlags: $('set-jvm-flags'),
-  setDataDir: $('set-data-dir'),
-  setCatalogUrl: $('set-catalog-url')
 };
 
 // ---------------------------------------------------------------- init
@@ -189,11 +186,6 @@ async function init() {
   bindUpdateModal();
 
   if (api && api.onGameEvent) api.onGameEvent(onGameEvent);
-  if (api && api.getAppDataPath) {
-    api.getAppDataPath().then((dir) => {
-      S.dataDir = dir || '';
-    }).catch(() => {});
-  }
   if (api && api.getSystemRam) {
     api.getSystemRam().then((gb) => {
       S.systemRamGb = Number(gb) || 0;
@@ -692,7 +684,7 @@ function renderStore() {
   setEmpty(
     list.length === 0,
     'Здесь пока пусто',
-    'Попробуй другой фильтр или обнови каталог'
+    'Попробуй другой фильтр или нажми «Обновить»'
   );
   updateSidebarCounts();
 }
@@ -2152,10 +2144,6 @@ function bindSettings() {
     }
   };
   $('btn-open-dir').onclick = () => api.openGameFolder().catch(() => {});
-  $('btn-open-data').onclick = () => api.openAppFolder().catch(() => {});
-  document.querySelectorAll('.settings-tab').forEach((tab) => {
-    tab.onclick = () => setSettingsTab(tab.dataset.settingsTab);
-  });
   $('btn-save-settings').onclick = async () => {
     try {
       const s = await api.saveSettings({
@@ -2165,8 +2153,7 @@ function bindSettings() {
         width: Number(els.setWidth.value) || 925,
         height: Number(els.setHeight.value) || 530,
         fullscreen: els.setFullscreen.checked,
-        jvmFlags: els.setJvmFlags.checked,
-        catalogUrl: els.setCatalogUrl.value.trim()
+        jvmFlags: els.setJvmFlags.checked
       });
       S.settings = s;
       closeModals();
@@ -2175,15 +2162,6 @@ function bindSettings() {
       toast('Не удалось сохранить настройки: ' + err, 'error');
     }
   };
-}
-
-function setSettingsTab(name) {
-  const tab = name === 'launcher' ? 'launcher' : 'minecraft';
-  document.querySelectorAll('.settings-tab').forEach((btn) => {
-    btn.classList.toggle('active', btn.dataset.settingsTab === tab);
-  });
-  $('settings-minecraft').hidden = tab !== 'minecraft';
-  $('settings-launcher').hidden = tab !== 'launcher';
 }
 
 function fillSettingsForm() {
@@ -2199,8 +2177,6 @@ function fillSettingsForm() {
   els.setHeight.value = s.height || 530;
   els.setFullscreen.checked = !!s.fullscreen;
   els.setJvmFlags.checked = s.jvmFlags !== false;
-  els.setDataDir.value = S.dataDir || '';
-  els.setCatalogUrl.value = s.catalogUrl || '';
 }
 
 // ---------------------------------------------------------------- модалки
@@ -2208,7 +2184,6 @@ function fillSettingsForm() {
 function openModal(id) {
   if (id === 'modal-settings') {
     fillSettingsForm();
-    setSettingsTab('minecraft');
   }
   if (id === 'modal-account') renderAccountModal();
   if (id === 'modal-ely-login') {

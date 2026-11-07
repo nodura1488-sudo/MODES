@@ -213,7 +213,7 @@
             </svg>
           </div>
           <h3 id="empty-title">Режимов пока нет</h3>
-          <p id="empty-sub">Список появится, когда в репозитории будет modes.json</p>
+          <p id="empty-sub">Не удалось загрузить режимы. Проверь подключение и попробуй обновить список.</p>
         </div>
         <div class="skeleton-grid" id="loading-state" hidden>
           <div class="skeleton-card"></div>
@@ -353,11 +353,6 @@
         <button class="modal-close" data-close="modal-settings">✕</button>
       </div>
 
-      <div class="settings-tabs">
-        <button class="settings-tab active" data-settings-tab="minecraft">Minecraft</button>
-        <button class="settings-tab" data-settings-tab="launcher">Лаунчер</button>
-      </div>
-
       <div id="settings-minecraft" class="settings-pane">
         <div class="field">
           <label>Оперативная память: <output id="ram-out">4 ГБ</output></label>
@@ -375,12 +370,6 @@
         </div>
 
         <div class="field">
-          <label>Путь к Java</label>
-          <input type="text" id="set-java" placeholder="пусто = системная java">
-          <div class="hint">Например: C:\Program Files\Java\jdk-17\bin\javaw.exe</div>
-        </div>
-
-        <div class="field">
           <label>Окно игры</label>
           <div class="row">
             <input type="number" id="set-width" min="400" max="3840" placeholder="925">
@@ -390,26 +379,18 @@
           </div>
         </div>
 
-        <div class="field">
-          <label class="check standalone"><input type="checkbox" id="set-jvm-flags" checked> Оптимизированные JVM-флаги (G1GC)</label>
-          <div class="hint">Меньше лагов и стабильнее запуск. Отключи, если Java не стартует или сборка несовместима.</div>
-        </div>
-      </div>
-
-      <div id="settings-launcher" class="settings-pane" hidden>
-        <div class="field">
-          <label>Папка данных лаунчера</label>
-          <div class="row">
-            <input type="text" id="set-data-dir" readonly>
-            <button class="btn btn-ghost" id="btn-open-data">Открыть</button>
+        <details class="settings-advanced">
+          <summary>Дополнительно</summary>
+          <div class="field">
+            <label>Путь к Java</label>
+            <input type="text" id="set-java" placeholder="Автоматически">
+            <div class="hint">Оставь пустым — лаунчер найдёт подходящую Java сам. Указывай путь, только если нужно выбрать конкретную версию.</div>
           </div>
-          <div class="hint">Здесь хранятся настройки, аккаунты и кэш списка режимов.</div>
-        </div>
-        <div class="field">
-          <label for="set-catalog-url">Источник каталога</label>
-          <input id="set-catalog-url" type="text" spellcheck="false" autocomplete="off" placeholder="https://.../modes.json">
-          <div class="hint">Адрес modes.json. Сейчас это GitHub, позже здесь можно указать API магазина.</div>
-        </div>
+          <div class="field">
+            <label class="check standalone"><input type="checkbox" id="set-jvm-flags" checked> Оптимизированные JVM-флаги (G1GC)</label>
+            <div class="hint">Меньше лагов и стабильнее запуск. Отключи, если Java не стартует или сборка несовместима.</div>
+          </div>
+        </details>
       </div>
 
       <div class="modal-foot">

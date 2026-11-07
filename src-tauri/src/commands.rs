@@ -20,31 +20,26 @@ where
 }
 
 async fn load_modes(state: &AppState) -> Vec<Mode> {
-    let (repo, catalog_url, token, cached) = {
+    let (repo, token, cached) = {
         let store = state.store.lock().unwrap();
         (
             store.settings.github_repo.clone(),
-            store.settings.catalog_url.clone(),
             store.settings.github_token.clone(),
             store.read_cached_modes(),
         )
     };
 
-    let remote: Result<Vec<Mode>, String> = if repo.trim().is_empty() && catalog_url.trim().is_empty() {
-        Ok(Vec::new())
-    } else {
-        match blocking(move || {
-            net::fetch_remote_modes(
-                &repo,
-                &catalog_url,
-                Some(token.as_str()).filter(|value| !value.trim().is_empty()),
-            )
-        })
-        .await
-        {
-            Ok(result) => result,
-            Err(err) => Err(err),
-        }
+    let remote: Result<Vec<Mode>, String> = match blocking(move || {
+        net::fetch_remote_modes(
+            &repo,
+            net::CATALOG_URL,
+            Some(token.as_str()).filter(|value| !value.trim().is_empty()),
+        )
+    })
+    .await
+    {
+        Ok(result) => result,
+        Err(err) => Err(err),
     };
 
     let modes = match remote {

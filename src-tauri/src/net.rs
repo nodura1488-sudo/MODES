@@ -15,6 +15,7 @@ use std::time::Duration;
 use url::Url;
 
 pub const API: &str = "https://api.github.com";
+pub const CATALOG_URL: &str = "https://raw.githubusercontent.com/tommy-whinston/TMStore-Catalog/main/modes/modes.json";
 pub const RAW: &str = "https://raw.githubusercontent.com";
 
 fn client() -> &'static Client {

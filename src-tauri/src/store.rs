@@ -81,9 +81,6 @@ impl Store {
         {
             settings.github_repo = "tommy-whinston/TMStore-Catalog".to_string();
         }
-        if settings.catalog_url.trim().is_empty() {
-            settings.catalog_url = "https://raw.githubusercontent.com/tommy-whinston/TMStore-Catalog/main/modes/modes.json".to_string();
-        }
         if settings.ely_client_id.trim().is_empty() {
             settings.ely_client_id = "tm-launcher".to_string();
         }
