@@ -1499,6 +1499,7 @@ function renderDetail() {
   renderChangelog(mode);
   els.reqSize.textContent = mode.size || '—';
   renderSpotlight(mode);
+  els.sideFolder.hidden = !isInstalled(mode);
 
   const others = sortByTitle(S.modes.filter((m) => m.id !== mode.id)).slice(0, 3);
   els.moreSection.hidden = others.length === 0;
